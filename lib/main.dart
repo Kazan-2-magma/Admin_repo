@@ -1,4 +1,5 @@
 import 'package:cinq_etoils/screens/login_screen.dart';
+import 'package:cinq_etoils/screens/project_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ void main() async {
   );
   runApp (MaterialApp(
     title: "my app",
-    home: LoginScreen(),
+    home: ProjectScreen(),
   ));
   //(const MyApp());
 }

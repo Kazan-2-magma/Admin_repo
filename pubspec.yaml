@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore:
   image_picker: ^1.0.7
   firebase_storage:
+  animation_search_bar: ^0.0.10
 
 
 dev_dependencies:

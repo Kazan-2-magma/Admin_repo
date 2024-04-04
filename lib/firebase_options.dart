@@ -47,28 +47,28 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyClgirxXXMao9hePQHE8IGQ_c5Z9-Uxfhk',
-    appId: '1:922764653098:web:2c4cc78f7057eef00f0953',
-    messagingSenderId: '922764653098',
-    projectId: 'five-stars-f150c',
-    authDomain: 'five-stars-f150c.firebaseapp.com',
-    storageBucket: 'five-stars-f150c.appspot.com',
+    apiKey: 'AIzaSyAz_mvbMPpbJ1l4uGNoXL5ZVvEtq1Z28A8',
+    appId: '1:915635564483:web:58eef5ffe6018da0b3d776',
+    messagingSenderId: '915635564483',
+    projectId: 'admin-manager-app',
+    authDomain: 'admin-manager-app.firebaseapp.com',
+    storageBucket: 'admin-manager-app.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDaVu4GAm1Q_3Kn0MH6DtMMjAOk8Dc9E-E',
-    appId: '1:922764653098:android:6ed4abae80c175300f0953',
-    messagingSenderId: '922764653098',
-    projectId: 'five-stars-f150c',
-    storageBucket: 'five-stars-f150c.appspot.com',
+    apiKey: 'AIzaSyDWCa0kDkATv20nnpaU9eMK05bmMHdJK-E',
+    appId: '1:915635564483:android:3723b80514a9a4b7b3d776',
+    messagingSenderId: '915635564483',
+    projectId: 'admin-manager-app',
+    storageBucket: 'admin-manager-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyByru2hiXor5cCxfPmuqMAV3RkhR7ukK5E',
-    appId: '1:922764653098:ios:69ad72555cb0b0ff0f0953',
-    messagingSenderId: '922764653098',
-    projectId: 'five-stars-f150c',
-    storageBucket: 'five-stars-f150c.appspot.com',
+    apiKey: 'AIzaSyBDLGEWj02M3VlTnTS-J-yBrWRNOhxjp5w',
+    appId: '1:915635564483:ios:9baeb043e5288670b3d776',
+    messagingSenderId: '915635564483',
+    projectId: 'admin-manager-app',
+    storageBucket: 'admin-manager-app.appspot.com',
     iosBundleId: 'com.example.adminManager',
   );
 }

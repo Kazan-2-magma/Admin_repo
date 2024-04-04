@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 import '../model/Users.dart';
 
-class LoinScreen extends StatefulWidget {
-  const LoinScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoinScreen> createState() => _LoinScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoinScreenState extends State<LoinScreen> {
+class _LoginScreenState extends State<LoginScreen> {
 
 
 

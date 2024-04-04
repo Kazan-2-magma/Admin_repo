@@ -1,15 +1,16 @@
+import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  MyAppState createState() => MyAppState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class MyAppState extends State<MyApp> {
+class HomeScreenState extends State<HomeScreen> {
   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
   GlobalKey<SliderDrawerState>();
   late String title;
@@ -22,10 +23,7 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'BalsamiqSans'),
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         body: SliderDrawer(
           appBar: SliderAppBar(
             appBarColor: Colors.white,
@@ -43,7 +41,6 @@ class MyAppState extends State<MyApp> {
           ),
           child: _AuthorList(),
         ),
-      ),
     );
   }
 }
@@ -134,11 +131,11 @@ class _SliderMenuItem extends StatelessWidget {
       title: Text(
         title,
         style: TextStyle(
-          color: isSelected ? Colors.yellow : Colors.black,
+          color: isSelected ? CustomColors.blue : Colors.black,
           fontFamily: 'BalsamiqSans_Regular',
         ),
       ),
-      leading: Icon(iconData, color: isSelected ? Colors.yellow : Colors.black),
+      leading: Icon(iconData, color: isSelected ? CustomColors.blue : Colors.black),
       onTap: onTap,
     );
   }

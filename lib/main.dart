@@ -13,7 +13,7 @@ void main() async {
   );
   runApp (MaterialApp(
     title: "my app",
-    home: LoinScreen(),
+    home: LoginScreen(),
   ));
   //(const MyApp());
 }

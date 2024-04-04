@@ -34,14 +34,42 @@ class CustomWidgets{
  static Widget CustomTextFormField({
    BuildContext? context,
    required String? Function(String?)? funcValid,
-   TextEditingController? editingController,
+   required TextEditingController? editingController,
+   required String? hintText,
+   bool isObscureText = false,
+   IconData? icon,
+   Color? iconColor = Colors.blue,
 
 }){
-   InputDecorationTheme inputDecorationTheme = Theme.of(context!).inputDecorationTheme;
    return TextFormField(
-    validator:funcValid,
+     validator:funcValid,
      controller: editingController,
-     //decoration: (),
+     decoration: InputDecoration(
+       fillColor: Colors.white,
+       filled: true,
+       labelStyle: TextStyle(
+         color: CustomColors.blue,
+       ),
+       labelText: hintText,
+       enabledBorder: OutlineInputBorder(
+         borderSide: BorderSide(
+           color: CustomColors.blue,
+           width: 2,
+         ),
+         borderRadius: BorderRadius.circular(10),
+       ),
+       focusedBorder: OutlineInputBorder(
+         borderSide: BorderSide(
+           color: CustomColors.blue,
+           width: 1.5,
+         ),
+         borderRadius: BorderRadius.circular(13),
+       ),
+       prefixIcon: Icon(icon,color: iconColor,),
+       border: OutlineInputBorder(),
+          ),
+         obscureText: isObscureText,
+
    );
  }
 }

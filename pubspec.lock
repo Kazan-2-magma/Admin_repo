@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.28"
+  animation_search_bar:
+    dependency: "direct main"
+    description:
+      name: animation_search_bar
+      sha256: "1742679df01989988a45075dbda1f84d7bfd94a197ca4e578179155689337b7b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.10"
   async:
     dependency: transitive
     description:
@@ -222,6 +230,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.17"
+  flutter_riverpod:
+    dependency: transitive
+    description:
+      name: flutter_riverpod
+      sha256: "0f1974eff5bbe774bf1d870e406fc6f29e3d6f1c46bd9c58e7172ff68a785d7d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.1"
+  flutter_slider_drawer:
+    dependency: "direct main"
+    description:
+      name: flutter_slider_drawer
+      sha256: "7e34f47a6d37c7518791fa1e242492df23e75ccbc600eeda4abfd5641aeea709"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -392,6 +416,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  riverpod:
+    dependency: transitive
+    description:
+      name: riverpod
+      sha256: f21b32ffd26a36555e501b04f4a5dca43ed59e16343f1a30c13632b2351dfa4d
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.1"
   shrink_sidemenu:
     dependency: "direct main"
     description:
@@ -421,6 +453,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  state_notifier:
+    dependency: transitive
+    description:
+      name: state_notifier
+      sha256: b8677376aa54f2d7c58280d5a007f9e8774f1968d1fb1c096adcb4792fba29bb
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   stream_channel:
     dependency: transitive
     description:

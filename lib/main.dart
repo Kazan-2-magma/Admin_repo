@@ -15,7 +15,7 @@ void main() async {
   );
   runApp (MaterialApp(
     title: "my app",
-    home: ProjectScreen(), ////// try new look of the project screen ;D by MFox
+    home: HomeScreen(), ////// try new look of the project screen ;D by MFox
   ));
   //(const MyApp());
 }

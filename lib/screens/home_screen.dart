@@ -1,4 +1,5 @@
 import 'package:cinq_etoils/shared/CustomColors.dart';
+import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
@@ -30,7 +31,7 @@ class HomeScreenState extends State<HomeScreen> {
             title: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
           ),
           key: _sliderDrawerKey,
-          sliderOpenSize: 179,
+          sliderOpenSize: 222,
           slider: _SliderView(
             onItemClick: (title) {
               _sliderDrawerKey.currentState!.closeSlider();
@@ -60,37 +61,47 @@ class _SliderViewState extends State<_SliderView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.only(top: 30),
+      color: CustomColors.lightGrey,
       child: ListView(
         children: <Widget>[
-          const SizedBox(height: 30),
-          CircleAvatar(
-            radius: 65,
-            backgroundColor: Colors.grey,
-            child: CircleAvatar(
-              radius: 60,
-              backgroundImage: Image.network(
-                  'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
-                  .image,
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey,
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: Image.network(
+                        'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
+                        .image,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                const Text(
+                  'Adolf \nhitler',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 20),
-          const Text(
-            'Nick',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-            ),
-          ),
-          const SizedBox(height: 20),
+
+
+
+          CustomWidgets.CustomDivider(),
           ...[
             Menu(Icons.home, 'Home'),
             Menu(Icons.business_center, 'Projet'),
             Menu(Icons.people, 'Client'),
             Menu(Icons.group, 'Utilisateurs'),
+            //li 3erf yzid hadi "CustomWidgets.CustomDivider()" hna yzidha
             Menu(Icons.arrow_back_ios, 'LogOut')
           ].map((menu) {
             return _SliderMenuItem(
@@ -127,16 +138,19 @@ class _SliderMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(
-          color: isSelected ? CustomColors.blue : Colors.black,
-          fontFamily: 'BalsamiqSans_Regular',
+    return Container(
+      color: isSelected ? Color.fromRGBO(0, 176, 255, 0.3) : Colors.grey[200],
+      child: ListTile(
+        title: Text(
+          title,
+          style: TextStyle(
+            color: isSelected ? CustomColors.blue : CustomColors.black,
+            fontFamily: 'BalsamiqSans_Regular',
+          ),
         ),
+        leading: Icon(iconData, color: isSelected ? CustomColors.blue : CustomColors.black),
+        onTap: onTap,
       ),
-      leading: Icon(iconData, color: isSelected ? CustomColors.blue : Colors.black),
-      onTap: onTap,
     );
   }
 }

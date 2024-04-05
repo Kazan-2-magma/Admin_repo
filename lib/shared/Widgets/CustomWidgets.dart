@@ -9,16 +9,13 @@ class CustomWidgets{
 
 
 
- static Widget CustomButton({
+ static Widget customButton({
    required String text,
    required VoidCallback func,
    required Color color,
    Icon? icon,
 }){
    return ElevatedButton(
-     child: Text(
-         text,
-     style: TextStyle(fontSize: 18),),
      onPressed: func,
      style: ElevatedButton.styleFrom(
        backgroundColor: color,
@@ -27,11 +24,37 @@ class CustomWidgets{
          borderRadius: BorderRadius.circular(10),
        ),
      ),
+     child: Text(
+         text,
+     style: const TextStyle(fontSize: 18),),
 
    );
  }
 
- static Widget CustomTextFormField({
+
+ static Widget customButtonWithButton({
+   required String text,
+   required VoidCallback func,
+   required Color color,
+   IconData? icon,
+ }){
+   return ElevatedButton.icon(
+     onPressed: func,
+     style: ElevatedButton.styleFrom(
+       backgroundColor: color,
+       foregroundColor: CustomColors.white,
+       shape: RoundedRectangleBorder(
+         borderRadius: BorderRadius.circular(10),
+       ),
+     ),
+     icon: Icon(icon),
+     label: Text(
+       text,
+       style: const TextStyle(fontSize: 18),),
+   );
+ }
+
+ static Widget customTextFormField({
    BuildContext? context,
    required String? Function(String?)? funcValid,
    required TextEditingController? editingController,
@@ -77,12 +100,12 @@ class CustomWidgets{
  static Widget verticalSpace(double height) => SizedBox(height: height,);
  static Widget horizontalSpace(double width) => SizedBox(width: width,);
 
- static Widget CustomDivider() => Padding(
+ static Widget customDivider() => Padding(
    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
    child: Divider(height: 1.0,color: CustomColors.grey,),
  );
 
- static Widget CustomIconButton({
+ static Widget customIconButton({
    required VoidCallback func,
    required Icon icon,
    Color? color,
@@ -94,7 +117,7 @@ class CustomWidgets{
    );
  }
 /////////////////////////Ahh ok, hanya waylii
- static Widget CustomCard(Map data) => Card(
+ static Widget customCard(Map data,{bool checkbox = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -114,38 +137,69 @@ class CustomWidgets{
            left: BorderSide(color: CustomColors.green, width: 7),
          ),
        ),
-       child: ListTile(
-           contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
-           title: Text(
-             "NAME",
-             style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
-           ),
-           subtitle:Text("Email: \nTel: "),
-           trailing: Row(
-             mainAxisSize: MainAxisSize.min,
-             children:
-             [
-               const VerticalDivider(),
-               CustomWidgets.CustomIconButton(
-                 func: (){
-                   ///////////////////////////////////////
-                 },
-                 icon:Icon(
-                   Icons.edit,
-                   color: CustomColors.green,
+       child: checkbox
+           ? ListTile(
+             contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+             title: Text(
+               "NAME",
+               style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+             ),
+             subtitle:Text("Email: \nTel: "),
+             trailing: Row(
+               mainAxisSize: MainAxisSize.min,
+               children:
+               [
+                 const VerticalDivider(),
+                 Checkbox(
+                     value: false,
+                     onChanged: (value){
+
+                     }
                  ),
-               ),
-               CustomWidgets.CustomIconButton(
-                 func: (){
-                   ///////////////////////////////////////
-                 },
-                 icon:Icon(
-                   Icons.delete,
-                   color: CustomColors.red,
+                 CustomWidgets.customIconButton(
+                   func: (){
+                     ///////////////////////////////////////
+                   },
+                   icon:Icon(
+                     Icons.delete,
+                     color: CustomColors.red,
+                   ),
                  ),
+               ],
+             )
+       )
+           : ListTile(
+               contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+               title: Text(
+                 "NAME",
+                 style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
                ),
-             ],
-           )
+               subtitle:Text("Email: \nTel: "),
+               trailing: Row(
+                 mainAxisSize: MainAxisSize.min,
+                 children:
+                 [
+                   const VerticalDivider(),
+                   CustomWidgets.customIconButton(
+                     func: (){
+                       ///////////////////////////////////////
+                     },
+                     icon:Icon(
+                       Icons.edit,
+                       color: CustomColors.green,
+                     ),
+                   ),
+                   CustomWidgets.customIconButton(
+                     func: (){
+                       ///////////////////////////////////////
+                     },
+                     icon:Icon(
+                       Icons.delete,
+                       color: CustomColors.red,
+                     ),
+                   ),
+                 ],
+               )
        ),
      ),
    ),

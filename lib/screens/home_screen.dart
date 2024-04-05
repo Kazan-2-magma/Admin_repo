@@ -95,7 +95,7 @@ class _SliderViewState extends State<_SliderView> {
 
 
 
-          CustomWidgets.CustomDivider(),
+          CustomWidgets.customDivider(),
           ...[
             Menu(Icons.home, 'Home'),
             Menu(Icons.business_center, 'Projet'),

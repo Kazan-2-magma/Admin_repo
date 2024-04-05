@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text("Connexion",style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color: CustomColors.blue),),
-                        CustomWidgets.CustomTextFormField(
+                        CustomWidgets.customTextFormField(
                           editingController: userEmailController,
                           hintText: 'Email',
                           icon: Icons.email,
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             //////////////////////////////
                           },
                         ),
-                        CustomWidgets.CustomTextFormField(
+                        CustomWidgets.customTextFormField(
                           editingController: passwordController,
                           hintText: 'Mot de passe',
                           icon: Icons.lock,
@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ///////////////////////////////////
                           },
                         ),
-                        CustomWidgets.CustomButton(
+                        CustomWidgets.customButton(
                             text: "S'inscrire",
                             func: (){
                               ////////////////////////////////

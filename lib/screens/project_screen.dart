@@ -50,7 +50,7 @@ class ProjectScreen extends StatelessWidget {
                       searchTextEditingController: _searchController,
                     ),
                   ),
-                  CustomWidgets.CustomIconButton(
+                  CustomWidgets.customIconButton(
                     color: CustomColors.green,
                       func: (){
                       },
@@ -60,21 +60,21 @@ class ProjectScreen extends StatelessWidget {
                   )
                 ],
               ),
-              CustomWidgets.CustomDivider(),
+              CustomWidgets.customDivider(),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
-                    CustomWidgets.CustomCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
+                    CustomWidgets.customCard(maptest),
                     ],
                   ),
                 ),

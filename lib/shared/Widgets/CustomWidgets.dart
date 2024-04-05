@@ -117,7 +117,7 @@ class CustomWidgets{
    );
  }
 /////////////////////////Ahh ok, hanya waylii
- static Widget customCard(Map data,{bool checkbox = false}) => Card(
+ static Widget customCard(Map data,{bool checkbox = false,bool isUser = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -144,7 +144,7 @@ class CustomWidgets{
                "NAME",
                style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
              ),
-             subtitle:Text("Email: \nTel: "),
+             subtitle:Text("Email: \nTel: ")  ,
              trailing: Row(
                mainAxisSize: MainAxisSize.min,
                children:
@@ -174,7 +174,7 @@ class CustomWidgets{
                  "NAME",
                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
                ),
-               subtitle:Text("Email: \nTel: "),
+               subtitle: isUser ? Text("Email: \nTel: \nRole :") : Text("Email: \nTel: "),
                trailing: Row(
                  mainAxisSize: MainAxisSize.min,
                  children:

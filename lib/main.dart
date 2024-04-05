@@ -1,6 +1,8 @@
+import 'package:cinq_etoils/screens/ClientScreen.dart';
 import 'package:cinq_etoils/screens/home_screen.dart';
 import 'package:cinq_etoils/screens/login_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
+import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -14,10 +16,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp (MaterialApp(
-    title: "my app",
-    home: HomeScreen(), ////// try new look of the project screen ;D by MFox
+    debugShowCheckedModeBanner: false,
+    title: "Cinq Etoil Admin",
+    home: ClientScreen(), ////// try new look of the project screen ;D by MFox
   ));
-  //(const MyApp());
+
 }
 
 /*class MyApp extends StatefulWidget {

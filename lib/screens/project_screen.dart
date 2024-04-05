@@ -43,7 +43,7 @@ class ProjectScreen extends StatelessWidget {
                       searchBarWidth: MediaQuery.of(context).size.width - 85,
                       isBackButtonVisible: false,
                       centerTitle: "List Des Projets : ",
-                      centerTitleStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                      centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
                       hintText: "Chercher Ici...",
                       onChanged: (String) {
                       },

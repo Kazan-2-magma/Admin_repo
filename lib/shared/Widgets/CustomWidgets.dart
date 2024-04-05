@@ -93,15 +93,21 @@ class CustomWidgets{
      icon: icon,
    );
  }
-/////////////////////////yassin 7ta t9ad dakchi nta3 data 3awed sorry ;3
+/////////////////////////Ahh ok, hanya waylii
  static Widget CustomCard(Map data) => Card(
-   shape: RoundedRectangleBorder(
-       borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft: Radius.circular(10))),
+   shape: const RoundedRectangleBorder(
+       borderRadius: BorderRadius.only(
+           topLeft: Radius.circular(10),
+           bottomLeft: Radius.circular(10)
+       )
+   ),
    elevation: 0.6,
    child: ClipPath(
      clipper: ShapeBorderClipper(
          shape: RoundedRectangleBorder(
-             borderRadius: BorderRadius.circular(10))),
+             borderRadius: BorderRadius.circular(10)
+         )
+     ),
      child: Container(
        decoration: BoxDecoration(
          border: Border(
@@ -109,15 +115,17 @@ class CustomWidgets{
          ),
        ),
        child: ListTile(
-
-           contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-           title: Text("project",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),),
+           contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+           title: Text(
+             "NAME",
+             style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+           ),
            subtitle:Text("Email: \nTel: "),
            trailing: Row(
              mainAxisSize: MainAxisSize.min,
              children:
              [
-               VerticalDivider(),
+               const VerticalDivider(),
                CustomWidgets.CustomIconButton(
                  func: (){
                    ///////////////////////////////////////

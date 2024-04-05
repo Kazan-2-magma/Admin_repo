@@ -78,7 +78,7 @@ class CustomWidgets{
  static Widget horizontalSpace(double width) => SizedBox(width: width,);
 
  static Widget CustomDivider() => Padding(
-   padding: const EdgeInsets.symmetric(horizontal: 8.0),
+   padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
    child: Divider(height: 1.0,color: CustomColors.grey,),
  );
 
@@ -93,36 +93,53 @@ class CustomWidgets{
      icon: icon,
    );
  }
-
+/////////////////////////yassin 7ta t9ad dakchi nta3 data 3awed sorry ;3
  static Widget CustomCard(Map data) => Card(
-   child: ListTile(
-       contentPadding: const EdgeInsets.all(10.0),
-       title: Text(data["title"]),
-       subtitle:Text("${data["email"]} \n${data["phone_number"]}"),
-       trailing: Row(
-         mainAxisSize: MainAxisSize.min,
-         children:
-         [
-           CustomWidgets.CustomIconButton(
-             func: (){
+   shape: RoundedRectangleBorder(
+       borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft: Radius.circular(10))),
+   elevation: 0.6,
+   child: ClipPath(
+     clipper: ShapeBorderClipper(
+         shape: RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(10))),
+     child: Container(
+       decoration: BoxDecoration(
+         border: Border(
+           left: BorderSide(color: CustomColors.green, width: 7),
+         ),
+       ),
+       child: ListTile(
 
-             },
-             icon:Icon(
-               Icons.edit,
-               color: CustomColors.green,
-             ),
-           ),
-           CustomWidgets.CustomIconButton(
-             func: (){
-
-             },
-             icon:Icon(
-               Icons.delete,
-               color: CustomColors.red,
-             ),
-           ),
-         ],
-       )
+           contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
+           title: Text("project",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),),
+           subtitle:Text("Email: \nTel: "),
+           trailing: Row(
+             mainAxisSize: MainAxisSize.min,
+             children:
+             [
+               VerticalDivider(),
+               CustomWidgets.CustomIconButton(
+                 func: (){
+                   ///////////////////////////////////////
+                 },
+                 icon:Icon(
+                   Icons.edit,
+                   color: CustomColors.green,
+                 ),
+               ),
+               CustomWidgets.CustomIconButton(
+                 func: (){
+                   ///////////////////////////////////////
+                 },
+                 icon:Icon(
+                   Icons.delete,
+                   color: CustomColors.red,
+                 ),
+               ),
+             ],
+           )
+       ),
+     ),
    ),
  );
 

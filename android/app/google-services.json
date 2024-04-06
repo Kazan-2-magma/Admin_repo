@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "915635564483",
-    "project_id": "admin-manager-app",
-    "storage_bucket": "admin-manager-app.appspot.com"
+    "project_number": "1060502762193",
+    "project_id": "admin-manager-app-3fee8",
+    "storage_bucket": "admin-manager-app-3fee8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:915635564483:android:3723b80514a9a4b7b3d776",
+        "mobilesdk_app_id": "1:1060502762193:android:da8bc03adf76b1c4b04bf0",
         "android_client_info": {
           "package_name": "com.example.admin_manager"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDWCa0kDkATv20nnpaU9eMK05bmMHdJK-E"
+          "current_key": "AIzaSyDJfLryZSZQipSr96Q6WoDHskIY8DuKE9Q"
         }
       ],
       "services": {

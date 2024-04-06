@@ -114,7 +114,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   left: 0,
                   right: 0,
                   bottom: 20,
-                  child: CustomWidgets.customButtonWithButton(
+                  child: CustomWidgets.customButtonWithIcon(
                       text: "Envoyer",
                       func: (){
                         },

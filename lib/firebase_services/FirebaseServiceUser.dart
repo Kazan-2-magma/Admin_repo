@@ -1,27 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../model/UserModel.dart';
 import '../model/Users.dart';
 
 class FirebaseServiceUser {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _userCollection = FirebaseFirestore.instance.collection('users');
 
-  // Register with email and password
-  Future<String?> registerWithEmailAndPassword(String email, String password, Userapp user) async {
-    try {
-      // Register user with email and password
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
-      // Save user data to Firestore
-      await _userCollection.doc(result.user!.uid).set(user.toJson());
-      return null; // Return null for successful registration
+  FirebaseAuth get auth => _auth;
+  Future<String?> registerWithEmailAndPassword(String email, String password, UserModel user) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      await _userCollection.doc(result.user!.uid).set(user.toJson(result.user!.uid));
+      return null;
     } catch (e) {
-      return e.toString(); // Return error message for failed registration
+      return e.toString();
     }
   }
 
-  //delete user
   Future<void> deleteUser(String userId, String password) async {
     try {
       // Re-authenticate the user
@@ -39,17 +37,17 @@ class FirebaseServiceUser {
       throw e; // Rethrow the error to handle it in the UI if needed
     }
   }
-  // Modify user by ID
-  Future<void> modifyUserById(String userId, Userapp updatedUser) async {
+
+  Future<void> modifyUserById(String userId, UserModel updatedUser) async {
     try {
       // Update user document in Firestore
-      await _userCollection.doc(userId).update(updatedUser.toJson());
+      await _userCollection.doc(userId).update(updatedUser.toJson(userId));
     } catch (e) {
       print('Error modifying user: $e');
       throw e; // Rethrow the error to handle it in the UI if needed
     }
   }
-  // Fonction pour récupérer toutes les informations de l'utilisateur à partir de Cloud Firestore
+
   Future<Map<String, dynamic>?> getUserInfo(String userId) async {
     try {
       DocumentSnapshot userSnapshot = await _userCollection.doc(userId).get();
@@ -69,10 +67,8 @@ class FirebaseServiceUser {
   // Sign in with email and password
   Future<String?> signInWithEmailAndPassword(String email, String password) async {
     try {
-      // Sign in user with email and password
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
-      return null; // Return null for successful sign in
+      return null;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return "L'utilisateur n'a pas été trouvé.";
@@ -90,46 +86,70 @@ class FirebaseServiceUser {
   }
 
   //list de uesrs
-  Stream<List<Userapp>> getUsers() {
+  Stream<List<UserModel>> getUsers() {
     return _userCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
-        return Userapp(
-          id_user: doc.id,
-          firstName: doc['firstName'],
-          lastName:doc['lastName'],
-          phoneNumber:doc['phoneNumber'],
-          email: doc['email'],
-          photoUrl:doc['photoUrl'],
-          idProjet: doc['idProjet'],
-          role:doc['role'],
-          password: doc['password'],
-        );
+        if(doc["role"] == "admin"){
+          return AdminUser(
+            id_user: doc.id,
+            firstName: doc['firstName'],
+            lastName:doc['lastName'],
+            phoneNumber:doc['phoneNumber'],
+            email: doc['email'],
+            photoUrl:doc['photoUrl'],
+            role:doc['role'],
+            password: doc['password'],
+          );
+        }else{
+          return Users(
+            id_user: doc.id,
+            firstName: doc['firstName'],
+            lastName:doc['lastName'],
+            phoneNumber:doc['phoneNumber'],
+            email: doc['email'],
+            photoUrl:doc['photoUrl'],
+            idProjet: doc['idProjet'],
+            role:doc['role'],
+            password: doc['password'],
+          );
+        }
       }).toList();
     });
   }
-//
-  Future<List<Userapp>> rechercheUserParEmailEtPassword(String email, String password) async {
+
+  Future<List<UserModel>> rechercheUserParEmailEtPassword(String email, String password) async {
     try {
       QuerySnapshot querySnapshot = await _userCollection
           .where('email', isEqualTo: email)
           .where('password', isEqualTo: password)
           .get();
 
-      List<Userapp> users = querySnapshot.docs.map((doc) {
-        return Userapp(
-          id_user: doc.id,
-          firstName: doc['firstName'],
-          lastName: doc['lastName'],
-          phoneNumber: doc['phoneNumber'],
-          email: doc['email'],
-          photoUrl: doc['photoUrl'],
-          idProjet: doc['idProjet'],
-          role:doc['role'],
-          password: doc['password'],
-
-        );
+      List<UserModel> users = querySnapshot.docs.map((doc) {
+        if(doc["role"] == "admin"){
+          return AdminUser(
+            id_user: doc.id,
+            firstName: doc['firstName'],
+            lastName: doc['lastName'],
+            phoneNumber: doc['phoneNumber'],
+            email: doc['email'],
+            photoUrl: doc['photoUrl'],
+            role:doc['role'],
+            password: doc['password'],
+          );
+        }else{
+         return Users(
+            id_user: doc.id,
+            firstName: doc['firstName'],
+            lastName: doc['lastName'],
+            phoneNumber: doc['phoneNumber'],
+            email: doc['email'],
+            photoUrl: doc['photoUrl'],
+            role:doc['role'],
+            password: doc['password'],
+            idProjet: doc["id_projet"],
+          );
+        }
       }).toList();
-
       return users;
     } catch (e) {
       // Gestion des erreurs
@@ -137,6 +157,7 @@ class FirebaseServiceUser {
       return []; // Retourner une liste vide en cas d'erreur
     }
   }
+
   // Update password for a user
   Future<void> updatePassword(String userId, String newPassword) async {
     try {

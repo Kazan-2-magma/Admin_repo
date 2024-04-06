@@ -178,7 +178,7 @@ packages:
     source: hosted
     version: "5.0.0"
   firebase_core_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core_web
       sha256: c8e1d59385eee98de63c92f961d2a7062c5d9a65e7f45bdc7f1b0b205aab2492
@@ -214,6 +214,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_conditional:
+    dependency: "direct main"
+    description:
+      name: flutter_conditional
+      sha256: cf4b7433050acc0af55d2c1123437f8b1c421de4a6d421e197b9b8361a798192
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0+1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -400,6 +408,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  rflutter_alert:
+    dependency: "direct main"
+    description:
+      name: rflutter_alert
+      sha256: "8ff35e3f9712ba24c746499cfa95bf320385edf38901a1a4eab0fe555867f66c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.7"
   riverpod:
     dependency: transitive
     description:
@@ -408,14 +424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.1"
-  shrink_sidemenu:
-    dependency: "direct main"
-    description:
-      name: shrink_sidemenu
-      sha256: "556436717d004ed4573522dcc8772da50f4b7ed3b3a238c0c0e11bc265a0c95a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0+2-null-safety"
   sky_engine:
     dependency: transitive
     description: flutter

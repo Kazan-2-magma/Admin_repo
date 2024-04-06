@@ -1,4 +1,5 @@
 import 'package:cinq_etoils/screens/ClientScreen.dart';
+import 'package:cinq_etoils/screens/auth_screen_manager.dart';
 import 'package:cinq_etoils/screens/home_screen.dart';
 import 'package:cinq_etoils/screens/login_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
@@ -19,7 +20,7 @@ void main() async {
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Cinq Etoil Admin",
-    home: UserListScreen(), ////// try new look of the project screen ;D by MFox
+    home: AuthPage(), ////// try new look of the project screen ;D by MFox
   ));
 
 }

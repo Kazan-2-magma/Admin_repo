@@ -9,6 +9,7 @@ class CustomWidgets{
 
 
 
+
  static Widget customButton({
    required String text,
    required VoidCallback func,
@@ -32,10 +33,10 @@ class CustomWidgets{
  }
 
 
- static Widget customButtonWithButton({
+ static Widget customButtonWithIcon({
    required String text,
    required VoidCallback func,
-   required Color color,
+   Color? color,
    IconData? icon,
  }){
    return ElevatedButton.icon(
@@ -116,7 +117,7 @@ class CustomWidgets{
      icon: icon,
    );
  }
-/////////////////////////Ahh ok, hanya waylii
+
  static Widget customCard(Map data,{bool checkbox = false,bool isUser = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
@@ -205,4 +206,24 @@ class CustomWidgets{
    ),
  );
 
+ static Widget showProgress(){
+   return const Center(
+     child: CircularProgressIndicator(),
+   );
+ }
+
+ static void showSnackBar(context,content,color){
+   ScaffoldMessenger.of(context).showSnackBar(
+     SnackBar(
+          content: Text(
+            content,
+            style:const TextStyle(
+              color: Colors.white
+            ),
+          ),
+          backgroundColor: color,
+
+     )
+   );
+ }
 }

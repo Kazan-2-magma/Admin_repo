@@ -1,18 +1,41 @@
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/UserModel.dart';
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class UserListScreen extends StatelessWidget {
+Future<void> getd(UserModel user)async{
+  FirebaseAuth auth = FirebaseAuth.instance;
+  CollectionReference collection = FirebaseFirestore.instance.collection("users");
+  UserCredential res = await auth.createUserWithEmailAndPassword(email: "il@add.com", password: "123134");
+  collection.doc(res.user!.uid).set(user.toJson(res.user!.uid));
+}
+
+class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
+
+  @override
+  State<UserListScreen> createState() => _UserListScreenState();
+}
+
+class _UserListScreenState extends State<UserListScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    //////////////////////////////// had l Map ghir test
+
     Map<String,dynamic> maptest = new Map<String,dynamic>();
 
 
@@ -27,7 +50,6 @@ class UserListScreen extends StatelessWidget {
         padding: const EdgeInsets.only(top:5),
         color: CustomColors.lightGrey,
         child: Padding(
-
           padding: const EdgeInsets.symmetric(
               horizontal: 10.0
           ),

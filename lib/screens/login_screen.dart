@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.blue,
-        title: Text("appBar"),
+        title: const Text("appBar"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -111,16 +111,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           CustomWidgets.customButton(
                               text: "Se Connecter",
-                              func: (){
+                              func: () async{
                                 if(formKey.currentState!.validate()){
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    signIn().then((value){
+                                    if(await signIn()){
                                       Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(builder: (context) => HomeScreen(userData:data))
                                       );
-                                    });
+                                    }else{
+                                      CustomWidgets.showSnackBar(
+                                          context,
+                                          "Login Falide",
+                                          CustomColors.red
+                                      );
+                                    }
                                 }
                               },
                               color: CustomColors.green)
@@ -134,7 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  Future<void> signIn() async {
+  Future<bool> signIn() async {
+    bool signIn = false;
     setState(() {
       isLoading = true;
     });
@@ -156,6 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           data = await _firebaseServiceUser.getUserInfo(user.id_user);
           print(data);
+          signIn = true;
         }
       }
     }else{
@@ -164,7 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
           "Erreur Cette application est réservée aux administrateurs.",
           CustomColors.red
       );
+      signIn = false;
     }
+    return signIn;
 
   }
 }

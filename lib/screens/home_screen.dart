@@ -104,11 +104,10 @@ class _SliderViewState extends State<_SliderView> {
                 ),
                 CustomWidgets.customDivider(),
               ...[
-                Menu(Icons.home, 'Home'),
+                Menu(Icons.home, 'Home'), /////////////// hadi b fronci plz
                 Menu(Icons.business_center, 'Projet'),
-                Menu(Icons.people, 'Client'),
-                Menu(Icons.group, 'Utilisateurs'),
-                //li 3erf yzid hadi "CustomWidgets.CustomDivider()" hna yzidha
+                Menu(Icons.group, 'Client'),
+                Menu(Icons.people_outline, 'Utilisateurs'),
               ].map((menu) {
                 return _SliderMenuItem(
                   title: menu.title,
@@ -122,20 +121,23 @@ class _SliderViewState extends State<_SliderView> {
                   isSelected: selectedItem == menu.title,
                 );
               }),
+              CustomWidgets.customDivider(),
+              Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 20,
+                  child: CustomWidgets.customButtonWithIcon(
+                      radius: 0,
+                      color: CustomColors.red,
+                      text: "Logout",
+                      func: (){
+                        widget._firebaseServiceUser.signOut();
+                      },
+                      icon: Icons.logout
+                  )
+              )
             ],
           ),
-          Positioned(
-              left: 0,
-              right: 0,
-              bottom: 20,
-              child: CustomWidgets.customButtonWithIcon(
-                  text: "Logout",
-                  func: (){
-                    widget._firebaseServiceUser.signOut();
-                  },
-                  icon: Icons.arrow_back_ios
-              )
-          )
         ],
       )
     );

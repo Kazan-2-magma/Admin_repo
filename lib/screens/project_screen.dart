@@ -1,37 +1,44 @@
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class ProjectScreen extends StatelessWidget {
-  const ProjectScreen({super.key});
+class ProjectScreen extends StatefulWidget {
+  FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
+
+
 
   @override
-  Widget build(BuildContext context) {
+  State<ProjectScreen> createState() => _ProjectScreenState();
+}
 
-    //////////////////////////////// had l Map ghir test
-    Map<String,dynamic> maptest = new Map<String,dynamic>();
+class _ProjectScreenState extends State<ProjectScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+  var projectName = TextEditingController(),projectDescription = TextEditingController(),
+      projetUrl = TextEditingController();
 
 
+  @override
+  Widget build(BuildContext context)  {
     var _searchController = TextEditingController();
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.blue,
-        leading: const Icon(Icons.menu),
-        title:const Text("Cinq Etoils Admin"),
-      ),
-      body: Container(
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.only(top:5),
-        color: CustomColors.lightGrey,
         child: Padding(
-
           padding: const EdgeInsets.symmetric(
             horizontal: 10.0
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
             children:
             [
               Row(
@@ -53,6 +60,7 @@ class ProjectScreen extends StatelessWidget {
                   CustomWidgets.customIconButton(
                     color: CustomColors.green,
                       func: (){
+                          addProject();
                       },
                       icon:const Icon(
                           Icons.add_business_rounded
@@ -61,28 +69,64 @@ class ProjectScreen extends StatelessWidget {
                 ],
               ),
               CustomWidgets.customDivider(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    CustomWidgets.customCard(maptest),
-                    ],
-                  ),
-                ),
-              ),
+              FutureBuilder(
+                  future: widget.firebaseServiceProject.getProjects(),
+                  builder: (context,dataSnapshot){
+                    if(dataSnapshot.connectionState == ConnectionState.waiting){
+                      return const Center(
+                        child : CircularProgressIndicator()
+                      );
+                    }else if(dataSnapshot.hasData && dataSnapshot.data!.isNotEmpty){
+                      Map<String,dynamic> mapData = dataSnapshot.data!.first;
+                      return ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder: (context,index) => CustomWidgets.customCard(mapData),
+                            separatorBuilder: (context,index) => CustomWidgets.verticalSpace(7.0),
+                            itemCount: dataSnapshot.data!.length
+                        );
+                    }else{
+                      return const Center(
+                        child: Text(
+                            "No Project Found",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold
+                            ),
+                        ),
+                      );
+                    }
+                  }
+              )
             ],
           ),
         ),
-      ),
+    );
+  }
+
+  void addProject(){
+    CustomWidgets.showAlertDialog(
+        context,
+        Column(
+          children:
+          [
+            CustomWidgets.customTextFormField(
+                funcValid: (value){
+
+                },
+                editingController: projectName,
+                hintText: "Nom de Projet"
+            ),
+          ],
+        ),
+        [
+          CustomWidgets.customButton(
+              text: "Ajouter",
+              func: (){
+
+              },
+              color: CustomColors.green
+          )
+        ]
     );
   }
 }

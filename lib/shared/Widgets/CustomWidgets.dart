@@ -38,6 +38,7 @@ class CustomWidgets{
    required VoidCallback func,
    Color? color,
    IconData? icon,
+   int? radius,
  }){
    return ElevatedButton.icon(
      onPressed: func,
@@ -225,5 +226,22 @@ class CustomWidgets{
 
      )
    );
+ }
+
+ static void showAlertDialog(context,Widget children,List<Widget> list){
+   showDialog(
+       context: context,
+       builder: (context) => AlertDialog(
+         title:const Text(
+           "Ajouter Projet",
+           style: TextStyle(
+             fontWeight: FontWeight.bold,
+             color: Colors.white,
+           ),
+         ),
+         content: children,
+         actions: list,
+         ),
+       );
  }
 }

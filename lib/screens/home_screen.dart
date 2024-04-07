@@ -1,3 +1,204 @@
+// import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+// import 'package:cinq_etoils/screens/ClientScreen.dart';
+// import 'package:cinq_etoils/screens/project_screen.dart';
+// import 'package:cinq_etoils/screens/users_list_screen.dart';
+// import 'package:cinq_etoils/shared/CustomColors.dart';
+// import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+//
+//
+// class HomeScreen extends StatefulWidget {
+//   Map<String,dynamic>? userData;
+//   HomeScreen({this.userData});
+//
+//   @override
+//   HomeScreenState createState() => HomeScreenState();
+// }
+//
+// class HomeScreenState extends State<HomeScreen> {
+//   final GlobalKey<SliderDrawerState> _sliderDrawerKey =
+//   GlobalKey<SliderDrawerState>();
+//   late String title;
+//
+//   @override
+//   void initState() {
+//     title = "Home";
+//     super.initState();
+//     print(widget.userData);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: SliderDrawer(
+//           appBar: SliderAppBar(
+//             appBarColor: Colors.white,
+//             title: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+//           ),
+//           key: _sliderDrawerKey,
+//           sliderOpenSize: 222,
+//           slider: _SliderView(
+//             onItemClick: (title) {
+//               _sliderDrawerKey.currentState!.closeSlider();
+//               setState(() {
+//                 this.title = title;
+//               });
+//             },
+//             data: widget.userData,
+//           ),
+//           child: ProjectScreen(),
+//         ),
+//     );
+//   }
+// }
+//
+// class _SliderView extends StatefulWidget {
+//   final Function(String)? onItemClick;
+//   Map<String,dynamic>? data;
+//    _SliderView({Key? key, this.onItemClick,this.data}) : super(key: key);
+//    FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+//
+//   @override
+//   _SliderViewState createState() => _SliderViewState();
+// }
+//
+// class _SliderViewState extends State<_SliderView> {
+//   String selectedItem = 'Home';
+//   int index = 0;
+//   var listOfScreens = [
+//     HomeScreen(),
+//     ProjectScreen(),
+//     ClientScreen(),
+//     UserListScreen(),
+//   ];
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: CustomColors.lightGrey,
+//       child: Stack(
+//         children:
+//         [
+//           ListView(
+//             children: <Widget>[
+//               if(widget.data != null)
+//                 Container(
+//                   padding: EdgeInsets.symmetric(vertical: 10),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.center,
+//                     children: [
+//                       CircleAvatar(
+//                         radius: 40,
+//                         backgroundColor: Colors.grey,
+//                         child: CircleAvatar(
+//                           radius: 60,
+//                           backgroundImage: Image.network(
+//                               'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
+//                               .image,
+//                         ),
+//                       ),
+//                       const SizedBox(width: 15),
+//                       Text(
+//                         "${widget.data!["firstName"]}\n${widget.data!["lastName"]}",
+//                         textAlign: TextAlign.center,
+//                         style:const TextStyle(
+//                           color: Colors.black,
+//                           fontWeight: FontWeight.w600,
+//                           fontSize: 25,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//                 CustomWidgets.customDivider(),
+//               ...[
+//                 Menu(Icons.home, 'Home',0),
+//                 Menu(Icons.business_center, 'Projet',1),
+//                 Menu(Icons.people, 'Client',2),
+//                 Menu(Icons.group, 'Utilisateurs',3),
+//                 //li 3erf yzid hadi "CustomWidgets.CustomDivider()" hna yzidha
+//               ].map((menu) {
+//                 return _SliderMenuItem(
+//                   title: menu.title,
+//                   iconData: menu.iconData,
+//                   onTap: () {
+//                     setState(() {
+//                       selectedItem = menu.title;
+//                       index = menu.index;
+//                     });
+//                     widget.onItemClick?.call(menu.title);
+//                   },
+//                   isSelected: selectedItem == menu.title,
+//                 );
+//               }),
+//             ],
+//           ),
+//           Positioned(
+//               left: 0,
+//               right: 0,
+//               bottom: 20,
+//               child: CustomWidgets.customButtonWithIcon(
+//                   text: "Logout",
+//                   func: (){
+//                     widget._firebaseServiceUser.signOut();
+//                   },
+//                   icon: Icons.arrow_back_ios
+//               )
+//           )
+//         ],
+//       )
+//     );
+//   }
+// }
+//
+//
+// class _SliderMenuItem extends StatelessWidget {
+//   final String title;
+//   final IconData iconData;
+//   final Function()? onTap;
+//   final bool isSelected;
+//
+//   const _SliderMenuItem({
+//     Key? key,
+//     required this.title,
+//     required this.iconData,
+//     required this.onTap,
+//     required this.isSelected,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: isSelected ? Color.fromRGBO(0, 176, 255, 0.3) : Colors.grey[200],
+//       child: ListTile(
+//         title: Text(
+//           title,
+//           style: TextStyle(
+//             color: isSelected ? CustomColors.blue : CustomColors.black,
+//             fontFamily: 'BalsamiqSans_Regular',
+//           ),
+//         ),
+//         leading: Icon(iconData, color: isSelected ? CustomColors.blue : CustomColors.black),
+//         onTap: onTap,
+//       ),
+//     );
+//   }
+// }
+//
+//
+//
+//
+//
+// class Menu {
+//   final IconData iconData;
+//   final String title;
+//   final int index;
+//
+//   Menu(this.iconData, this.title,this.index);
+// }
+
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
@@ -29,24 +230,24 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SliderDrawer(
-          appBar: SliderAppBar(
-            appBarColor: Colors.white,
-            title: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-          ),
-          key: _sliderDrawerKey,
-          sliderOpenSize: 222,
-          slider: _SliderView(
-            onItemClick: (title) {
-              _sliderDrawerKey.currentState!.closeSlider();
-              setState(() {
-                this.title = title;
-              });
-            },
-            data: widget.userData,
-          ),
-          child: _AuthorList(),
+      body: SliderDrawer(
+        appBar: SliderAppBar(
+          appBarColor: Colors.white,
+          title: Text(title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
         ),
+        key: _sliderDrawerKey,
+        sliderOpenSize: 222,
+        slider: _SliderView(
+          onItemClick: (title) {
+            _sliderDrawerKey.currentState!.closeSlider();
+            setState(() {
+              this.title = title;
+            });
+          },
+          data: widget.userData,
+        ),
+        child: _AuthorList(),
+      ),
     );
   }
 }
@@ -54,8 +255,8 @@ class HomeScreenState extends State<HomeScreen> {
 class _SliderView extends StatefulWidget {
   final Function(String)? onItemClick;
   Map<String,dynamic>? data;
-   _SliderView({Key? key, this.onItemClick,this.data}) : super(key: key);
-   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+  _SliderView({Key? key, this.onItemClick,this.data}) : super(key: key);
+  FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
 
   @override
   _SliderViewState createState() => _SliderViewState();
@@ -67,77 +268,79 @@ class _SliderViewState extends State<_SliderView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: CustomColors.lightGrey,
-      child: Stack(
-        children:
-        [
-          ListView(
-            children: <Widget>[
-              if(widget.data != null)
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Colors.grey,
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundImage: Image.network(
-                              'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
-                              .image,
+        color: CustomColors.lightGrey,
+        child: Stack(
+          children:
+          [
+            ListView(
+              children: <Widget>[
+                if(widget.data != null)
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.grey,
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundImage: Image.network(
+                                'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
+                                .image,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 15),
-                      Text(
-                        "${widget.data!["firstName"]}\n${widget.data!["lastName"]}",
-                        textAlign: TextAlign.center,
-                        style:const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 25,
+                        const SizedBox(width: 15),
+                        Text(
+                          "${widget.data!["firstName"]}\n${widget.data!["lastName"]}",
+                          textAlign: TextAlign.center,
+                          style:const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 25,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
                 CustomWidgets.customDivider(),
-              ...[
-                Menu(Icons.home, 'Home'),
-                Menu(Icons.business_center, 'Projet'),
-                Menu(Icons.people, 'Client'),
-                Menu(Icons.group, 'Utilisateurs'),
-                //li 3erf yzid hadi "CustomWidgets.CustomDivider()" hna yzidha
-              ].map((menu) {
-                return _SliderMenuItem(
-                  title: menu.title,
-                  iconData: menu.iconData,
-                  onTap: () {
-                    setState(() {
-                      selectedItem = menu.title;
-                    });
-                    widget.onItemClick?.call(menu.title);
-                  },
-                  isSelected: selectedItem == menu.title,
-                );
-              }),
-            ],
-          ),
-          Positioned(
-              left: 0,
-              right: 0,
-              bottom: 20,
-              child: CustomWidgets.customButtonWithIcon(
-                  text: "Logout",
-                  func: (){
-                    widget._firebaseServiceUser.signOut();
-                  },
-                  icon: Icons.arrow_back_ios
-              )
-          )
-        ],
-      )
+                ...[
+                  Menu(Icons.home, 'Home'), /////////////// hadi b fronci plz
+                  Menu(Icons.business_center, 'Projet'),
+                  Menu(Icons.group, 'Client'),
+                  Menu(Icons.people_outline, 'Utilisateurs'),
+                ].map((menu) {
+                  return _SliderMenuItem(
+                    title: menu.title,
+                    iconData: menu.iconData,
+                    onTap: () {
+                      setState(() {
+                        selectedItem = menu.title;
+                      });
+                      widget.onItemClick?.call(menu.title);
+                    },
+                    isSelected: selectedItem == menu.title,
+                  );
+                }),
+                CustomWidgets.customDivider(),
+                Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 20,
+                    child: CustomWidgets.customButtonWithIcon(
+                        radius: 0,
+                        color: CustomColors.red,
+                        text: "Logout",
+                        func: (){
+                          widget._firebaseServiceUser.signOut();
+                        },
+                        icon: Icons.logout
+                    )
+                )
+              ],
+            ),
+          ],
+        )
     );
   }
 }

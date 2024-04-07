@@ -1,37 +1,29 @@
 class Projet {
   String id;
   String nomProjet;
-  String numeroTelephone;
-  String email;
-  String photoUrl;
-  String projetUrl;
+  String description;
+  String projetUrl = "";
 
   Projet({
     required this.id,
+    required this.description,
     required this.nomProjet,
-    required this.numeroTelephone,
-    required this.email,
-    required this.photoUrl,
-    required this.projetUrl,
+    this.projetUrl = "",
   });
 
   Map<String, dynamic> toJson() {
     return {
       'nomProjet': nomProjet,
-      'numeroTelephone': numeroTelephone,
-      'email': email,
-      'photoUrl': photoUrl,
       'projetUrl': projetUrl,
+      "description" : description,
     };
   }
 
   factory Projet.fromJson(Map<String, dynamic> json) {
     return Projet(
       id: json['id'],
+      description : json["description"],
       nomProjet: json['nomProjet'],
-      numeroTelephone: json['numeroTelephone'],
-      email: json['email'],
-      photoUrl: json['photoUrl'],
       projetUrl: json['projetUrl'],
     );
   }

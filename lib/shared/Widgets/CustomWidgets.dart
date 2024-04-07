@@ -36,17 +36,20 @@ class CustomWidgets{
  static Widget customButtonWithIcon({
    required String text,
    required VoidCallback func,
+   double radius = 10.0,
    Color? color,
    IconData? icon,
    int? radius,
  }){
    return ElevatedButton.icon(
+
      onPressed: func,
      style: ElevatedButton.styleFrom(
        backgroundColor: color,
        foregroundColor: CustomColors.white,
        shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(radius),
+
        ),
      ),
      icon: Icon(icon),

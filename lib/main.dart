@@ -21,7 +21,11 @@ void main() async {
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Cinq Etoil Admin",
+<<<<<<< HEAD
     home: ProfileScreen(), ////// try new look of the project screen ;D by MFox
+=======
+    home: ClientScreen(), ////// try new look of the ProjectScreen ;D by MFox
+>>>>>>> 9d791fefb09c486025e34c11aff4b2d8b08833af
   ));
 
 }

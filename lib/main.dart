@@ -2,7 +2,6 @@ import 'package:cinq_etoils/screens/ClientScreen.dart';
 import 'package:cinq_etoils/screens/auth_screen_manager.dart';
 import 'package:cinq_etoils/screens/home_screen.dart';
 import 'package:cinq_etoils/screens/login_screen.dart';
-import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
 import 'package:cinq_etoils/screens/users_list_screen.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
@@ -21,11 +20,7 @@ void main() async {
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Cinq Etoil Admin",
-<<<<<<< HEAD
-    home: ProfileScreen(), ////// try new look of the project screen ;D by MFox
-=======
     home: ClientScreen(), ////// try new look of the ProjectScreen ;D by MFox
->>>>>>> 9d791fefb09c486025e34c11aff4b2d8b08833af
   ));
 
 }

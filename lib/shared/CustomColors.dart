@@ -9,4 +9,5 @@ class CustomColors{
   static var black = Colors.black;
   static var grey = Colors.grey;
   static var lightGrey = Colors.grey[200];
+  static var transparent = Colors.transparent;
 }

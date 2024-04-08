@@ -2,8 +2,6 @@
 import 'package:animation_search_bar/animation_search_bar.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
-import 'package:cinq_etoils/model/UserModel.dart';
-import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -21,7 +19,7 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context){
-    TextEditingController _searchController = TextEditingController();
+    TextEditingController _searchController = TextEditingController() ;//////////////////////////////// had l Map ghir test
     // Map<String,dynamic> projectItems = widget._firebaseServiceProject.getProjects();
 
     var dropMenuValue;
@@ -50,15 +48,93 @@ class _ClientScreenState extends State<ClientScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children:
                     [
-                      AnimationSearchBar(
-                        searchBarWidth: MediaQuery.of(context).size.width - 70,
-                        isBackButtonVisible: false,
-                        centerTitle: "List Des Clients : ",
-                        centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                        hintText: "Chercher un client...",
-                        onChanged: (String) {
+                      Flexible(
+                        child: AnimationSearchBar(
+                          searchBarWidth: MediaQuery.of(context).size.width - 70,
+                          isBackButtonVisible: false,
+                          centerTitle: "List Des Clients : ",
+                          centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                          hintText: "Chercher un client...",
+                          onChanged: (String) {
+                          },
+                          searchTextEditingController: _searchController,
+                        ),
+                      ),
+                      CustomWidgets.customIconButton(
+                        color: CustomColors.green,
+                        func: (){
                         },
-                        searchTextEditingController: _searchController,
+                        icon:const Icon(Icons.search),
+
+                      ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Choisir un projet',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: [],
+                          value: dropMenuValue,
+                          onChanged: (value) {
+                            setState(() {
+                              dropMenuValue = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 200,
+                          ),
+                          dropdownStyleData: const DropdownStyleData(
+                            maxHeight: 200,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: dropDownSearchBarController,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(
+                                top: 8,
+                                bottom: 4,
+                                right: 8,
+                                left: 8,
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: dropDownSearchBarController,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Chercher un projet...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            searchMatchFn: (item, searchValue) {
+                              return item.value.toString().contains(searchValue);
+                            },
+                          ),
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              dropDownSearchBarController.clear();
+                            }
+                          },
+                        ),
                       ),
                       CustomWidgets.customIconButton(
                           color: CustomColors.green,
@@ -71,37 +147,7 @@ class _ClientScreenState extends State<ClientScreen> {
                     ],
                   ),
                   const Divider(),
-                  StreamBuilder(
-                      stream: widget._firebaseServiceUser.getUsers(),
-                      builder: (context,snapshot){
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }else if(snapshot.hasData){
-                          return Expanded(
-                            child : ListView.separated(
-                              itemCount: snapshot.data!.length,
-                              separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
-                              itemBuilder: (conetxt,index){
-                                UserModel user = snapshot.data![index];
-                                return CustomWidgets.customCard(isUser:true,user: user);
-                              },
-                            )
-                          );
-                        }else{
-                          return const Center(
-                            child: Text(
-                              "No Clients found",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                  )
+                  
                 ],
                   ),
               Positioned(

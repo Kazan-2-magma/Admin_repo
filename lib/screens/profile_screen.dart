@@ -1,12 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:cinq_etoils/Utils.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,14 +17,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _image;
 
-  void selecteImage() async{
-    Uint8List img = await pickImage(ImageSource.gallery);
-    String s = base64Encode(img);;
-
-    setState((){
-      _image = s;
-    });
-  }@override
+  @override
   Widget build(BuildContext context) {
 
   return Scaffold(
@@ -72,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               radius: 50,
                               name: 'name name',
                               fontsize: 21,
-                              img: _image,
+                              img: _image, // image hna a sat w tkon string plz
                             ),
                             CustomWidgets.horizontalSpace(10),
                             Column(

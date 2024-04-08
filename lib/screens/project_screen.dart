@@ -214,6 +214,7 @@ import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/model/project_model.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -242,74 +243,82 @@ class _ProjectScreenState extends State<ProjectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.only(top: 5),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: AnimationSearchBar(
-                      searchBarWidth: MediaQuery.of(context).size.width - 85,
-                      isBackButtonVisible: false,
-                      centerTitle: "List Des Projets : ",
-                      centerTitleStyle: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 25),
-                      hintText: "Chercher Ici...",
-                      onChanged: (String) {},
-                      searchTextEditingController: _searchController,
+        body: Container(
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          padding: const EdgeInsets.only(top: 5),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: AnimationSearchBar(
+                        searchBarWidth: MediaQuery
+                            .of(context)
+                            .size
+                            .width - 85,
+                        isBackButtonVisible: false,
+                        centerTitle: "List Des Projets : ",
+                        centerTitleStyle: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                        hintText: "Chercher Ici...",
+                        onChanged: (String) {},
+                        searchTextEditingController: _searchController,
+                      ),
                     ),
-                  ),
-                  CustomWidgets.customIconButton(
-                      color: CustomColors.green,
-                      func: () {
-                        addProject();
-                      },
-                      icon: const Icon(Icons.add_business_rounded)),
-                ],
-              ),
-              CustomWidgets.customDivider(),
-              FutureBuilder(
-                  future: searchProjects(_searchController.text),
-                  builder: (context, dataSnapshot) {
-                    if (dataSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (dataSnapshot.hasData &&
-                        dataSnapshot.data!.isNotEmpty) {
-                      List<Map<String, dynamic>> searchResults =
-                      dataSnapshot.data as List<Map<String, dynamic>>;
-                      return ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) =>
-                              CustomWidgets.customCard(searchResults[index]),
-                          separatorBuilder: (context, index) =>
-                              CustomWidgets.verticalSpace(7.0),
-                          itemCount: searchResults.length);
-                    } else {
-                      return const Center(
-                        child: Text(
-                          "No Project Found",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      );
-                    }
-                  })
-            ],
+                    CustomWidgets.customIconButton(
+                        color: CustomColors.green,
+                        func: () {
+                          addProject();
+                        },
+                        icon: const Icon(Icons.add_business_rounded)),
+                  ],
+                ),
+                CustomWidgets.customDivider(),
+                FutureBuilder(
+                    future: searchProjects(_searchController.text),
+                    builder: (context, dataSnapshot) {
+                      if (dataSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (dataSnapshot.hasData &&
+                          dataSnapshot.data!.isNotEmpty) {
+                        List<Map<String, dynamic>> searchResults =
+                        dataSnapshot.data as List<Map<String, dynamic>>;
+                        return ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) =>
+                                CustomWidgets.customCard(searchResults[index]),
+                            separatorBuilder: (context, index) =>
+                                CustomWidgets.verticalSpace(7.0),
+                            itemCount: searchResults.length);
+                      } else {
+                        return const Center(
+                          child: Text(
+                            "No Project Found",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }
+                    })
+              ],
+            ),
           ),
-        ),
-      ),
+        )
     );
   }
-
   Future<List<Map<String, dynamic>>> searchProjects(String query) async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -331,7 +340,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
       return [];
     }
   }
-
   void addProject() {
     CustomWidgets.showAlertDialog(
         context,
@@ -409,3 +417,5 @@ class _ProjectScreenState extends State<ProjectScreen> {
     ]);
   }
 }
+
+

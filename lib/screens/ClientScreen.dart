@@ -1,5 +1,6 @@
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
@@ -10,23 +11,17 @@ import 'package:flutter/widgets.dart';
 
 class ClientScreen extends StatefulWidget {
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+  FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
   @override
   State<ClientScreen> createState() => _ClientScreenState();
 }
 
 class _ClientScreenState extends State<ClientScreen> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    TextEditingController _searchController = TextEditingController() ;//////////////////////////////// had l Map ghir test
+    // Map<String,dynamic> projectItems = widget._firebaseServiceProject.getProjects();
 
-    //////////////////////////////// had l Map ghir test
-    Map<String,dynamic> maptest = new Map<String,dynamic>();
-    var items = [
-      "project 1",
-      "spongbob 0.5",
-      "maprojich *",
-      "jetpak &",
-      "project 2",
-    ];
     var dropMenuValue;
     TextEditingController dropDownSearchBarController = TextEditingController();
 
@@ -40,7 +35,6 @@ class _ClientScreenState extends State<ClientScreen> {
         padding: const EdgeInsets.only(top:5),
         color: CustomColors.lightGrey,
         child: Padding(
-
           padding: const EdgeInsets.symmetric(
               horizontal: 10.0
           ),
@@ -54,132 +48,108 @@ class _ClientScreenState extends State<ClientScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children:
                     [
-                      const Text(
-                        "List Des Client",
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: AnimationSearchBar(
+                          searchBarWidth: MediaQuery.of(context).size.width - 70,
+                          isBackButtonVisible: false,
+                          centerTitle: "List Des Clients : ",
+                          centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                          hintText: "Chercher un client...",
+                          onChanged: (String) {
+                          },
+                          searchTextEditingController: _searchController,
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children:
-                          [
-                            /*DropdownButton(
-                              hint: const Text("Choisir un projet"),
-                              value: dropMenuValue,
-                              items: items.map((e){
-                                return DropdownMenuItem(
-                                    value: e,
-                                    child: Text(e)
-                                );
-                              }).toList(),
-                              onChanged: (value){
-                                setState(() {
-                                  dropMenuValue = value.toString();
-                                });
-                              },
-                            ),*/
+                      CustomWidgets.customIconButton(
+                        color: CustomColors.green,
+                        func: (){
+                        },
+                        icon:const Icon(Icons.search),
 
-                            //////new dropDownMenu with a new fuc*ing searchBar wooooooow
-
-                            DropdownButtonHideUnderline(
-                              child: DropdownButton2<String>(
-                                isExpanded: true,
-                                hint: Text(
-                                  'Choisir un projet',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).hintColor,
+                      ),
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Choisir un projet',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: [],
+                          value: dropMenuValue,
+                          onChanged: (value) {
+                            setState(() {
+                              dropMenuValue = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 200,
+                          ),
+                          dropdownStyleData: const DropdownStyleData(
+                            maxHeight: 200,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: dropDownSearchBarController,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(
+                                top: 8,
+                                bottom: 4,
+                                right: 8,
+                                left: 8,
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: dropDownSearchBarController,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Chercher un projet...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                items: items
-                                    .map((item) => DropdownMenuItem(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ))
-                                    .toList(),
-                                value: dropMenuValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    dropMenuValue = value;
-                                  });
-                                },
-                                buttonStyleData: const ButtonStyleData(
-                                  padding: EdgeInsets.symmetric(horizontal: 16),
-                                  height: 40,
-                                  width: 200,
-                                ),
-                                dropdownStyleData: const DropdownStyleData(
-                                  maxHeight: 200,
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  height: 40,
-                                ),
-                                dropdownSearchData: DropdownSearchData(
-                                  searchController: dropDownSearchBarController,
-                                  searchInnerWidgetHeight: 50,
-                                  searchInnerWidget: Container(
-                                    height: 50,
-                                    padding: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 4,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: TextFormField(
-                                      expands: true,
-                                      maxLines: null,
-                                      controller: dropDownSearchBarController,
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 8,
-                                        ),
-                                        hintText: 'Chercher un projet...',
-                                        hintStyle: const TextStyle(fontSize: 12),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  searchMatchFn: (item, searchValue) {
-                                    return item.value.toString().contains(searchValue);
-                                  },
-                                ),
-                                //This to clear the search value when you close the menu
-                                onMenuStateChange: (isOpen) {
-                                  if (!isOpen) {
-                                    dropDownSearchBarController.clear();
-                                  }
-                                },
                               ),
                             ),
-                            CustomWidgets.customIconButton(
-                                color: CustomColors.green,
-                                func: (){
-                                },
-                                icon:const Icon(
-                                    Icons.add_business_rounded
-                                )
-                            )
-                          ],
+                            searchMatchFn: (item, searchValue) {
+                              return item.value.toString().contains(searchValue);
+                            },
+                          ),
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              dropDownSearchBarController.clear();
+                            }
+                          },
                         ),
+                      ),
+                      CustomWidgets.customIconButton(
+                          color: CustomColors.green,
+                          func: (){
+                          },
+                          icon:const Icon(
+                              Icons.add_business_rounded
+                          )
                       )
                     ],
                   ),
-                  CustomWidgets.customDivider(),
+                  const Divider(),
+                  
                 ],
-              ),
+                  ),
               Positioned(
                   left: 0,
                   right: 0,
@@ -194,8 +164,8 @@ class _ClientScreenState extends State<ClientScreen> {
               ),
             ],
           )
+          )
         ),
-      ),
     );
   }
 }

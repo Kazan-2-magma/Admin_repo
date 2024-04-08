@@ -13,21 +13,35 @@ class CustomWidgets{
  static Widget customButton({
    required String text,
    required VoidCallback func,
-   required Color color,
+   Color colorText = Colors.white,
+   Color color =  Colors.green,
+   Color? shadowColor,
+   Color? surfaceTintColor,
+   Color borderColor = Colors.transparent,
+   double borderWidth = 0,
    Icon? icon,
+   double radius = 10.0,
+   double elevation = 0,
+   double textSize =18,
 }){
    return ElevatedButton(
      onPressed: func,
      style: ElevatedButton.styleFrom(
        backgroundColor: color,
-       foregroundColor: CustomColors.white,
+       surfaceTintColor: surfaceTintColor,
+       foregroundColor: colorText,
+       shadowColor: shadowColor,
        shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(10),
+         borderRadius: BorderRadius.circular(radius),
+         side: BorderSide(
+           color: borderColor,
+           width: borderWidth,
+         ),
        ),
      ),
      child: Text(
          text,
-     style: const TextStyle(fontSize: 18),),
+     style: TextStyle(fontSize: textSize),),
 
    );
  }

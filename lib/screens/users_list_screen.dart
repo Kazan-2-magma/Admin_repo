@@ -64,9 +64,9 @@ class _UserListScreenState extends State<UserListScreen> {
                     child: AnimationSearchBar(
                       searchBarWidth: MediaQuery.of(context).size.width - 85,
                       isBackButtonVisible: false,
-                      centerTitle: "List Des Utilisateurs : ",
+                      centerTitle: "List Des Clients : ",
                       centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                      hintText: "Chercher Ici...",
+                      hintText: "Chercher un client...",
                       onChanged: (String) {
                       },
                       searchTextEditingController: _searchController,

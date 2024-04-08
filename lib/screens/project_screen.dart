@@ -298,7 +298,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         return ListView.separated(
                             shrinkWrap: true,
                             itemBuilder: (context, index) =>
-                                CustomWidgets.customCard(data: searchResults[index]),
+                                CustomWidgets.customCardProjet(searchResults[index]),
                             separatorBuilder: (context, index) =>
                                 CustomWidgets.verticalSpace(7.0),
                             itemCount: searchResults.length);

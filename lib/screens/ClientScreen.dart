@@ -6,6 +6,7 @@ import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context){
-    TextEditingController _searchController = TextEditingController() ;//////////////////////////////// had l Map ghir test
+    TextEditingController _searchController = TextEditingController() ;
     // Map<String,dynamic> projectItems = widget._firebaseServiceProject.getProjects();
 
     var dropMenuValue;
@@ -76,16 +77,36 @@ class _ClientScreenState extends State<ClientScreen> {
                   StreamBuilder(
                       stream: widget._firebaseServiceUser.getUsers(),
                       builder: (context,snapshot){
-                        return Expanded(
-                            child: ListView.separated(
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }else if(snapshot.hasData ){
+                          List<UserModel> filteredUsers = snapshot.data!.where((user) =>
+                          user.firstName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+                              user.lastName.toLowerCase().contains(_searchController.text.toLowerCase())
+                          ).toList();
+                          return Expanded(
+                              child: ListView.separated(
                                 separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context,index){
                                   AdminUser user =  snapshot.data![index] as AdminUser;
-                                  return CustomWidgets.customCard(user: user,isUser : true,checkbox: true);
+                                  return CustomWidgets.customCardUser(user);
                                 },
-                            )
-                        );
+                              )
+                          );
+                        }else{
+                          return const Center(
+                            child: Text(
+                              "No Clients Found",
+                              style:TextStyle(
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          );
+                        }
 
                       }
                   )
@@ -109,4 +130,5 @@ class _ClientScreenState extends State<ClientScreen> {
         ),
     );
   }
+
 }

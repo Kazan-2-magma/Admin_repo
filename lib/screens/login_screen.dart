@@ -6,6 +6,7 @@ import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
@@ -42,13 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
         backgroundColor: CustomColors.blue,
         title: const Text("appBar"),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-            color: CustomColors.lightGrey,
-            padding: EdgeInsets.all(30),
+      body: Container(
+          height:MediaQuery.of(context).size.height,
+          color: CustomColors.lightGrey,
+          padding: EdgeInsets.all(30),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-
+            
               children: [
                 ClipOval(
                   child: Image.asset(
@@ -59,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top:20,left: 30,right: 30),
+                  margin: EdgeInsets.only(top:20),
                   padding: EdgeInsets.symmetric(horizontal: 45),
                   decoration: BoxDecoration(
                     color: CustomColors.white,
@@ -109,6 +111,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                             },
                           ),
+            
+                        RichText(
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: 'Mot de passe oublier?',
+                                  style: TextStyle(color: Colors.blue, fontSize: 15.0),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      print('Mot de passe oublier"');
+                                    }),
+                            ],
+                          ),
+                        ),
+            
+            
                           CustomWidgets.customButton(
                               text: "Se Connecter",
                               func: () async{
@@ -136,8 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 )
               ],
-            )),
-      ),
+            ),
+          )),
     );
   }
   Future<bool> signIn() async {

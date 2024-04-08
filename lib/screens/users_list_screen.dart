@@ -87,12 +87,7 @@ class _UserListScreenState extends State<UserListScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      CustomWidgets.customCard(maptest,isUser: true),
-                      CustomWidgets.customCard(maptest,isUser: true),
-                      CustomWidgets.customCard(maptest,isUser: true),
-                      CustomWidgets.customCard(maptest,isUser: true),
-                      CustomWidgets.customCard(maptest,isUser: true),
-                      CustomWidgets.customCard(maptest,isUser: true),
+
                     ],
                   ),
                 ),

@@ -1,8 +1,10 @@
 
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../model/UserModel.dart';
 import '../CustomColors.dart';
 
 class CustomWidgets{
@@ -139,7 +141,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCard(Map data,{bool checkbox = false,bool isUser = false}) => Card(
+ static Widget customCard({UserModel? user,bool checkbox = false,bool isUser = false,Map<String,dynamic>? data}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -163,10 +165,10 @@ class CustomWidgets{
            ? ListTile(
              contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
              title: Text(
-               "NAME",
+               "${user!.firstName} ${user.lastName}",
                style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
              ),
-             subtitle:Text("Email: \nTel: ")  ,
+             subtitle:Text("Email: ${user.email}\nTel: ${user.phoneNumber}")  ,
              trailing: Row(
                mainAxisSize: MainAxisSize.min,
                children:
@@ -193,7 +195,7 @@ class CustomWidgets{
            : ListTile(
                contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
                title: Text(
-                 data["nomProjet"],
+                 data!["nomProjet"],
                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
                ),
                subtitle: isUser

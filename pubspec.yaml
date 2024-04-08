@@ -46,7 +46,7 @@ dependencies:
   animation_search_bar: ^0.0.10
   flutter_conditional: ^2.0.0+1
   dropdown_button2: ^2.3.8
-
+  flutter_profile_picture: ^2.0.0
 
 
 dev_dependencies:

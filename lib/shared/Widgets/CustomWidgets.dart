@@ -22,6 +22,7 @@ class CustomWidgets{
    Icon? icon,
    double radius = 10.0,
    double elevation = 0,
+   double textSize =18,
 }){
    return ElevatedButton(
      onPressed: func,
@@ -40,7 +41,7 @@ class CustomWidgets{
      ),
      child: Text(
          text,
-     style: const TextStyle(fontSize: 18),),
+     style: TextStyle(fontSize: textSize),),
 
    );
  }

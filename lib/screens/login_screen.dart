@@ -68,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       BoxShadow(
                         color: CustomColors.grey,
                         spreadRadius: 1,
-                        offset: Offset(1, 1), // changes position of shadow
+                        offset: Offset(1, 1),
                       ),
                     ],
                   ),

@@ -146,7 +146,7 @@ class _ClientScreenState extends State<ClientScreen> {
                       )
                     ],
                   ),
-                  const Divider(),
+                  CustomWidgets.customDivider(),
                   
                 ],
                   ),

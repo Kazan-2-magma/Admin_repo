@@ -244,6 +244,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+          color: CustomColors.lightGrey,
           width: MediaQuery
               .of(context)
               .size
@@ -255,65 +256,67 @@ class _ProjectScreenState extends State<ProjectScreen> {
           padding: const EdgeInsets.only(top: 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: AnimationSearchBar(
-                        searchBarWidth: MediaQuery
-                            .of(context)
-                            .size
-                            .width - 85,
-                        isBackButtonVisible: false,
-                        centerTitle: "List Des Projets : ",
-                        centerTitleStyle: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                        hintText: "Chercher Ici...",
-                        onChanged: (String) {},
-                        searchTextEditingController: _searchController,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: AnimationSearchBar(
+                          searchBarWidth: MediaQuery
+                              .of(context)
+                              .size
+                              .width - 85,
+                          isBackButtonVisible: false,
+                          centerTitle: "List Des Projets : ",
+                          centerTitleStyle: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25),
+                          hintText: "Chercher Ici...",
+                          onChanged: (String) {},
+                          searchTextEditingController: _searchController,
+                        ),
                       ),
-                    ),
-                    CustomWidgets.customIconButton(
-                        color: CustomColors.green,
-                        func: () {
-                          addProject();
-                        },
-                        icon: const Icon(Icons.add_business_rounded)),
-                  ],
-                ),
-                CustomWidgets.customDivider(),
-                FutureBuilder(
-                    future: searchProjects(_searchController.text),
-                    builder: (context, dataSnapshot) {
-                      if (dataSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (dataSnapshot.hasData &&
-                          dataSnapshot.data!.isNotEmpty) {
-                        List<Map<String, dynamic>> searchResults =
-                        dataSnapshot.data as List<Map<String, dynamic>>;
-                        return ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) =>
-                                CustomWidgets.customCard(searchResults[index]),
-                            separatorBuilder: (context, index) =>
-                                CustomWidgets.verticalSpace(7.0),
-                            itemCount: searchResults.length);
-                      } else {
-                        return const Center(
-                          child: Text(
-                            "No Project Found",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      }
-                    })
-              ],
+                      CustomWidgets.customIconButton(
+                          color: CustomColors.green,
+                          func: () {
+                            addProject();
+                          },
+                          icon: const Icon(Icons.add_business_rounded)),
+                    ],
+                  ),
+                  CustomWidgets.customDivider(),
+                  FutureBuilder(
+                      future: searchProjects(_searchController.text),
+                      builder: (context, dataSnapshot) {
+                        if (dataSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (dataSnapshot.hasData &&
+                            dataSnapshot.data!.isNotEmpty) {
+                          List<Map<String, dynamic>> searchResults =
+                          dataSnapshot.data as List<Map<String, dynamic>>;
+                          return ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) =>
+                                  CustomWidgets.customCard(searchResults[index]),
+                              separatorBuilder: (context, index) =>
+                                  CustomWidgets.verticalSpace(7.0),
+                              itemCount: searchResults.length);
+                        } else {
+                          return const Center(
+                            child: Text(
+                              "No Project Found",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        }
+                      })
+                ],
+              ),
             ),
           ),
         )

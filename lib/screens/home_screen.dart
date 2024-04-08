@@ -322,22 +322,22 @@ class _SliderViewState extends State<_SliderView> {
                   );
                 }),
                 CustomWidgets.customDivider(),
-                Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 20,
-                    child: CustomWidgets.customButtonWithIcon(
-                        radius: 0,
-                        color: CustomColors.red,
-                        text: "Logout",
-                        func: (){
-                          widget._firebaseServiceUser.signOut();
-                        },
-                        icon: Icons.logout
-                    )
-                )
               ],
             ),
+            Positioned(
+                left: 0,
+                right: 0,
+                bottom: 20,
+                child: CustomWidgets.customButtonWithIcon(
+                    radius: 0,
+                    color: CustomColors.red,
+                    text: "Logout",
+                    func: (){
+                      widget._firebaseServiceUser.signOut();
+                    },
+                    icon: Icons.logout
+                )
+            )
           ],
         ),
       );

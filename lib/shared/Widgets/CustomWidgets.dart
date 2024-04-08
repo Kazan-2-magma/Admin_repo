@@ -147,7 +147,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCard({UserModel? user,bool checkbox = false,bool isUser = false,Map<String,dynamic>? data}) => Card(
+ static Widget customCardUser(UserModel user,{bool checkbox = false,bool isUser = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -167,14 +167,15 @@ class CustomWidgets{
            left: BorderSide(color: CustomColors.green, width: 7),
          ),
        ),
-       child: checkbox
-           ? ListTile(
+       child:ListTile(
              contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
              title: Text(
-               "${user!.firstName} ${user.lastName}",
+               "${user.firstName} ${user.lastName}",
                style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
              ),
-             subtitle:Text("Email: ${user.email}\nTel: ${user.phoneNumber}")  ,
+             subtitle:isUser
+                 ? Text("Email: ${user.email}\nTel: ${user.phoneNumber}")
+                 : Text("Email: ${user.email}\nTel: ${user.phoneNumber}\nRole : ${user.role}"),
              trailing: Row(
                mainAxisSize: MainAxisSize.min,
                children:
@@ -198,44 +199,66 @@ class CustomWidgets{
                ],
              )
        )
-           : ListTile(
-               contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
-               title: Text(
-                 data!["nomProjet"],
-                 style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+     ),
+   ),
+ );
+ static Widget customCardProjet(Map<String,dynamic> data) => Card(
+   shape: const RoundedRectangleBorder(
+       borderRadius: BorderRadius.only(
+           topLeft: Radius.circular(10),
+           bottomLeft: Radius.circular(10)
+       )
+   ),
+   elevation: 0.6,
+   child: ClipPath(
+     clipper: ShapeBorderClipper(
+         shape: RoundedRectangleBorder(
+             borderRadius: BorderRadius.circular(10)
+         )
+     ),
+     child: Container(
+       decoration: BoxDecoration(
+         border: Border(
+           left: BorderSide(color: CustomColors.green, width: 7),
+         ),
+       ),
+       child: ListTile(
+           contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+           title: Text(
+             data["nomProjet"],
+             style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+           ),
+           subtitle:Text("Email: ${data["email_professionel"]}\nTel: ${data["phoneNumber"]}"),
+           trailing: Row(
+             mainAxisSize: MainAxisSize.min,
+             children:
+             [
+               const VerticalDivider(),
+               CustomWidgets.customIconButton(
+                 func: (){
+                   ///////////////////////////////////////
+                 },
+                 icon:Icon(
+                   Icons.edit,
+                   color: CustomColors.green,
+                 ),
                ),
-               subtitle: isUser
-                   ? Text("Email: ${data["email_professionel"]}\nTel: ${data["phoneNumber"]}\nRole : ${data["role"]}")
-                   : Text("Email: ${data["email_professionel"]}\nTel: ${data["phoneNumber"]}"),
-               trailing: Row(
-                 mainAxisSize: MainAxisSize.min,
-                 children:
-                 [
-                   const VerticalDivider(),
-                   CustomWidgets.customIconButton(
-                     func: (){
-                       ///////////////////////////////////////
-                     },
-                     icon:Icon(
-                       Icons.edit,
-                       color: CustomColors.green,
-                     ),
-                   ),
-                   CustomWidgets.customIconButton(
-                     func: (){
-                       ///////////////////////////////////////
-                     },
-                     icon:Icon(
-                       Icons.delete,
-                       color: CustomColors.red,
-                     ),
-                   ),
-                 ],
-               )
+               CustomWidgets.customIconButton(
+                 func: (){
+                   ///////////////////////////////////////
+                 },
+                 icon:Icon(
+                   Icons.delete,
+                   color: CustomColors.red,
+                 ),
+               ),
+             ],
+           )
        ),
      ),
    ),
  );
+
 
  static Widget showProgress(){
    return const Center(

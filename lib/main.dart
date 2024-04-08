@@ -20,7 +20,7 @@ void main() async {
   );
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: "Cinq Etoil Adminn",
+    title: "Cinq Etoil Admin",
     home: ProfileScreen(),
   ));
 

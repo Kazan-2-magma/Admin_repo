@@ -216,6 +216,7 @@ import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 class ProjectScreen extends StatefulWidget {
   FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
@@ -285,34 +286,36 @@ class _ProjectScreenState extends State<ProjectScreen> {
                   ],
                 ),
                 CustomWidgets.customDivider(),
-                FutureBuilder(
-                    future: searchProjects(_searchController.text),
-                    builder: (context, dataSnapshot) {
-                      if (dataSnapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (dataSnapshot.hasData &&
-                          dataSnapshot.data!.isNotEmpty) {
-                        List<Map<String, dynamic>> searchResults =
-                        dataSnapshot.data as List<Map<String, dynamic>>;
-                        return ListView.separated(
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) =>
-                                CustomWidgets.customCardProjet(searchResults[index]),
-                            separatorBuilder: (context, index) =>
-                                CustomWidgets.verticalSpace(7.0),
-                            itemCount: searchResults.length);
-                      } else {
-                        return const Center(
-                          child: Text(
-                            "No Project Found",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        );
-                      }
-                    })
+                Expanded(
+                  child: FutureBuilder(
+                      future: searchProjects(_searchController.text),
+                      builder: (context, dataSnapshot) {
+                        if (dataSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (dataSnapshot.hasData &&
+                            dataSnapshot.data!.isNotEmpty) {
+                          List<Map<String, dynamic>> searchResults =
+                          dataSnapshot.data as List<Map<String, dynamic>>;
+                          return ListView.separated(
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) =>
+                                  CustomWidgets.customCardProjet(searchResults[index]),
+                              separatorBuilder: (context, index) =>
+                                  CustomWidgets.verticalSpace(7.0),
+                              itemCount: searchResults.length);
+                        } else {
+                          return const Center(
+                            child: Text(
+                              "No Project Found",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        }
+                      }),
+                )
               ],
             ),
           ),
@@ -342,6 +345,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
   void addProject() {
     CustomWidgets.showAlertDialog(
+        titleText: 'Ajouter un projet',
         context,
         Form(
           key: formKey,
@@ -354,7 +358,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       if (value!.isEmpty) return "Enter le Nom de projet";
                       return null;
                     },
-                    prefixIcon: Icons.work,
+                    icon: Icons.work,
+                    borderColor: CustomColors.grey,
+                    iconColor: CustomColors.grey,
+                    colorText: CustomColors.grey,
                     editingController: projectName,
                     hintText: "Nom de Projet"),
                 CustomWidgets.verticalSpace(10.0),
@@ -363,7 +370,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       if (value!.isEmpty) return "Enter Email";
                       return null;
                     },
-                    prefixIcon: Icons.email,
+                    icon: Icons.email,
+                    borderColor: CustomColors.grey,
+                    iconColor: CustomColors.grey,
+                    colorText: CustomColors.grey,
                     editingController: emailProfessionel,
                     hintText: "Email"),
                 CustomWidgets.verticalSpace(10.0),
@@ -371,7 +381,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                     funcValid: (value) {
                       return null;
                     },
-                    prefixIcon: Icons.phone,
+                    icon: Icons.phone,
+                    borderColor: CustomColors.grey,
+                    iconColor: CustomColors.grey,
+                    colorText: CustomColors.grey,
                     editingController: phoneNumber,
                     hintText: "Tele Projet"),
                 CustomWidgets.verticalSpace(10.0),
@@ -379,9 +392,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
                     funcValid: (value) {
                       return null;
                     },
-                    prefixIcon: Icons.link_outlined,
+                    icon: Icons.link_outlined,
+                    borderColor: CustomColors.grey,
+                    iconColor: CustomColors.grey,
+                    colorText: CustomColors.grey,
                     editingController: projetUrl,
-                    hintText: "Projet URL"),
+                    hintText: "URL(optionel)"),
               ],
             ),
           ),
@@ -396,15 +412,16 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 nomProjet: projectName.text,
                 phoneNumber: phoneNumber.text,
                 projetUrl: projetUrl.text ?? "",
-              ))
-                  .then((value) {
+              )).then((value) {
                 Navigator.of(context).pop();
                 CustomWidgets.showSnackBar(context, value, CustomColors.green);
                 setState(() {});
+                Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
               }).catchError((e) {
                 CustomWidgets.showSnackBar(context, e.toString(), CustomColors.red);
                 print(e.toString());
               });
+
             }
           },
           color: CustomColors.green),
@@ -412,10 +429,15 @@ class _ProjectScreenState extends State<ProjectScreen> {
           text: "Annuler",
           func: () {
             Navigator.of(context).pop();
+            Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
           },
           color: CustomColors.red),
-    ]);
+    ], );
   }
 }
-
+Clear(List<TextEditingController> list){
+  for(int i = 0; i < list.length; i++){
+    list[i].clear();
+  }
+}
 

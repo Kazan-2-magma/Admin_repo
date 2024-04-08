@@ -82,6 +82,10 @@ class CustomWidgets{
    bool isObscureText = false,
    IconData? icon,
    Color? iconColor = Colors.blue,
+   Color? colorText = Colors.blue,
+   Color? fillColor = Colors.white,
+   Color borderColor = Colors.blue,
+   filled = true,
    IconData? suffixIcon,
    IconData? prefixIcon,
 
@@ -89,18 +93,20 @@ class CustomWidgets{
    return TextFormField(
      validator:funcValid,
      controller: editingController,
+
      decoration: InputDecoration(
+
        suffixIcon: Icon(suffixIcon),
        prefix: Icon(prefixIcon),
-       fillColor: Colors.white,
+       fillColor: fillColor,
        filled: true,
        labelStyle: TextStyle(
-         color: CustomColors.blue,
+         color: colorText,
        ),
        labelText: hintText,
        enabledBorder: OutlineInputBorder(
          borderSide: BorderSide(
-           color: CustomColors.blue,
+           color: borderColor,
            width: 2,
          ),
          borderRadius: BorderRadius.circular(10),
@@ -275,15 +281,27 @@ class CustomWidgets{
    );
  }
 
- static void showAlertDialog(context,Widget children,List<Widget> list){
+ static void showAlertDialog(context,Widget children,List<Widget> list,{required String titleText}){
    showDialog(
        context: context,
        builder: (context) => AlertDialog(
-         title:const Text(
-           "Ajouter Projet",
+         surfaceTintColor: CustomColors.white,
+         backgroundColor: CustomColors.white,
+         elevation: 4,
+         shadowColor: CustomColors.black,
+         title:Text(
+           textAlign: TextAlign.center,
+           titleText,
            style: TextStyle(
              fontWeight: FontWeight.bold,
-             color: Colors.white,
+             color: CustomColors.blue
+           ),
+         ),
+         shape: RoundedRectangleBorder(
+           borderRadius: BorderRadius.circular(11),
+           side: BorderSide(
+             color: CustomColors.blue,
+             width: 2,
            ),
          ),
          content: children,

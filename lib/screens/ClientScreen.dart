@@ -73,43 +73,7 @@ class _ClientScreenState extends State<ClientScreen> {
                       )
                     ],
                   ),
-                  const Divider(),
-                  StreamBuilder(
-                      stream: widget._firebaseServiceUser.getUsers(),
-                      builder: (context,snapshot){
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }else if(snapshot.hasData ){
-                          List<UserModel> filteredUsers = snapshot.data!.where((user) =>
-                          user.firstName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-                              user.lastName.toLowerCase().contains(_searchController.text.toLowerCase())
-                          ).toList();
-                          return Expanded(
-                              child: ListView.separated(
-                                separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context,index){
-                                  AdminUser user =  snapshot.data![index] as AdminUser;
-                                  return CustomWidgets.customCardUser(user);
-                                },
-                              )
-                          );
-                        }else{
-                          return const Center(
-                            child: Text(
-                              "No Clients Found",
-                              style:TextStyle(
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          );
-                        }
 
-                      }
-                  )
                 ],
                   ),
               Positioned(

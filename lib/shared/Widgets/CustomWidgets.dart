@@ -39,7 +39,6 @@ class CustomWidgets{
    double radius = 10.0,
    Color? color,
    IconData? icon,
-   int? radius,
  }){
    return ElevatedButton.icon(
 
@@ -67,12 +66,16 @@ class CustomWidgets{
    bool isObscureText = false,
    IconData? icon,
    Color? iconColor = Colors.blue,
+   IconData? suffixIcon,
+   IconData? prefixIcon,
 
 }){
    return TextFormField(
      validator:funcValid,
      controller: editingController,
      decoration: InputDecoration(
+       suffixIcon: Icon(suffixIcon),
+       prefix: Icon(prefixIcon),
        fillColor: Colors.white,
        filled: true,
        labelStyle: TextStyle(
@@ -176,10 +179,12 @@ class CustomWidgets{
            : ListTile(
                contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
                title: Text(
-                 "NAME",
+                 data["nomProjet"],
                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
                ),
-               subtitle: isUser ? Text("Email: \nTel: \nRole :") : Text("Email: \nTel: "),
+               subtitle: isUser
+                   ? Text("Email: ${data["email_professionel"]}\nTel: ${data["phoneNumber"]}\nRole : ${data["role"]}")
+                   : Text("Email: ${data["email_professionel"]}\nTel: ${data["phoneNumber"]}"),
                trailing: Row(
                  mainAxisSize: MainAxisSize.min,
                  children:

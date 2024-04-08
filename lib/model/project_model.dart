@@ -1,13 +1,15 @@
 class Projet {
   String id;
   String nomProjet;
-  String description;
+  String emailProfessionel;
+  String phoneNumber;
   String projetUrl = "";
 
   Projet({
-    required this.id,
-    required this.description,
+    this.id = "",
+    required this.emailProfessionel,
     required this.nomProjet,
+    required this.phoneNumber,
     this.projetUrl = "",
   });
 
@@ -15,14 +17,16 @@ class Projet {
     return {
       'nomProjet': nomProjet,
       'projetUrl': projetUrl,
-      "description" : description,
+      "phoneNumber" : phoneNumber,
+      "email_professionel" : emailProfessionel,
     };
   }
 
   factory Projet.fromJson(Map<String, dynamic> json) {
     return Projet(
       id: json['id'],
-      description : json["description"],
+      emailProfessionel : json["email_professionel"],
+      phoneNumber: json["phoneNumber"],
       nomProjet: json['nomProjet'],
       projetUrl: json['projetUrl'],
     );

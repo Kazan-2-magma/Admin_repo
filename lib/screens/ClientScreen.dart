@@ -1,5 +1,6 @@
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -8,8 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ClientScreen extends StatefulWidget {
-  const ClientScreen({super.key});
-
+  FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
   @override
   State<ClientScreen> createState() => _ClientScreenState();
 }
@@ -164,11 +164,6 @@ class _ClientScreenState extends State<ClientScreen> {
                                 },
                               ),
                             ),
-
-
-
-
-
                             CustomWidgets.customIconButton(
                                 color: CustomColors.green,
                                 func: (){
@@ -183,22 +178,6 @@ class _ClientScreenState extends State<ClientScreen> {
                     ],
                   ),
                   CustomWidgets.customDivider(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                          CustomWidgets.customCard(maptest,checkbox: true),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
               ),
               Positioned(

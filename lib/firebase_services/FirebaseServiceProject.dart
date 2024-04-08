@@ -17,12 +17,13 @@ class FirebaseServiceProject{
 
   Future<List<Map<String,dynamic>>> getProjects() async{
     try{
-      QuerySnapshot querySnapshot = await _firebaseFirestore.collection("project").get();
+      QuerySnapshot querySnapshot = await _firebaseFirestore.collection("projects").get();
       return querySnapshot.docs.map((e){
         return Projet(
             id: e.id,
             nomProjet: e["nomProjet"],
-            description : e["description"],
+            emailProfessionel : e["email_professionel"],
+            phoneNumber: e["phoneNumber"],
             projetUrl: e["projetUrl"]
         ).toJson();
       }).toList();

@@ -4,8 +4,6 @@ import 'package:cinq_etoils/screens/home_screen.dart';
 import 'package:cinq_etoils/screens/login_screen.dart';
 import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
-import 'package:cinq_etoils/screens/screens_manager.dart';
-import 'package:cinq_etoils/screens/users_list_screen.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +20,7 @@ void main() async {
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Cinq Etoil Admin",
-    home: ScreenManager(),
+    home: ProfileScreen(),
   ));
 
 }

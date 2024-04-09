@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -28,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   var data;
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
-
+  bool passwordVisible = true;
 
   @override
   void initState() {
@@ -96,10 +97,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                           CustomWidgets.customTextFormField(
+                            suffixIcon: IconButton(
+                              icon: Icon(passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: CustomColors.blue,),
+                              onPressed: () {
+                                setState(
+                                      () {
+                                    passwordVisible = !passwordVisible;
+                                  },
+
+                                );
+                              },
+                            ),
                             editingController: passwordController,
                             hintText: 'Mot de passe',
                             icon: Icons.lock,
-                            isObscureText: true,
+                            isObscureText: passwordVisible,
                             funcValid: (value){
                               if(value!.isEmpty) return "Le mot de passe est vide";
                               else if(!passwordValidation(value)){
@@ -117,7 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: <TextSpan>[
                               TextSpan(
                                   text: 'Mot de passe oublier?',
-                                  style: TextStyle(color: Colors.blue, fontSize: 15.0),
+                                  style: const TextStyle(color: Colors.blue,
+                                      fontSize: 15.0,
+                                      decoration: TextDecoration. underline, decorationColor:Colors.blue
+                                  ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       print('Mot de passe oublier"');
@@ -147,7 +165,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                 }
                               },
-                              color: CustomColors.green)
+                              color: CustomColors.green),
+
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(text:"Ou bien,",
+                                  style: const TextStyle(color: Colors.black,
+                                  fontSize: 14.0,
+                                ),),
+                                TextSpan(
+                                    text: ' créer un compte',
+                                    style: const TextStyle(color: Colors.blue,
+                                        fontSize: 15.0,
+                                        decoration: TextDecoration. underline, decorationColor:Colors.blue
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        print('create"');
+                                      }),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ),

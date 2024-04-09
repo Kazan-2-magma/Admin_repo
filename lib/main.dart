@@ -21,7 +21,7 @@ void main() async {
   runApp (MaterialApp(
     debugShowCheckedModeBanner: false,
     title: "Cinq Etoil Admin",
-    home: ScreenManager(),
+    home: AuthPage(),
   ));
 
 }

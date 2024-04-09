@@ -220,6 +220,8 @@ import 'package:flutter/widgets.dart';
 
 class ProjectScreen extends StatefulWidget {
   FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
+  Map<String,dynamic>? userData;
+  ProjectScreen({this.userData});
 
   @override
   State<ProjectScreen> createState() => _ProjectScreenState();

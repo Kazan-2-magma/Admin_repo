@@ -5,11 +5,16 @@ import 'dart:typed_data';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:cinq_etoils/shared/image_functions/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
+  Map<String,dynamic>? userData;
+  User? user = FirebaseAuth.instance.currentUser;
+
+  ProfileScreen({this.userData});
 
 
   @override
@@ -75,6 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   .then((value){
                                     setState(()  {
                                       _imageProfile = value;
+                                      widget.user.
                                     });
                                   }).catchError((e) => print(e.toString()));
 

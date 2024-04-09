@@ -11,6 +11,7 @@ import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
   Map<String,dynamic>? userData;
+  User? user = FirebaseAuth.instance.currentUser;
   ScreenManager({this.userData});
 
   @override
@@ -25,8 +26,8 @@ class _ScreenManagerState extends State<ScreenManager> {
   void initState() {
     title = "Home";
     currentScreen = HomeScreen();
-    User? user = FirebaseAuth.instance.currentUser;
-    print(user);
+
+    print(widget.userData);
     super.initState();
   }
 
@@ -71,10 +72,10 @@ class _SliderViewState extends State<_SliderView> {
 
 
   var list =[
-    Menu(Icons.home, 'Home',HomeScreen()),
-    Menu(Icons.business_center_outlined, 'Projets',ProjectScreen()),
-    Menu(Icons.people, 'Utilisateurs',ClientScreen()),
-    Menu(Icons.person, 'Profile',ProfileScreen()),
+    Menu(Icons.home, 'Home',HomeScreen(userData: ScreenManager().userData)),
+    Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(userData : ScreenManager().userData)),
+    Menu(Icons.people, 'Utilisateurs',ClientScreen(userData : ScreenManager().userData)),
+    Menu(Icons.person, 'Profile',ProfileScreen(userData : ScreenManager().userData)),
     //Menu(Icons.arrow_back_ios, 'LogOut',Container())
   ];
 

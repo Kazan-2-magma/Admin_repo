@@ -34,6 +34,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    if(widget.adminUser!.photoUrl.isNotEmpty){
+      //_image = convertStringToXFile(widget.adminUser!.photoUrl);
+    }
     print("From profile admin : ${widget.adminUser}");
   }
   @override
@@ -81,12 +84,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: _image != null
                                     ? CircleAvatar(
                                     radius: 60,
-                                    backgroundImage : FileImage(File(_image!.path)),
-                                  )
+                                    backgroundImage : FileImage(File(_image!.path)),)
                                     : ProfilePicture(
                                         //IMAGE
                                         radius: 50,
-                                        name: 'name name',
+                                        name: widget.adminUser!.getFullname(),
                                         fontsize: 21,
                                         img: _imageStr,
                                 ),
@@ -329,11 +331,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return converter;
   }
 
-  Image? convertStringToXFile(String imageString)  {
+  MemoryImage? convertStringToXFile(String imageString)  {
     try {
       Uint8List bytes = base64Decode(imageString);
-      Image image = Image.memory(bytes);
-      return image;
+      return MemoryImage(bytes);
     }catch (e) {
       print('Error converting string to XFile: $e');
       return null;

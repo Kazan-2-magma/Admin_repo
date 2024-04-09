@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
@@ -8,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 import '../shared/CustomColors.dart';
@@ -113,6 +118,17 @@ class _SliderViewState extends State<_SliderView> {
   }
 
 
+  ImageProvider? convertStringToXFile(String imageString)  {
+    try {
+      Uint8List bytes = base64Decode(imageString);
+      return MemoryImage(bytes);
+    }catch (e) {
+      print('Error converting string to XFile: $e');
+      return null;
+    }
+  }
+
+
 
 
   @override
@@ -132,11 +148,17 @@ class _SliderViewState extends State<_SliderView> {
               CircleAvatar(
                 radius: 42,
                 backgroundColor: CustomColors.blue,
-                child: CircleAvatar(
-                  radius: 40,
-                  backgroundImage: Image.network(
-                      'https://nikhilvadoliya.github.io/assets/images/nikhil_1.webp')
-                      .image,
+                child: widget.adminUser!.photoUrl.isNotEmpty
+                    ? CircleAvatar(
+                  radius: 60,
+                  backgroundImage : convertStringToXFile(widget.adminUser!.photoUrl),
+                )
+                    : ProfilePicture(
+                  //IMAGE
+                  radius: 50,
+                  name: widget.adminUser!.getFullname(),
+                  fontsize: 21,
+                  img: "",
                 ),
               ),
               const SizedBox(

@@ -117,3 +117,4 @@ class Users extends UserModel {
   }
 
 }
+

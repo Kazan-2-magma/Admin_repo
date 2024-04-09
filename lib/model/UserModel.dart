@@ -19,6 +19,8 @@ class UserModel {
     String id_user =""
   });
 
+  String getFullname() => "${this.firstName} ${this.lastName}";
+
   Map<String, dynamic> toJson({String uid = ""}) {
     return {
       "id_user" : uid,

@@ -87,17 +87,13 @@ class CustomWidgets{
    Color borderColor = Colors.blue,
    filled = true,
    IconButton? suffixIcon,
-   IconData? prefixIcon,
 
 }){
    return TextFormField(
      validator:funcValid,
      controller: editingController,
-
      decoration: InputDecoration(
-
        suffixIcon: suffixIcon,
-       prefix: Icon(prefixIcon),
        fillColor: fillColor,
        filled: true,
        labelStyle: TextStyle(

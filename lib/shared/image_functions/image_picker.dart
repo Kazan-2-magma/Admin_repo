@@ -8,9 +8,9 @@ XFile? _image;
 final picker = ImagePicker();
 
 //Photo
-Future<void> getImageFromGallery() async {
+Future<XFile?> getImageFromGallery() async {
     try{
-     await picker.pickImage(source: ImageSource.gallery);
+    return await picker.pickImage(source: ImageSource.gallery);
     }catch(e){
       print(e.toString());
     }

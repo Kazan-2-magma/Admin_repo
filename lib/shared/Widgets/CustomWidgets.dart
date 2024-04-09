@@ -77,7 +77,6 @@ class CustomWidgets{
  static Widget customTextFormField({
    BuildContext? context,
    required String? Function(String?)? funcValid,
-   String? Function()? fucnSuffixIconButton,
    required TextEditingController? editingController,
    required String? hintText,
    bool isObscureText = false,
@@ -98,7 +97,6 @@ class CustomWidgets{
      decoration: InputDecoration(
 
        suffixIcon: suffixIcon,
-
        prefix: Icon(prefixIcon),
        fillColor: fillColor,
        filled: true,

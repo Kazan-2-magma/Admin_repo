@@ -1,6 +1,7 @@
 
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/screens/home_screen.dart';
+import 'package:cinq_etoils/screens/screens_manager.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _AuthPageState extends State<AuthPage> {
                       child : CircularProgressIndicator()
                     );
                   }else if(dataSnapshot.hasData){
-                    return HomeScreen();
+                    return ScreenManager(userData: dataSnapshot.data,);
                   }else{
                     return const Text("ERROR");
                   }

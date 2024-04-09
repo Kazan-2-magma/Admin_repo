@@ -1,6 +1,8 @@
+import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/screens/ClientScreen.dart';
 import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
@@ -8,6 +10,9 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
+  Map<String,dynamic>? userData;
+  ScreenManager({this.userData});
+
   @override
   State<ScreenManager> createState() => _ScreenManagerState();
 }
@@ -20,6 +25,8 @@ class _ScreenManagerState extends State<ScreenManager> {
   void initState() {
     title = "Home";
     currentScreen = HomeScreen();
+    User? user = FirebaseAuth.instance.currentUser;
+    print(user);
     super.initState();
   }
 
@@ -55,6 +62,7 @@ class _ScreenManagerState extends State<ScreenManager> {
 class _SliderView extends StatefulWidget{
   final Function(String,Widget)? onItemClick;
   _SliderView({Key? key, this.onItemClick}) : super(key: key);
+  FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
   @override
   State<_SliderView> createState() => _SliderViewState();
 }
@@ -67,7 +75,7 @@ class _SliderViewState extends State<_SliderView> {
     Menu(Icons.business_center_outlined, 'Projets',ProjectScreen()),
     Menu(Icons.people, 'Utilisateurs',ClientScreen()),
     Menu(Icons.person, 'Profile',ProfileScreen()),
-    Menu(Icons.arrow_back_ios, 'LogOut',Container())
+    //Menu(Icons.arrow_back_ios, 'LogOut',Container())
   ];
 
 
@@ -113,7 +121,13 @@ class _SliderViewState extends State<_SliderView> {
                 iconData: e.iconData,
                 onTap:widget.onItemClick
             );
-          })
+          }),
+          ElevatedButton(
+              onPressed: (){
+                widget._firebaseServiceUser.signOut();
+              },
+              child: Text("LogOut")
+          )
         ],
       ),
     );;

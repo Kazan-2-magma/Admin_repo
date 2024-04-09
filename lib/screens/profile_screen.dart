@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+import 'package:cinq_etoils/shared/image_functions/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:image_picker/image_picker.dart';
@@ -59,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: _imageProfile != null
                                     ? CircleAvatar(
                                   radius: 60,
-                                  backgroundImage : _imageProfile as ImageProvider,
+                                  backgroundImage : FileImage(File(_imageProfile!.path)),
                                 )
                                     : ProfilePicture(
                                         //IMAGE
@@ -68,7 +70,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontsize: 21,
                                         img: _image,
                                 ),
-                                onTap: (){
+                                onTap: () async {
+                                  await getImageFromGallery()
+                                  .then((value){
+                                    setState(()  {
+                                      _imageProfile = value;
+                                    });
+                                  }).catchError((e) => print(e.toString()));
 
                                 },
                               ),
@@ -77,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "name name", /////////////////// nom et prenome
+                                    "name name",
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

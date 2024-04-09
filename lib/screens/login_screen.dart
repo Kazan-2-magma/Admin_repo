@@ -46,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Container(
           height:MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
           color: CustomColors.lightGrey,
           padding: EdgeInsets.all(30),
           child: SingleChildScrollView(
@@ -167,26 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               color: CustomColors.green),
 
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(text:"Ou bien,",
-                                  style: const TextStyle(color: Colors.black,
-                                  fontSize: 14.0,
-                                ),),
-                                TextSpan(
-                                    text: ' créer un compte',
-                                    style: const TextStyle(color: Colors.blue,
-                                        fontSize: 15.0,
-                                        decoration: TextDecoration. underline, decorationColor:Colors.blue
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        print('create"');
-                                      }),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),

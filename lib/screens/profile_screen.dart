@@ -6,8 +6,8 @@ import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
+import 'package:cinq_etoils/shared/CustomFunctions.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
-import 'package:cinq_etoils/shared/image_functions/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
@@ -30,6 +30,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   XFile? _image;
   final picker = ImagePicker();
   var editNom = TextEditingController(),editPhone = TextEditingController(),editEmail = TextEditingController();
+
+  TextEditingController nomEditEditingController =TextEditingController();
+  TextEditingController numeroEditEditingController =TextEditingController();
+  bool passwordVisible = true;
 
   @override
   void initState() {
@@ -168,7 +172,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           CustomWidgets.customIconButton(
                               func: () {
-                                  showTextField("Nom", editNom);
+                                  CustomWidgets.showAlertDialog(
+                                      context, CustomWidgets.customTextFormField(
+                                      funcValid: (value){
+
+                                      },
+                                      editingController: nomEditEditingController,
+                                      hintText: "Nouvell nom"),
+                                       titleText: "Votre old nome: hna smiyto le9dima",
+                                      [
+                                        CustomWidgets.customButton(
+                                            text: "Sauvgarder",
+                                            func: (){
+                                              setState(() {
+                                                ///////////////// yassine helllp!!!!!
+                                              });
+                                            },
+                                            color: CustomColors.transparent,
+                                            shadowColor: CustomColors.transparent,
+                                            surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.grey,
+                                            radius: 30,
+                                            borderColor: CustomColors.grey,
+                                            borderWidth: 1.2,
+                                        ),
+                                        CustomWidgets.customButton(
+                                            text: "Annuler",
+                                            func: (){
+                                              Navigator.pop(context);
+                                              setState(() {
+                                                CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                              });
+                                            },
+                                            color: CustomColors.transparent,
+                                            shadowColor: CustomColors.transparent,
+                                            surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.grey,
+                                            radius: 30,
+                                            borderColor: CustomColors.grey,
+                                            borderWidth: 1.2,
+                                        ),
+                                      ]);
                               },
                               icon: Icon(Icons.edit,color: CustomColors.grey,),
                           )
@@ -198,7 +242,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           CustomWidgets.customIconButton(
                             func: () {
-                              showTextField("Nom", editNom);
+                              CustomWidgets.showAlertDialog(
+                                  context, CustomWidgets.customTextFormField(
+                                  funcValid: (value){
+
+                                  },
+                                  editingController: numeroEditEditingController,
+                                  hintText: "Nouvell numero"),
+                                  titleText: "Votre old numero: hna smiyto le9dima",
+                                  [
+                                    CustomWidgets.customButton(
+                                      text: "Sauvgarder",
+                                      func: (){
+                                        setState(() {
+                                          ///////////////// yassine helllp!!!!!
+                                        });
+                                      },
+                                      color: CustomColors.transparent,
+                                      shadowColor: CustomColors.transparent,
+                                      surfaceTintColor: CustomColors.transparent,
+                                      colorText: CustomColors.grey,
+                                      radius: 30,
+                                      borderColor: CustomColors.grey,
+                                      borderWidth: 1.2,
+                                    ),
+                                    CustomWidgets.customButton(
+                                      text: "Annuler",
+                                      func: (){
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          CustomFunctions.ClearTextFields([numeroEditEditingController]);
+                                        });
+                                      },
+                                      color: CustomColors.transparent,
+                                      shadowColor: CustomColors.transparent,
+                                      surfaceTintColor: CustomColors.transparent,
+                                      colorText: CustomColors.grey,
+                                      radius: 30,
+                                      borderColor: CustomColors.grey,
+                                      borderWidth: 1.2,
+                                    ),
+                                  ]);
                             },
                             icon: Icon(Icons.edit,color: CustomColors.grey,),
                           )
@@ -274,6 +358,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               textSize: 16,
                               text: "Modifier le mot de pass",
                               func: (){
+                                CustomWidgets.showAlertDialog(
+                                    context, CustomWidgets.customTextFormField(
+                                    funcValid: (value){
+
+                                    },
+                                    isObscureText: true,
+                                    suffixIcon: IconButton(
+                                      icon: Icon(passwordVisible
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                        color: CustomColors.blue,),
+                                      onPressed: () {
+                                        setState(
+                                              () {
+                                            passwordVisible = !passwordVisible;
+                                          },
+
+                                        );
+                                      },
+                                    ),
+                                    editingController: nomEditEditingController,
+                                    hintText: "Nouvell mot de pass"),
+                                    titleText: "Votre old mot de pass: hna smiyto le9dima",
+                                    [
+                                      CustomWidgets.customButton(
+                                        text: "Sauvgarder",
+                                        func: (){
+                                          setState(() {
+                                            ///////////////// yassine helllp!!!!!
+                                          });
+                                        },
+                                        color: CustomColors.transparent,
+                                        shadowColor: CustomColors.transparent,
+                                        surfaceTintColor: CustomColors.transparent,
+                                        colorText: CustomColors.grey,
+                                        radius: 30,
+                                        borderColor: CustomColors.grey,
+                                        borderWidth: 1.2,
+                                      ),
+                                      CustomWidgets.customButton(
+                                        text: "Annuler",
+                                        func: (){
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                          });
+                                        },
+                                        color: CustomColors.transparent,
+                                        shadowColor: CustomColors.transparent,
+                                        surfaceTintColor: CustomColors.transparent,
+                                        colorText: CustomColors.grey,
+                                        radius: 30,
+                                        borderColor: CustomColors.grey,
+                                        borderWidth: 1.2,
+                                      ),
+                                    ]);
 
                               },
                           ),

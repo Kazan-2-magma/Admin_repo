@@ -207,7 +207,6 @@
 //     );
 //   }
 // }
-import 'package:cinq_etoils/model/Users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animation_search_bar/animation_search_bar.dart';
@@ -221,8 +220,8 @@ import 'package:flutter/widgets.dart';
 
 class ProjectScreen extends StatefulWidget {
   FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
-  AdminUser? adminUser;
-  ProjectScreen({this.adminUser});
+  Map<String,dynamic>? userData;
+  ProjectScreen({this.userData});
 
   @override
   State<ProjectScreen> createState() => _ProjectScreenState();

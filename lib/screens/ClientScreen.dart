@@ -22,18 +22,13 @@ class ClientScreen extends StatefulWidget {
 class _ClientScreenState extends State<ClientScreen> {
   @override
   Widget build(BuildContext context){
-    TextEditingController _searchController = TextEditingController() ;//////////////////////////////// had l Map ghir test
+    TextEditingController _searchController = TextEditingController() ;
     // Map<String,dynamic> projectItems = widget._firebaseServiceProject.getProjects();
 
     var dropMenuValue;
     TextEditingController dropDownSearchBarController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.blue,
-        leading: const Icon(Icons.menu),
-        title:const Text("Cinq Etoils Admin"),
-      ),
       body: Container(
         padding: const EdgeInsets.only(top:5),
         color: CustomColors.lightGrey,
@@ -61,82 +56,6 @@ class _ClientScreenState extends State<ClientScreen> {
                           onChanged: (String) {
                           },
                           searchTextEditingController: _searchController,
-                        ),
-                      ),
-                      CustomWidgets.customIconButton(
-                        color: CustomColors.green,
-                        func: (){
-                        },
-                        icon:const Icon(Icons.search),
-
-                      ),
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: Text(
-                            'Choisir un projet',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                          items: [],
-                          value: dropMenuValue,
-                          onChanged: (value) {
-                            setState(() {
-                              dropMenuValue = value;
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            height: 40,
-                            width: 200,
-                          ),
-                          dropdownStyleData: const DropdownStyleData(
-                            maxHeight: 200,
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 40,
-                          ),
-                          dropdownSearchData: DropdownSearchData(
-                            searchController: dropDownSearchBarController,
-                            searchInnerWidgetHeight: 50,
-                            searchInnerWidget: Container(
-                              height: 50,
-                              padding: const EdgeInsets.only(
-                                top: 8,
-                                bottom: 4,
-                                right: 8,
-                                left: 8,
-                              ),
-                              child: TextFormField(
-                                expands: true,
-                                maxLines: null,
-                                controller: dropDownSearchBarController,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 8,
-                                  ),
-                                  hintText: 'Chercher un projet...',
-                                  hintStyle: const TextStyle(fontSize: 12),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            searchMatchFn: (item, searchValue) {
-                              return item.value.toString().contains(searchValue);
-                            },
-                          ),
-                          //This to clear the search value when you close the menu
-                          onMenuStateChange: (isOpen) {
-                            if (!isOpen) {
-                              dropDownSearchBarController.clear();
-                            }
-                          },
                         ),
                       ),
                       CustomWidgets.customIconButton(

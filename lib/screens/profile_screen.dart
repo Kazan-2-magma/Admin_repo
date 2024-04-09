@@ -8,7 +8,6 @@ import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/CustomFunctions.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
-import 'package:cinq_etoils/shared/image_functions/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';

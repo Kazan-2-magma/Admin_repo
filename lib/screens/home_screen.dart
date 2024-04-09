@@ -1,9 +1,10 @@
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  Map<String,dynamic>? userData;
-  HomeScreen({this.userData});
+  AdminUser? adminUser;
+  HomeScreen({this.adminUser});
 
   @override
   Widget build(BuildContext context) {

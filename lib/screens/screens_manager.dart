@@ -1,4 +1,6 @@
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/UserModel.dart';
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/screens/ClientScreen.dart';
 import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
@@ -10,9 +12,9 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
-  Map<String,dynamic>? userData;
-  User? user = FirebaseAuth.instance.currentUser;
+  AdminUser? userData;
   ScreenManager({this.userData});
+
 
   @override
   State<ScreenManager> createState() => _ScreenManagerState();
@@ -26,8 +28,7 @@ class _ScreenManagerState extends State<ScreenManager> {
   void initState() {
     title = "Home";
     currentScreen = HomeScreen();
-
-    print(widget.userData);
+    print("From screen manager ${widget.userData?.toJson()}");
     super.initState();
   }
 
@@ -45,6 +46,7 @@ class _ScreenManagerState extends State<ScreenManager> {
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.w700))),
           slider: _SliderView(
+            adminUser: widget.userData,
             onItemClick: (title,widget){
               _sliderDrawerKey.currentState!.closeSlider();
               setState(() {
@@ -61,23 +63,33 @@ class _ScreenManagerState extends State<ScreenManager> {
 }
 
 class _SliderView extends StatefulWidget{
+
+  AdminUser? adminUser;
   final Function(String,Widget)? onItemClick;
-  _SliderView({Key? key, this.onItemClick}) : super(key: key);
+  _SliderView({Key? key,this.adminUser, this.onItemClick}) : super(key: key);
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+
   @override
   State<_SliderView> createState() => _SliderViewState();
 }
 
 class _SliderViewState extends State<_SliderView> {
+  late List<Menu> list;
+  @override
+  void initState() {
+    super.initState();
+    list =[
+      //Menu(Icons.home, 'Home',HomeScreen(adminUser: ScreenManager().userData)),
+      // Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(adminUser : ScreenManager().adminUser)),
+      // Menu(Icons.people, 'Utilisateurs',ClientScreen(adminUser : ScreenManager().adminUser)),
+      Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser,)),
+      //Menu(Icons.arrow_back_ios, 'LogOut',Container())
+    ];
+    print("from Sliider View ${widget.adminUser!.email}");
+  }
 
 
-  var list =[
-    Menu(Icons.home, 'Home',HomeScreen(userData: ScreenManager().userData)),
-    Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(userData : ScreenManager().userData)),
-    Menu(Icons.people, 'Utilisateurs',ClientScreen(userData : ScreenManager().userData)),
-    Menu(Icons.person, 'Profile',ProfileScreen(userData : ScreenManager().userData)),
-    //Menu(Icons.arrow_back_ios, 'LogOut',Container())
-  ];
+
 
 
   @override

@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/UserModel.dart';
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:cinq_etoils/shared/image_functions/image_picker.dart';
@@ -11,10 +14,10 @@ import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
-  Map<String,dynamic>? userData;
+  AdminUser? adminUser;
   User? user = FirebaseAuth.instance.currentUser;
-
-  ProfileScreen({this.userData});
+  ProfileScreen({this.adminUser});
+  FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
 
 
   @override
@@ -22,10 +25,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? _image;
+  String? _imageStr;
   XFile? _imageProfile;
+  XFile? _image;
+  final picker = ImagePicker();
   var editNom = TextEditingController(),editPhone = TextEditingController(),editEmail = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    print("From profile admin : ${widget.adminUser}");
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -63,36 +73,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               GestureDetector(
-                                child: _imageProfile != null
+                                onTap: () async {
+                                  getImageFromGallery();
+                                  print(_image);
+                                    if(_image != null){
+                                      widget.adminUser!.photoUrl = await convertXFileIntoBase64()!;
+                                    }
+                                },
+                                child: _image != null
                                     ? CircleAvatar(
-                                  radius: 60,
-                                  backgroundImage : FileImage(File(_imageProfile!.path)),
-                                )
+                                    radius: 60,
+                                    backgroundImage : FileImage(File(_image!.path)),
+                                  )
                                     : ProfilePicture(
                                         //IMAGE
                                         radius: 50,
                                         name: 'name name',
                                         fontsize: 21,
-                                        img: _image,
+                                        img: _imageStr,
                                 ),
-                                onTap: () async {
-                                  await getImageFromGallery()
-                                  .then((value){
-                                    setState(()  {
-                                      _imageProfile = value;
-                                      widget.user.
-                                    });
-                                  }).catchError((e) => print(e.toString()));
 
-                                },
                               ),
                               CustomWidgets.horizontalSpace(10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "name name",
-                                    style: TextStyle(
+                                    "${widget.adminUser!.firstName} ${widget.adminUser!.lastName}",
+                                    style:const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -102,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Icon(Icons.person_pin_rounded,color: CustomColors.grey,size: 15,),
                                       Text(
                                         textAlign: TextAlign.start,
-                                        "Role",
+                                        widget.adminUser!.role,
                                         style: TextStyle(
                                           color: CustomColors.grey,
                                           fontSize: 15,
@@ -134,11 +142,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-                    ////////////////////////////////       nome et prenome
-                    Divider(height: 1.0,indent: 45,),
+                    const Divider(height: 1.0,indent: 45,),
                     Container(
                       height: 50,
-                      padding: EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                      padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
@@ -153,8 +160,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Text("Nom",style: TextStyle(color: CustomColors.grey),),
                                   Text(
-                                    style: TextStyle(fontWeight: FontWeight.w600),
-                                    "Adolf Hitler"//Nom Data
+                                    "${widget.adminUser!.lastName} ${widget.adminUser!.firstName}",
+                                    style:const TextStyle(fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -170,11 +177,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    ////////////////////////////////       tele
-                    Divider(height: 1.0,indent: 45),
+                    const Divider(height: 1.0,indent: 45),
                     Container(
                       height: 50,
-                      padding: EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                      padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                       child: Row(
                         children:
                         [
@@ -186,8 +192,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Text("Telephone",style: TextStyle(color: CustomColors.grey),),
                               Text(
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                                "+212 723-3298"//Nom Data
+                                style:const TextStyle(fontWeight: FontWeight.w600),
+                                widget.adminUser!.phoneNumber
                               ),
                             ],
                           ),
@@ -201,10 +207,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
 
-                    Divider(height: 1.0,indent: 45,),
+                    const Divider(height: 1.0,indent: 45,),
                     Container(
                       height: 50,
-                      padding: EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                      padding:const  EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                       child: Row(
                         children:
                         [
@@ -217,8 +223,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             children: [
                               Text("Email",style: TextStyle(color: CustomColors.grey),),
                               Text(
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                                "AdolfHitler007@NaziForever.Germany"//Nom Data
+                                widget.adminUser!.email,
+                                style:const TextStyle(fontWeight: FontWeight.w600),
                               ),
                             ],
                           )
@@ -226,12 +232,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-
-                    ////////////////////////////////        role
-                    Divider(height: 1.0,indent: 45,),
+                    const Divider(height: 1.0,indent: 45,),
                     Container(
                       height: 50,
-                      padding: EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                      padding: const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
@@ -247,8 +251,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Text("Role",style: TextStyle(color: CustomColors.grey),),
                                   Text(
-                                    style: TextStyle(fontWeight: FontWeight.w600),
-                                    "Hokage"//Nom Data
+                                    style:const TextStyle(fontWeight: FontWeight.w600),
+                                    widget.adminUser!.role
                                   ),
                                 ],
                               ),
@@ -262,12 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-
-
                     CustomWidgets.verticalSpace(30.0),
-
-
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -283,9 +282,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         CustomWidgets.customButton(
                             textSize: 16,
                             color: CustomColors.red,
-                            text: "Deconnecter",// li 3endo m3a fronci ychof m3a hadi
+                            text: "Deconnecter",
                             func: (){
-
+                                widget._firebaseServiceUser.signOut();
                             },
                         ),
                       ],
@@ -299,6 +298,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+
+
+
+//Photo
+  Future<void> getImageFromGallery() async {
+    await picker.pickImage(source: ImageSource.gallery)
+        .then((value) async {
+          if(value != null){
+            setState(() {
+              _image = XFile(value.path);
+            });
+            widget.adminUser!.photoUrl = await convertXFileIntoBase64()!;
+            widget._firebaseServiceUser.modifyUserById(
+                widget.user!.uid,
+                widget.adminUser as AdminUser
+            );
+            print(widget.adminUser);
+          }
+    }).catchError((e){
+      print(e.toString());
+    });
+  }
+//Image to base64
+  Future<String>? convertXFileIntoBase64() async {
+    String converter = "";
+    if(_image != null){
+      Uint8List bytes = await _image!.readAsBytes();
+      converter = base64Encode(bytes);
+    }
+    return converter;
+  }
+
+  Image? convertStringToXFile(String imageString)  {
+    try {
+      Uint8List bytes = base64Decode(imageString);
+      Image image = Image.memory(bytes);
+      return image;
+    }catch (e) {
+      print('Error converting string to XFile: $e');
+      return null;
+    }
+  }
+
+
 
   showTextField(String title,TextEditingController controller){
     return showDialog(

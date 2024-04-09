@@ -19,7 +19,7 @@ class UserModel {
     String id_user =""
   });
 
-  Map<String, dynamic> toJson(String uid) {
+  Map<String, dynamic> toJson({String uid = ""}) {
     return {
       "id_user" : uid,
       'firstName': firstName,

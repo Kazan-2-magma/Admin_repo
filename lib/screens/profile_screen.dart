@@ -42,29 +42,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
   return Scaffold(
       body: Center(
         child: Container(
+          height:MediaQuery.of(context).size.height,
+          width:MediaQuery.of(context).size.width,
           color: CustomColors.lightGrey,
           padding: EdgeInsets.symmetric(horizontal: 7.0, vertical:20),
           child: Column(
             children:
             [
               Container(
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 decoration: BoxDecoration(
                   color: CustomColors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
                       color: CustomColors.grey,
                       spreadRadius: 0,
-                      offset: Offset(1.5, 1.5),
+                      offset: const Offset(1.5, 1.5),
                     ),
                   ],
                 ),
-                height: 490,
                 child: Column(
                   children:
                   [
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 15, horizontal:20),
+                      padding: EdgeInsets.symmetric( horizontal:20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,10 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               GestureDetector(
                                 onTap: () async {
                                   getImageFromGallery();
-                                  print(_image);
-                                    if(_image != null){
-                                      widget.adminUser!.photoUrl = await convertXFileIntoBase64()!;
-                                    }
                                 },
                                 child: _image != null
                                     ? CircleAvatar(
@@ -92,7 +90,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontsize: 21,
                                         img: _imageStr,
                                 ),
-
                               ),
                               CustomWidgets.horizontalSpace(10),
                               Column(
@@ -289,6 +286,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ],
                     ),
+
                   ],
                 ),
               )

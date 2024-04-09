@@ -207,6 +207,7 @@
 //     );
 //   }
 // }
+import 'package:cinq_etoils/shared/CustomFunctions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animation_search_bar/animation_search_bar.dart';
@@ -247,6 +248,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+          color: CustomColors.lightGrey,
           width: MediaQuery
               .of(context)
               .size
@@ -418,7 +420,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 Navigator.of(context).pop();
                 CustomWidgets.showSnackBar(context, value, CustomColors.green);
                 setState(() {});
-                Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
+                CustomFunctions.ClearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
               }).catchError((e) {
                 CustomWidgets.showSnackBar(context, e.toString(), CustomColors.red);
                 print(e.toString());
@@ -431,15 +433,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
           text: "Annuler",
           func: () {
             Navigator.of(context).pop();
-            Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
+            CustomFunctions.ClearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
           },
           color: CustomColors.red),
     ], );
   }
 }
-Clear(List<TextEditingController> list){
-  for(int i = 0; i < list.length; i++){
-    list[i].clear();
-  }
-}
+
 

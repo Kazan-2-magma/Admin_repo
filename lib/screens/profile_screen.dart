@@ -56,11 +56,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Row(
                             children: [
                               GestureDetector(
-                                child: CircleAvatar(
+                                child: _imageProfile != null
+                                    ? CircleAvatar(
                                   radius: 60,
-                                  backgroundImage : _imageProfile != null
-                                      ? _imageProfile as ImageProvider
-                                      : const  NetworkImage("https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"),
+                                  backgroundImage : _imageProfile as ImageProvider,
+                                )
+                                    : ProfilePicture(
+                                        //IMAGE
+                                        radius: 50,
+                                        name: 'name name',
+                                        fontsize: 21,
+                                        img: _image,
                                 ),
                                 onTap: (){
 

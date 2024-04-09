@@ -30,7 +30,7 @@ class AdminUser extends UserModel {
       id_user: id_user
   );
   @override
-  Map<String, dynamic> toJson(String uid) {
+  Map<String, dynamic> toJson({String uid = ""}) {
     return {
       "id_user" : uid,
       'firstName': firstName,
@@ -42,16 +42,16 @@ class AdminUser extends UserModel {
       'password' :password
     };
   }
-  factory AdminUser.fromJson(Map<String, dynamic> json) {
+  factory AdminUser.fromJson(Map<String, dynamic>? json) {
     return AdminUser(
-      id_user: json['id_user'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      phoneNumber: json['phoneNumber'],
-      email: json['email'],
-      photoUrl: json['photoUrl'],
-      role:json['role'],
-      password: json['password'],
+      id_user: json!['id_user'] ?? "",
+      firstName: json['firstName']?? "",
+      lastName: json['lastName']?? "",
+      phoneNumber: json['phoneNumber']?? "",
+      email: json['email']?? "",
+      photoUrl: json['photoUrl']?? "",
+      role:json['role']?? "",
+      password: json['password']?? "",
     );
   }
 
@@ -89,7 +89,7 @@ class Users extends UserModel {
       password: password
   );
 
-  Map<String, dynamic> toJson(String uid) {
+  Map<String, dynamic> toJson({String uid = ""}) {
     return {
       "id_user" : uid,
       'firstName': firstName,

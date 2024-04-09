@@ -15,8 +15,8 @@ import '../model/Users.dart';
 class ClientScreen extends StatefulWidget {
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
   FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
-  Map<String,dynamic>? userData;
-  ClientScreen({this.userData});
+  AdminUser? adminUser;
+  ClientScreen({this.adminUser});
   @override
   State<ClientScreen> createState() => _ClientScreenState();
 }

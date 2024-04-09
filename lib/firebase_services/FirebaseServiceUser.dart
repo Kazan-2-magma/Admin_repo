@@ -13,7 +13,7 @@ class FirebaseServiceUser {
   Future<String?> registerWithEmailAndPassword(String email, String password, UserModel user) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      await _userCollection.doc(result.user!.uid).set(user.toJson(result.user!.uid));
+      await _userCollection.doc(result.user!.uid).set(user.toJson(uid: result.user!.uid));
       return null;
     } catch (e) {
       return e.toString();
@@ -40,8 +40,7 @@ class FirebaseServiceUser {
 
   Future<void> modifyUserById(String userId, UserModel updatedUser) async {
     try {
-      // Update user document in Firestore
-      await _userCollection.doc(userId).update(updatedUser.toJson(userId));
+      await _userCollection.doc(userId).update(updatedUser.toJson(uid: userId));
     } catch (e) {
       print('Error modifying user: $e');
       throw e; // Rethrow the error to handle it in the UI if needed

@@ -1,4 +1,6 @@
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/UserModel.dart';
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/screens/ClientScreen.dart';
 import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
@@ -13,8 +15,11 @@ import '../shared/Widgets/CustomWidgets.dart';
 import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
-  Map<String,dynamic>? userData;
+
+  AdminUser? userData;
+
   ScreenManager({this.userData});
+
 
   @override
   State<ScreenManager> createState() => _ScreenManagerState();
@@ -28,8 +33,12 @@ class _ScreenManagerState extends State<ScreenManager> {
   void initState() {
     title = "Home";
     currentScreen = HomeScreen();
+
+    print("From screen manager ${widget.userData?.toJson()}");
+
     User? user = FirebaseAuth.instance.currentUser;
     print(user);
+
     super.initState();
   }
 
@@ -47,6 +56,7 @@ class _ScreenManagerState extends State<ScreenManager> {
                   style: const TextStyle(
                       fontSize: 22, fontWeight: FontWeight.w700))),
           slider: _SliderView(
+            adminUser: widget.userData,
             onItemClick: (title,widget){
               _sliderDrawerKey.currentState!.closeSlider();
               setState(() {
@@ -64,15 +74,34 @@ class _ScreenManagerState extends State<ScreenManager> {
 }
 
 class _SliderView extends StatefulWidget{
+
+  AdminUser? adminUser;
   final Function(String,Widget)? onItemClick;
-  _SliderView({Key? key, this.onItemClick}) : super(key: key);
+  _SliderView({Key? key,this.adminUser, this.onItemClick}) : super(key: key);
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+
   @override
   State<_SliderView> createState() => _SliderViewState();
 
 }
 
 class _SliderViewState extends State<_SliderView> {
+  late List<Menu> list;
+  @override
+  void initState() {
+    super.initState();
+    list =[
+      Menu(Icons.home, 'Home',HomeScreen(adminUser: widget.adminUser),false),
+      Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
+      Menu(Icons.people, 'Utilisateurs',ClientScreen(adminUser :widget.adminUser),false),
+      Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser),false),
+      //Menu(Icons.arrow_back_ios, 'LogOut',Container())
+    ];
+    print("from Sliider View ${widget.adminUser!.email}");
+  }
+
+
+
 // Define a function to handle item selection
   void handleItemSelection(String title) {
     setState(() {
@@ -83,13 +112,7 @@ class _SliderViewState extends State<_SliderView> {
     });
   }
 
-  var list =[
-    Menu(Icons.home, 'Home',HomeScreen(),false),
-    Menu(Icons.business_center, 'Projets',ProjectScreen(),false),
-    Menu(Icons.people, 'Utilisateurs',ClientScreen(),false),
-    Menu(Icons.account_circle_rounded, 'Profile',ProfileScreen(),false),
-    //Menu(Icons.arrow_back_ios, 'LogOut',Container())
-  ];
+
 
 
   @override

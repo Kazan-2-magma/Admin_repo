@@ -64,7 +64,6 @@ class FirebaseServiceUser {
     }
   }
 
-  // Sign in with email and password
   Future<String?> signInWithEmailAndPassword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -80,12 +79,10 @@ class FirebaseServiceUser {
     }
   }
 
-  // Sign out
   Future<void> signOut() async {
     await _auth.signOut();
   }
 
-  //list de uesrs
   Stream<List<UserModel>> getUsers() {
     return _userCollection.snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -152,23 +149,19 @@ class FirebaseServiceUser {
       }).toList();
       return users;
     } catch (e) {
-      // Gestion des erreurs
       print('Erreur lors de la recherche d\'utilisateur par email et mot de passe : $e');
-      return []; // Retourner une liste vide en cas d'erreur
+      return [];
     }
   }
 
-  // Update password for a user
   Future<void> updatePassword(String userId, String newPassword) async {
     try {
-      // Update password in Firebase Authentication
       await _auth.currentUser?.updatePassword(newPassword);
 
-      // Update password in Firestore collection
       await _userCollection.doc(userId).update({'password': newPassword});
     } catch (e) {
       print('Error updating password: $e');
-      throw e; // Rethrow the error to handle it in the UI if needed
+      throw e;
     }
   }
 

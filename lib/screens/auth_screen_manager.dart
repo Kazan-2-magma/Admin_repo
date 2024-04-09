@@ -40,7 +40,7 @@ class _AuthPageState extends State<AuthPage> {
                       child : CircularProgressIndicator()
                     );
                   }else if(dataSnapshot.hasData){
-                    return HomeScreen(userData: dataSnapshot.data);
+                    return HomeScreen();
                   }else{
                     return const Text("ERROR");
                   }

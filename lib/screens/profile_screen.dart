@@ -16,17 +16,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _image;
+  XFile? _imageProfile;
   var editNom = TextEditingController(),editPhone = TextEditingController(),editEmail = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
 
   return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.blue,
-        leading: const Icon(Icons.menu),
-        title:const Text("Cinq Etoils Admin"),
-      ),
       body: Center(
         child: Container(
           color: CustomColors.lightGrey,
@@ -59,12 +55,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         [
                           Row(
                             children: [
-                              ProfilePicture(
-                                //IMAGE
-                                radius: 50,
-                                name: 'name name',
-                                fontsize: 21,
-                                img: _image, // image hna a sat w tkon string plz
+                              GestureDetector(
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  backgroundImage : _imageProfile != null
+                                      ? _imageProfile as ImageProvider
+                                      : const  NetworkImage("https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"),
+                                ),
+                                onTap: (){
+
+                                },
                               ),
                               CustomWidgets.horizontalSpace(10),
                               Column(

@@ -135,9 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       isLoading = true;
                                     });
                                     if(await signIn()){
-                                      Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(builder: (context) => HomeScreen(userData:data))
-                                      );
+                                      // Navigator.of(context).pushReplacement(
+                                      //     MaterialPageRoute(builder: (context) => HomeScreen(userData:data))
+                                      // );
                                     }else{
                                       CustomWidgets.showSnackBar(
                                           context,

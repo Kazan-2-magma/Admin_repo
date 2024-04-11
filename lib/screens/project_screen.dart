@@ -207,6 +207,7 @@
 //     );
 //   }
 // }
+import 'package:cinq_etoils/model/Users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:animation_search_bar/animation_search_bar.dart';
@@ -220,8 +221,8 @@ import 'package:flutter/widgets.dart';
 
 class ProjectScreen extends StatefulWidget {
   FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
-  Map<String,dynamic>? userData;
-  ProjectScreen({this.userData});
+  AdminUser? adminUser;
+  ProjectScreen({this.adminUser});
 
   @override
   State<ProjectScreen> createState() => _ProjectScreenState();
@@ -233,28 +234,21 @@ class _ProjectScreenState extends State<ProjectScreen> {
       phoneNumber = TextEditingController(),
       emailProfessionel = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  var formKeyBottomSheet = GlobalKey<FormState>();
   var _searchController = TextEditingController();
+  String project_id = "";
 
   @override
   void initState() {
     super.initState();
-    widget.firebaseServiceProject.getProjects().then((value) {
-      print(value.isEmpty);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          width: MediaQuery
-              .of(context)
-              .size
-              .width,
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.only(top: 5),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -301,10 +295,74 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           dataSnapshot.data as List<Map<String, dynamic>>;
                           return ListView.separated(
                               shrinkWrap: true,
-                              itemBuilder: (context, index) =>
-                                  CustomWidgets.customCardProjet(searchResults[index]),
-                              separatorBuilder: (context, index) =>
-                                  CustomWidgets.verticalSpace(7.0),
+                              itemBuilder: (context, index) {
+                                  return Card(
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        )
+                                    ),
+                                    elevation: 0.6,
+                                    child: ClipPath(
+                                      clipper: ShapeBorderClipper(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)
+                                          )
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border(
+                                            left: BorderSide(color: CustomColors.green, width: 7),
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                            contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+                                            title: Text(
+                                              searchResults[index]["nomProjet"],
+                                              style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+                                            ),
+                                            subtitle:Text("Email: ${searchResults[index]["email_professionel"]}\n"
+                                                "Tel: ${searchResults[index]["phoneNumber"]}"
+                                                "${searchResults[index]["projetUrl"] != "" ?  "\nURL : ${searchResults[index]["projetUrl"]}" : ""}"),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children:
+                                              [
+                                                const VerticalDivider(),
+                                                CustomWidgets.customIconButton(
+                                                  func: (){
+                                                    projectName.text = searchResults[index]["nomProjet"].toString();
+                                                    emailProfessionel.text = searchResults[index]["email_professionel"].toString();
+                                                    phoneNumber.text = searchResults[index]["phoneNumber"].toString();
+                                                    projetUrl.text = searchResults[index]["projetUrl"].toString() ?? "";
+                                                    BottomSheet(searchResults[index]["id"]);
+                                                  },
+                                                  icon:Icon(
+                                                    Icons.edit,
+                                                    color: CustomColors.green,
+                                                  ),
+                                                ),
+                                                CustomWidgets.customIconButton(
+                                                  func: (){
+                                                    deleteProject(searchResults[index]["id"]);
+                                                    setState(() {
+                                                      searchProjects(_searchController.text);
+                                                    });
+                                                  },
+                                                  icon:Icon(
+                                                    Icons.delete,
+                                                    color: CustomColors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                              },
+                              separatorBuilder: (context, index) => CustomWidgets.verticalSpace(7.0),
                               itemCount: searchResults.length);
                         } else {
                           return const Center(
@@ -335,7 +393,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         return {
           "id": e.id,
           "nomProjet": e["nomProjet"],
-          "emailProfessionel": e["email_professionel"],
+          "email_professionel": e["email_professionel"],
           "phoneNumber": e["phoneNumber"],
           "projetUrl": e["projetUrl"],
         };
@@ -347,63 +405,67 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
   void addProject() {
     CustomWidgets.showAlertDialog(
-        titleText: 'Ajouter un projet',
         context,
-        Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomWidgets.customTextFormField(
-                    funcValid: (value) {
-                      if (value!.isEmpty) return "Enter le Nom de projet";
-                      return null;
-                    },
-                    icon: Icons.work,
-                    borderColor: CustomColors.grey,
-                    iconColor: CustomColors.grey,
-                    colorText: CustomColors.grey,
-                    editingController: projectName,
-                    hintText: "Nom de Projet"),
-                CustomWidgets.verticalSpace(10.0),
-                CustomWidgets.customTextFormField(
-                    funcValid: (value) {
-                      if (value!.isEmpty) return "Enter Email";
-                      return null;
-                    },
-                    icon: Icons.email,
-                    borderColor: CustomColors.grey,
-                    iconColor: CustomColors.grey,
-                    colorText: CustomColors.grey,
-                    editingController: emailProfessionel,
-                    hintText: "Email"),
-                CustomWidgets.verticalSpace(10.0),
-                CustomWidgets.customTextFormField(
-                    funcValid: (value) {
-                      return null;
-                    },
-                    icon: Icons.phone,
-                    borderColor: CustomColors.grey,
-                    iconColor: CustomColors.grey,
-                    colorText: CustomColors.grey,
-                    editingController: phoneNumber,
-                    hintText: "Tele Projet"),
-                CustomWidgets.verticalSpace(10.0),
-                CustomWidgets.customTextFormField(
-                    funcValid: (value) {
-                      return null;
-                    },
-                    icon: Icons.link_outlined,
-                    borderColor: CustomColors.grey,
-                    iconColor: CustomColors.grey,
-                    colorText: CustomColors.grey,
-                    editingController: projetUrl,
-                    hintText: "URL(optionel)"),
-              ],
-            ),
-          ),
-        ), [
+        'Ajouter un projet',
+         children : Form(
+           key: formKey,
+           child: SingleChildScrollView(
+             child: Column(
+               mainAxisSize: MainAxisSize.min,
+               children: [
+                 CustomWidgets.customTextFormField(
+                     funcValid: (value) {
+                       if (value!.isEmpty) return "Enter le Nom de projet";
+                       return null;
+                     },
+                     icon: Icons.work,
+                     borderColor: CustomColors.grey,
+                     iconColor: CustomColors.grey,
+                     colorText: CustomColors.grey,
+                     editingController: projectName,
+                     hintText: "Nom de Projet"),
+                 CustomWidgets.verticalSpace(10.0),
+                 CustomWidgets.customTextFormField(
+                    inputType: TextInputType.emailAddress,
+                     funcValid: (value) {
+                       if (value!.isEmpty) return "Enter Email";
+                       return null;
+                     },
+                     icon: Icons.email,
+                     borderColor: CustomColors.grey,
+                     iconColor: CustomColors.grey,
+                     colorText: CustomColors.grey,
+                     editingController: emailProfessionel,
+                     hintText: "Email"),
+                 CustomWidgets.verticalSpace(10.0),
+                 CustomWidgets.customTextFormField(
+                     inputType: TextInputType.number,
+                     funcValid: (value) {
+                       return null;
+                     },
+                     icon: Icons.phone,
+                     borderColor: CustomColors.grey,
+                     iconColor: CustomColors.grey,
+                     colorText: CustomColors.grey,
+                     editingController: phoneNumber,
+                     hintText: "Tele Projet"),
+                 CustomWidgets.verticalSpace(10.0),
+                 CustomWidgets.customTextFormField(
+                     inputType: TextInputType.url,
+                     funcValid: (value) {
+                       return null;
+                     },
+                     icon: Icons.link_outlined,
+                     borderColor: CustomColors.grey,
+                     iconColor: CustomColors.grey,
+                     colorText: CustomColors.grey,
+                     editingController: projetUrl,
+                     hintText: "URL(optionel)"),
+               ],
+             ),
+           ),
+         ),
+        list :  [
       CustomWidgets.customButton(
           text: "Ajouter",
           func: () {
@@ -418,7 +480,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 Navigator.of(context).pop();
                 CustomWidgets.showSnackBar(context, value, CustomColors.green);
                 setState(() {});
-                Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
+                clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
               }).catchError((e) {
                 CustomWidgets.showSnackBar(context, e.toString(), CustomColors.red);
                 print(e.toString());
@@ -431,15 +493,160 @@ class _ProjectScreenState extends State<ProjectScreen> {
           text: "Annuler",
           func: () {
             Navigator.of(context).pop();
-            Clear([projectName,projetUrl,phoneNumber,emailProfessionel]);
+            clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
           },
           color: CustomColors.red),
-    ], );
+    ],
+    );
   }
+  deleteProject(String project_id){
+    CustomWidgets.showAlertDialog(context,
+        "Voulez-vous vraiment supprimer cette projet?",
+        list: [
+          CustomWidgets.customButton(text: "Oui", func: (){
+            widget.firebaseServiceProject.deleteProject(project_id)
+                .then((value){
+                  CustomWidgets.showSnackBar(context,"Suppression success", CustomColors.green);
+                  setState(() {
+                    searchProjects(_searchController.text);
+                  });
+                  Navigator.pop(context);
+
+            }).catchError((onError) => print("Error : ${onError.toString()}"));
+          }),
+          CustomWidgets.customButton(text: "Non", func: () {
+            CustomWidgets.showSnackBar(context,"Suppression failed", CustomColors.red);
+            Navigator.pop(context);
+          }),
+        ]
+    );
+  }
+  void BottomSheet(String project_id){
+      var formKey = GlobalKey<FormState>();
+      showBottomSheet(
+          context: context,
+          builder: (context){
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.75,
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                    [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children:
+                        [
+                          IconButton(
+                              onPressed: () => Navigator.pop(context),
+                              icon:const Icon(Icons.arrow_back_ios)),
+                          const Text(
+                                "Modifier Projet",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 30.0,
+                                ),
+                          ),
+                        ],
+                      ),
+                      CustomWidgets.customTextFormField(
+                          funcValid: (value){
+                            if(value!.isEmpty) return "Entre le nom de projet";
+                            return null;
+                          },
+                          editingController: projectName,
+                          hintText: "Nom de Projet",
+
+                      ),
+                      CustomWidgets.verticalSpace(20.0),
+                      CustomWidgets.customTextFormField(
+                          inputType: TextInputType.emailAddress,
+                          funcValid: (value){
+                            if(value!.isEmpty) return "Entre le Email de projet";
+                            return null;
+                          },
+                          editingController: emailProfessionel,
+                          hintText: "Email de Projet",
+                      ),
+                      CustomWidgets.verticalSpace(20.0),
+                      CustomWidgets.customTextFormField(
+                          inputType: TextInputType.number,
+                          funcValid: (value){
+                            if(value!.isEmpty) return "N° de Telephone de projet";
+                            return null;
+                          },
+                          editingController: phoneNumber,
+                          hintText: "N° Telephone de Projet",
+                      ),
+                      CustomWidgets.verticalSpace(20.0),
+                      CustomWidgets.customTextFormField(
+                        inputType: TextInputType.url,
+                        funcValid: (value){
+                          return null;
+                        },
+                        editingController: projetUrl,
+                        hintText: "URL de Projet (optional)",
+                      ),
+                      CustomWidgets.verticalSpace(20.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children:
+                        [
+                          Flexible(
+                              child: CustomWidgets.customButton(
+                                  text: "Modifier",
+                                  func: (){
+                                    if(formKey.currentState!.validate()){
+                                      Projet project = Projet(
+                                          emailProfessionel: emailProfessionel.text,
+                                          nomProjet: projectName.text,
+                                          phoneNumber: phoneNumber.text,
+                                          projetUrl: projetUrl.text ?? "",
+                                      );
+                                      widget.firebaseServiceProject.updateProject(project_id, project)
+                                      .then((value){
+                                        print("Projet Updated Success");
+                                        setState(() {
+                                          searchProjects(_searchController.text);
+                                        });
+                                        Navigator.pop(context);
+                                      }).catchError((e){
+                                        print("Error : ${e.toString()}");
+                                      });
+                                    }
+                                  },
+                                color: CustomColors.green
+                              )
+                          ),
+                          CustomWidgets.customButton(
+                              text: "Annuler",
+                              color: CustomColors.red,
+                              func: (){
+                                Navigator.pop(context);
+                              }
+                          )
+                        ],
+                      )
+
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+  }
+
 }
-Clear(List<TextEditingController> list){
-  for(int i = 0; i < list.length; i++){
-    list[i].clear();
-  }
+  clearTextFields(List<TextEditingController> list){
+    for(int i = 0; i < list.length; i++){
+      list[i].clear();
+    }
 }
 

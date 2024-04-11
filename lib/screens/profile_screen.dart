@@ -125,23 +125,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             ],
                           ),
-                          //BUTTON DYAL EDIT PHOTO
-                          // Container(
-                          //   width: 110,
-                          //   child: CustomWidgets.customButton(
-                          //       text: 'Edit photo',
-                          //       func: () {
-                          //         // yassine ha hiya l botona 7ta t9adha
-                          //       },
-                          //       color: CustomColors.transparent,
-                          //       shadowColor: CustomColors.transparent,
-                          //       surfaceTintColor: CustomColors.transparent,
-                          //       colorText: CustomColors.grey,
-                          //       radius: 30,
-                          //       borderColor: CustomColors.grey,
-                          //       borderWidth: 1.2,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -173,46 +156,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           CustomWidgets.customIconButton(
                               func: () {
                                   CustomWidgets.showAlertDialog(
-                                      context, CustomWidgets.customTextFormField(
-                                      funcValid: (value){
+                                      context,
+                                      "Votre old nome: hna smiyto le9dima",
+                                      children:  CustomWidgets.customTextFormField(
+                                          funcValid: (value){
 
-                                      },
-                                      editingController: nomEditEditingController,
-                                      hintText: "Nouvell nom"),
-                                       titleText: "Votre old nome: hna smiyto le9dima",
-                                      [
-                                        CustomWidgets.customButton(
-                                            text: "Sauvgarder",
-                                            func: (){
-                                              setState(() {
-                                                ///////////////// yassine helllp!!!!!
-                                              });
-                                            },
-                                            color: CustomColors.transparent,
-                                            shadowColor: CustomColors.transparent,
-                                            surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.grey,
-                                            radius: 30,
-                                            borderColor: CustomColors.grey,
-                                            borderWidth: 1.2,
-                                        ),
-                                        CustomWidgets.customButton(
-                                            text: "Annuler",
-                                            func: (){
-                                              Navigator.pop(context);
-                                              setState(() {
-                                                CustomFunctions.ClearTextFields([nomEditEditingController]);
-                                              });
-                                            },
-                                            color: CustomColors.transparent,
-                                            shadowColor: CustomColors.transparent,
-                                            surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.grey,
-                                            radius: 30,
-                                            borderColor: CustomColors.grey,
-                                            borderWidth: 1.2,
-                                        ),
-                                      ]);
+                                          },
+                                          editingController: nomEditEditingController,
+                                          hintText: "Nouvell nom"),
+                                      list: [ CustomWidgets.customButton(
+                                        text: "Sauvgarder",
+                                        func: (){
+                                          setState(() {
+                                            ///////////////// yassine helllp!!!!!
+                                          });
+                                        },
+                                        color: CustomColors.transparent,
+                                        shadowColor: CustomColors.transparent,
+                                        surfaceTintColor: CustomColors.transparent,
+                                        colorText: CustomColors.grey,
+                                        radius: 30,
+                                        borderColor: CustomColors.grey,
+                                        borderWidth: 1.2,
+                                      ),CustomWidgets.customButton(
+                                          text: "Annuler",
+                                          func: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                            });
+                                          },
+                                          color: CustomColors.transparent,
+                                          shadowColor: CustomColors.transparent,
+                                          surfaceTintColor: CustomColors.transparent,
+                                          colorText: CustomColors.grey,
+                                          radius: 30,
+                                          borderColor: CustomColors.grey,
+                                          borderWidth: 1.2,
+                                        ),]
+                                  );
                               },
                               icon: Icon(Icons.edit,color: CustomColors.grey,),
                           )
@@ -243,14 +225,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           CustomWidgets.customIconButton(
                             func: () {
                               CustomWidgets.showAlertDialog(
-                                  context, CustomWidgets.customTextFormField(
-                                  funcValid: (value){
+                                  context,
+                                  "Votre old numero: hna smiyto le9dima",
+                                  children: CustomWidgets.customTextFormField(
+                                      funcValid: (value){
 
-                                  },
-                                  editingController: numeroEditEditingController,
-                                  hintText: "Nouvell numero"),
-                                  titleText: "Votre old numero: hna smiyto le9dima",
-                                  [
+                                      },
+                                      editingController: numeroEditEditingController,
+                                      hintText: "Nouvell numero"),
+                                  list: [
                                     CustomWidgets.customButton(
                                       text: "Sauvgarder",
                                       func: (){
@@ -282,7 +265,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       borderColor: CustomColors.grey,
                                       borderWidth: 1.2,
                                     ),
-                                  ]);
+                                  ]
+                              );
                             },
                             icon: Icon(Icons.edit,color: CustomColors.grey,),
                           )
@@ -359,29 +343,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               text: "Modifier le mot de pass",
                               func: (){
                                 CustomWidgets.showAlertDialog(
-                                    context, CustomWidgets.customTextFormField(
-                                    funcValid: (value){
+                                    context,
+                                    "Votre old mot de pass: hna smiyto le9dima",
+                                    children :  CustomWidgets.customTextFormField(
+                                        funcValid: (value){
 
-                                    },
-                                    isObscureText: true,
-                                    suffixIcon: IconButton(
-                                      icon: Icon(passwordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                        color: CustomColors.blue,),
-                                      onPressed: () {
-                                        setState(
-                                              () {
-                                            passwordVisible = !passwordVisible;
+                                        },
+                                        isObscureText: true,
+                                        suffixIcon: IconButton(
+                                          icon: Icon(passwordVisible
+                                              ? Icons.visibility
+                                              : Icons.visibility_off,
+                                            color: CustomColors.blue,),
+                                          onPressed: () {
+                                            setState(
+                                                  () {
+                                                passwordVisible = !passwordVisible;
+                                              },
+
+                                            );
                                           },
-
-                                        );
-                                      },
-                                    ),
-                                    editingController: nomEditEditingController,
-                                    hintText: "Nouvell mot de pass"),
-                                    titleText: "Votre old mot de pass: hna smiyto le9dima",
-                                    [
+                                        ),
+                                        editingController: nomEditEditingController,
+                                        hintText: "Nouvell mot de pass"),
+                                    list: [
                                       CustomWidgets.customButton(
                                         text: "Sauvgarder",
                                         func: (){
@@ -413,7 +398,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         borderColor: CustomColors.grey,
                                         borderWidth: 1.2,
                                       ),
-                                    ]);
+                                    ]
+                                    );
 
                               },
                           ),

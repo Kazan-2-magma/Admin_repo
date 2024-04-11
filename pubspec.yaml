@@ -47,6 +47,7 @@ dependencies:
   flutter_conditional: ^2.0.0+1
   dropdown_button2: ^2.3.8
   flutter_profile_picture: ^2.0.0
+  modal_bottom_sheet:
 
 
 dev_dependencies:

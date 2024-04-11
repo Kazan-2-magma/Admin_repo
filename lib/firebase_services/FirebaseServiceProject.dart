@@ -32,4 +32,27 @@ class FirebaseServiceProject{
       return [];
     }
   }
+  
+  Future<void> deleteProject(String project_id) async{
+      try{
+        await _firebaseFirestore.collection("projects")
+            .doc(project_id).delete();
+        print("Delete success");
+      }catch(e){
+        print("Error : Delete Failed!!");
+      }
+  }
+
+  Future<void> updateProject(String projetId, Projet nouveauProjet) async {
+    try{
+      await _firebaseFirestore.collection('projects').doc(projetId).update({
+        'nomProjet': nouveauProjet.nomProjet,
+        'phoneNumber': nouveauProjet.phoneNumber,
+        'email_professionel': nouveauProjet.emailProfessionel,
+        'projetUrl': nouveauProjet.projetUrl,
+      });
+    }catch (e) {
+      print('Erreur lors de la modification du projet: $e');
+    }
+  }
 }

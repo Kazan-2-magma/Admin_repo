@@ -80,6 +80,7 @@ class CustomWidgets{
    required TextEditingController? editingController,
    required String? hintText,
    bool isObscureText = false,
+   String? initValue,
    IconData? icon,
    Color? iconColor = Colors.blue,
    Color? colorText = Colors.blue,
@@ -87,13 +88,18 @@ class CustomWidgets{
    Color borderColor = Colors.blue,
    filled = true,
    IconButton? suffixIcon,
+   Icon? prefix,
+   TextInputType? inputType,
 
 }){
    return TextFormField(
+     initialValue: initValue,
      validator:funcValid,
+     keyboardType: inputType,
      controller: editingController,
      decoration: InputDecoration(
        suffixIcon: suffixIcon,
+       prefix: prefix,
        fillColor: fillColor,
        filled: true,
        labelStyle: TextStyle(
@@ -198,7 +204,8 @@ class CustomWidgets{
      ),
    ),
  );
- static Widget customCardProjet(Map<String,dynamic> data) => Card(
+ static Widget customCardProjet(Map<String,dynamic> data,
+     {Function(String?)? deleteFunction}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -241,7 +248,9 @@ class CustomWidgets{
                ),
                CustomWidgets.customIconButton(
                  func: (){
-                   ///////////////////////////////////////
+                   if(deleteFunction != null && data["id"] != null) {
+                      deleteFunction(data["id"]);
+                   }
                  },
                  icon:Icon(
                    Icons.delete,
@@ -277,7 +286,7 @@ class CustomWidgets{
    );
  }
 
- static void showAlertDialog(context,Widget children,List<Widget> list,{required String titleText}){
+ static void showAlertDialog(context,String titleText,{Widget? children,List<Widget>? list}){
    showDialog(
        context: context,
        builder: (context) => AlertDialog(
@@ -305,4 +314,6 @@ class CustomWidgets{
          ),
        );
  }
+
+
 }

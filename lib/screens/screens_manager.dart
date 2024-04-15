@@ -17,6 +17,7 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 import '../shared/CustomColors.dart';
 import '../shared/Widgets/CustomWidgets.dart';
+import 'ClientsScreen.dart';
 import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
@@ -96,8 +97,9 @@ class _SliderViewState extends State<_SliderView> {
     super.initState();
     list =[
       Menu(Icons.home, 'Home',HomeScreen(adminUser: widget.adminUser),false),
-      Menu(Icons.business_center, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
+      Menu(Icons.people_alt_rounded, 'Clients',ClientsScreen(adminUser :widget.adminUser),false),
       Menu(Icons.people, 'Utilisateurs',UsersScreen(adminUser :widget.adminUser),false),
+      Menu(Icons.business_center, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
       Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser),false),
       //Menu(Icons.arrow_back_ios, 'LogOut',Container())
     ];

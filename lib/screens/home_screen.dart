@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.only(left: 20,top: 15),
                               child: Icon(
-                                Icons.people_outline,
+                                Icons.people_alt_rounded,
                                 size: 50,
                                 color: CustomColors.white,
                               ),
@@ -182,7 +182,7 @@ class HomeScreen extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.only(left: 5,top: 15),
                               child: Text(
-                                'Clients',
+                                'Projets',
                                 style: TextStyle(fontSize: 40, color: CustomColors.white),
                                 textAlign: TextAlign.start,
                               ),

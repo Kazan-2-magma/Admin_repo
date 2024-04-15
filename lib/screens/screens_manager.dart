@@ -96,7 +96,7 @@ class _SliderViewState extends State<_SliderView> {
     super.initState();
     list =[
       Menu(Icons.home, 'Home',HomeScreen(adminUser: widget.adminUser),false),
-      Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
+      Menu(Icons.business_center, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
       Menu(Icons.people, 'Utilisateurs',UsersScreen(adminUser :widget.adminUser),false),
       Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser),false),
       //Menu(Icons.arrow_back_ios, 'LogOut',Container())

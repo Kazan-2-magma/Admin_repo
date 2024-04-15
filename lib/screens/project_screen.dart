@@ -247,6 +247,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
+          color: CustomColors.lightGrey,
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.only(top: 5),
@@ -525,14 +526,15 @@ class _ProjectScreenState extends State<ProjectScreen> {
     CustomWidgets.showAlertDialog(context,
         "Voulez-vous vraiment supprimer cette projet?",
         list: [
-          CustomWidgets.customButton(text: "Oui", func: (){
+          CustomWidgets.customButton(color: CustomColors.red,text: "Oui", func: (){
             widget.firebaseServiceProject.deleteProject(project_id)
                 .then((value){
                   CustomWidgets.showSnackBar(context,"Suppression success", CustomColors.green);
                   setState(() {
                     searchProjects(_searchController.text);
+                    Navigator.pop(context);
+
                   });
-                  Navigator.pop(context);
 
             }).catchError((onError) => print("Error : ${onError.toString()}"));
           }),
@@ -562,12 +564,16 @@ class _ProjectScreenState extends State<ProjectScreen> {
                     children:
                     [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children:
                         [
                           IconButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () {
+                                clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
+                                Navigator.pop(context);
+                              },
                               icon:const Icon(Icons.arrow_back_ios)),
+                          CustomWidgets.horizontalSpace(5),
                           const Text(
                                 "Modifier Projet",
                                 style: TextStyle(
@@ -577,7 +583,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           ),
                         ],
                       ),
+                      CustomWidgets.verticalSpace(20.0),
                       CustomWidgets.customTextFormField(
+                          icon: Icons.work,
                           funcValid: (value){
                             if(value!.isEmpty) return "Entre le nom de projet";
                             return null;
@@ -588,7 +596,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       ),
                       CustomWidgets.verticalSpace(20.0),
                       CustomWidgets.customTextFormField(
-                          inputType: TextInputType.emailAddress,
+                        icon: Icons.work,
+
+                        inputType: TextInputType.emailAddress,
                           funcValid: (value){
                             if(value!.isEmpty) return "Entre le Email de projet";
                             return null;
@@ -598,7 +608,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       ),
                       CustomWidgets.verticalSpace(20.0),
                       CustomWidgets.customTextFormField(
-                          inputType: TextInputType.number,
+                        icon: Icons.call,
+
+                        inputType: TextInputType.number,
                           funcValid: (value){
                             if(value!.isEmpty) return "N° de Telephone de projet";
                             return null;
@@ -608,6 +620,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       ),
                       CustomWidgets.verticalSpace(20.0),
                       CustomWidgets.customTextFormField(
+                        icon: Icons.link,
+
                         inputType: TextInputType.url,
                         funcValid: (value){
                           return null;
@@ -637,11 +651,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                         setState(() {
                                           searchProjects(_searchController.text);
                                         });
+                                        clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
                                         Navigator.pop(context);
                                       }).catchError((e){
                                         print("Error : ${e.toString()}");
                                       });
                                     }
+
                                   },
                                 color: CustomColors.green
                               )
@@ -650,6 +666,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                               text: "Annuler",
                               color: CustomColors.red,
                               func: (){
+                                clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
                                 Navigator.pop(context);
                               }
                           )

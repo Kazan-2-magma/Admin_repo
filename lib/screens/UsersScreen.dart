@@ -25,6 +25,8 @@ class UsersScreen extends StatefulWidget {
 
 
 class _UsersScreenState extends State<UsersScreen> {
+  TextEditingController dropDownSearchTextEditingController = TextEditingController();
+
   bool isVisible = true;
   bool isVisibleConf = true;
   Stream<List<UserModel>>? usersList;
@@ -37,7 +39,7 @@ class _UsersScreenState extends State<UsersScreen> {
       password = TextEditingController(),
       confirmPassword = TextEditingController(),
       role = TextEditingController();
-  String? selectedProjectId;
+      String? selectedProjectId;
 
   @override
   void initState(){
@@ -156,12 +158,13 @@ class _UsersScreenState extends State<UsersScreen> {
     var formKey = GlobalKey<FormState>();
     var groupValue = "user";
     showBottomSheet(
+
         context: context,
         builder: (context){
           return StatefulBuilder(
               builder: (context,setState){
                 return Container(
-                  height: MediaQuery.of(context).size.height * 0.90,
+                  height: MediaQuery.of(context).size.height * 0.98,
                   padding: const EdgeInsets.all(20.0),
                   child: Form(
                     key: formKey,
@@ -190,6 +193,7 @@ class _UsersScreenState extends State<UsersScreen> {
                             ],
                           ),
                           CustomWidgets.customTextFormField(
+                            icon: Icons.person,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le nom de Utilisateur";
                               return null;
@@ -200,6 +204,8 @@ class _UsersScreenState extends State<UsersScreen> {
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
+                            icon: Icons.person,
+
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le nom de Utilisateur";
                               return null;
@@ -210,6 +216,8 @@ class _UsersScreenState extends State<UsersScreen> {
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
+                            icon: Icons.email,
+
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le Email de Utilisateur";
@@ -220,6 +228,8 @@ class _UsersScreenState extends State<UsersScreen> {
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
+                            icon: Icons.call,
+
                             inputType: TextInputType.number,
                             funcValid: (value){
                               if(value!.isEmpty) return "N° de Telephone de Utilisateur";
@@ -229,47 +239,8 @@ class _UsersScreenState extends State<UsersScreen> {
                             hintText: "N° Telephone de Utilisateur",
                           ),
                           CustomWidgets.verticalSpace(20.0),
-                          CustomWidgets.customTextFormField(
-                            inputType: TextInputType.visiblePassword,
-                            isObscureText: isVisible,
-                            suffixIcon: IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    isVisible = !isVisible;
-                                    print(isVisible);
-                                  });
-                                },
-                                icon : isVisible ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility)
-                            ),
-                            funcValid: (value){
-                              if(value!.isEmpty) return "Enter Mot de pass de Utilisateur";
-                              return null;
-                            },
-                            editingController: password,
-                            hintText: "Mot de pass de Utilisateur",
-                          ),
-                          CustomWidgets.verticalSpace(20.0),
-                          CustomWidgets.customTextFormField(
-                            inputType: TextInputType.visiblePassword,
-                            isObscureText: isVisibleConf,
-                            suffixIcon: IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    print("set");
-                                    isVisibleConf = !isVisibleConf;
-                                  });
-                                },
-                                icon : isVisibleConf ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility)
-                            ),
-                            funcValid: (value){
-                              if(value!.isEmpty) return "Confirmer Mot de pass de Utilisateur";
-                              else if(value != password.text) return "Le mot de pass ne match pas";
-                              return null;
-                            },
-                            editingController: confirmPassword,
-                            hintText: "Confirmer Mot de pass de Utilisateur",
-                          ),
-                          CustomWidgets.verticalSpace(20.0),
+
+
                           Row(
                             children:
                             [
@@ -288,16 +259,16 @@ class _UsersScreenState extends State<UsersScreen> {
                               Flexible(
                                 child: RadioListTile(
                                   title:const Text(
-                                      "Partenaire",
+                                    "Partenaire",
                                     style: TextStyle(
-                                      fontSize: 15.0
+                                        fontSize: 15.0
                                     ),
                                   ),
                                   value: "partenaire",
                                   onChanged: (value){
-                                      setState((){
-                                        groupValue = value!;
-                                      });
+                                    setState((){
+                                      groupValue = value!;
+                                    });
                                   },
                                   groupValue: groupValue,
                                 ),
@@ -305,21 +276,131 @@ class _UsersScreenState extends State<UsersScreen> {
                             ],
                           ),
                           if(groupValue == "partenaire")
-                            DropdownButtonFormField<String>(
-                              value: selectedProjectId,
-                              items: projectsList?.map((e){
-                               return DropdownMenuItem<String>(
-                                  value: e["id"],
-                                   child: Text(e["nomProjet"])
-                               );
-                              }).toList(),
-                              onChanged: (value) {
-                                  print(value);
-                                  setState((){
-                                    selectedProjectId = value;
-                                  });
-                              },
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                      child: Text("Projet : ",style: TextStyle(fontSize: 15),)),
+                                  DropdownButtonHideUnderline(
+                                    child: DropdownButton2<String>(
+                                      value: selectedProjectId,
+                                      items: projectsList?.map((e){
+                                        return DropdownMenuItem<String>(
+                                            value: e["id"],
+                                            child: Text(e["nomProjet"])
+                                        );
+                                      }).toList(),
+                                      onChanged: (value) {
+                                        print(value);
+                                        setState((){
+                                          selectedProjectId = value;
+                                        });
+                                      },
+                                      buttonStyleData: const ButtonStyleData(
+                                      padding: EdgeInsets.symmetric(horizontal: 16),
+                                      height: 40,
+                                      width: 200,
+                                      ),
+                                      dropdownStyleData: const DropdownStyleData(
+                                      maxHeight: 200,
+                                      ),
+                                      menuItemStyleData: const MenuItemStyleData(
+                                      height: 40,
+                                      ),
+                                      dropdownSearchData: DropdownSearchData(
+                                      searchController: dropDownSearchTextEditingController,
+                                      searchInnerWidgetHeight: 50,
+                                      searchInnerWidget: Container(
+                                      height: 50,
+                                      padding: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 4,
+                                      right: 8,
+                                      left: 8,
+                                      ),
+                                      child: TextFormField(
+                                      expands: true,
+                                      maxLines: null,
+                                      controller: dropDownSearchTextEditingController,
+                                      decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 8,
+                                      ),
+                                      hintText: 'Chercher un projet...',
+                                      hintStyle: const TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      ),
+                                      ),
+                                      ),
+                                      searchMatchFn: (item, searchValue) {
+                                      return item.value.toString().contains(searchValue);
+                                      },
+                                      ),
+                                      //This to clear the search value when you close the menu
+                                      onMenuStateChange: (isOpen) {
+                                      if (!isOpen) {
+                                      dropDownSearchTextEditingController.clear();
+                                      }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
+
+
+                          CustomWidgets.verticalSpace(20.0),
+                          CustomWidgets.customTextFormField(
+                            icon: Icons.lock,
+
+                            inputType: TextInputType.visiblePassword,
+                            isObscureText: isVisible,
+                            suffixIcon: IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    isVisible = !isVisible;
+                                    print(isVisible);
+                                  });
+                                },
+                                icon : isVisible ? const Icon(Icons.visibility_off,color: Colors.blue,) : const Icon(Icons.visibility,color: Colors.blue)
+                            ),
+                            funcValid: (value){
+                              if(value!.isEmpty) return "Enter Mot de pass de Utilisateur";
+                              return null;
+                            },
+                            editingController: password,
+                            hintText: "Mot de pass de Utilisateur",
+                          ),
+                          CustomWidgets.verticalSpace(20.0),
+                          CustomWidgets.customTextFormField(
+                            icon: Icons.lock,
+
+                            inputType: TextInputType.visiblePassword,
+                            isObscureText: isVisibleConf,
+                            suffixIcon: IconButton(
+                                onPressed: (){
+                                  setState(() {
+                                    print("set");
+                                    isVisibleConf = !isVisibleConf;
+                                  });
+                                },
+                                icon : isVisibleConf ? const Icon(Icons.visibility_off,color: Colors.blue) : const Icon(Icons.visibility,color: Colors.blue)
+                            ),
+                            funcValid: (value){
+                              if(value!.isEmpty) return "Confirmer Mot de pass de Utilisateur";
+                              else if(value != password.text) return "Le mot de pass ne match pas";
+                              return null;
+                            },
+                            editingController: confirmPassword,
+                            hintText: "Confirmer Mot de pass de Utilisateur",
+                          ),
+                          CustomWidgets.verticalSpace(20.0),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
@@ -352,21 +433,11 @@ class _UsersScreenState extends State<UsersScreen> {
                                                   idProjet: ''
                                               )
                                           ).then((value){
-                                            widget._firebaseServiceUser.signOut()
-                                            .then((value){
-                                              widget._firebaseServiceUser.reAuthenticateUser(
-                                                "admin@admin.com",
-                                                "Admin@12345",
-                                              ).then((value){
-                                                Navigator.pushReplacement(context,
-                                                    MaterialPageRoute(builder: (context) => UsersScreen()));
-                                              }).catchError((onError) => print("ERROR WHILE RE AUTH ADMIN"));
-                                              CustomWidgets.showSnackBar(
-                                                context,
-                                                "Success! Utilsateur est Ajouter",
-                                                Colors.green,
-                                              );
-                                            });
+                                            CustomWidgets.showSnackBar(
+                                              context,
+                                              "Success! Utilsateur est Ajouter",
+                                              Colors.green,
+                                            );
                                           }).catchError((e){
                                             print("ERROR : ADDING NEW USER");
                                           });

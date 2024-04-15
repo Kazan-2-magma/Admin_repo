@@ -284,6 +284,13 @@ class _UsersScreenState extends State<UsersScreen> {
                                       child: Text("Projet : ",style: TextStyle(fontSize: 15),)),
                                   DropdownButtonHideUnderline(
                                     child: DropdownButton2<String>(
+                                      hint: Text(
+                                      'Choisir un projet',
+                                      style: TextStyle(
+                                      fontSize: 14,
+                                      color: CustomColors.grey,
+                                      ),
+                                      ),
                                       value: selectedProjectId,
                                       items: projectsList?.map((e){
                                         return DropdownMenuItem<String>(

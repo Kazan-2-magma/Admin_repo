@@ -81,6 +81,10 @@ class CustomWidgets{
    );
  }
 
+ void printt(){
+    print("hehehehe");
+ }
+
  static Widget customTextFormField({
    BuildContext? context,
    required String? Function(String?)? funcValid,

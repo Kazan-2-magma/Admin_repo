@@ -301,6 +301,7 @@ class CustomWidgets{
    showDialog(
        context: context,
        builder: (context) => AlertDialog(
+         actionsAlignment: MainAxisAlignment.center,
          surfaceTintColor: CustomColors.white,
          backgroundColor: CustomColors.white,
          elevation: 4,

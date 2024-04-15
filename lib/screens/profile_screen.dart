@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController currentPasswordEditEditingController =TextEditingController();
   TextEditingController passwordEditEditingController =TextEditingController();
   TextEditingController passwordConfirmationEditEditingController =TextEditingController();
-  bool passwordVisible = true;
+  bool passwordVisible = false;
   Map<String, dynamic>? data;
 
 
@@ -140,7 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                        const Divider(height: 1.0,indent: 45,),
+                        const SizedBox(height: 15,),
+                        const Divider(height: 0.0,indent: 45,),
                         Container(
                           height: 50,
                           padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
@@ -169,13 +170,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   func: () {
                                       CustomWidgets.showAlertDialog(
                                           context,
-                                          "Votre ancien nom ${widget.adminUser!.getFullname()}",
+                                          "Votre nom: ${widget.adminUser!.getFullname()}",
                                           children:  CustomWidgets.customTextFormField(
+
+                                              icon: Icons.person,
                                               funcValid: (value){
                                                 return null;
                                               },
                                               editingController: nomEditEditingController,
-                                              hintText: "Nouvelle nom"),
+                                              hintText: "Nouveau nom"),
                                           list:
                                           [
                                             CustomWidgets.customButton(
@@ -187,6 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                  data?["lastName"] = splitFullName(nomEditEditingController.text)[1];
                                                });
                                                 print(data!["lastName"]);
+
                                               }
                                               widget._firebaseServiceUser.modifyUserById(
                                                   widget.adminUser!.id_user,
@@ -194,16 +198,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               );
                                               setState(() {
                                                 widget.adminUser!.setFullName(nomEditEditingController.text);
+                                                Navigator.pop(context);
+                                                CustomFunctions.ClearTextFields([nomEditEditingController]);
                                               });
-                                              Navigator.pop(context);
                                             },
-                                            color: CustomColors.transparent,
-                                            shadowColor: CustomColors.transparent,
-                                            surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.grey,
+                                            color: CustomColors.green,
+                                              shadowColor: CustomColors.transparent,
+                                              surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.white,
                                             radius: 30,
-                                            borderColor: CustomColors.grey,
-                                            borderWidth: 1.2,
                                           ),
                                             CustomWidgets.customButton(
                                               text: "Annuler",
@@ -213,13 +216,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   CustomFunctions.ClearTextFields([nomEditEditingController]);
                                                 });
                                               },
-                                              color: CustomColors.transparent,
+                                              color: CustomColors.red,
                                               shadowColor: CustomColors.transparent,
                                               surfaceTintColor: CustomColors.transparent,
-                                              colorText: CustomColors.grey,
+                                              colorText: CustomColors.white,
                                               radius: 30,
-                                              borderColor: CustomColors.grey,
-                                              borderWidth: 1.2,
                                             ),
                                           ]
                                       );
@@ -235,18 +236,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 50,
                           padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                           child: Row(
+                            mainAxisAlignment:MainAxisAlignment.spaceBetween,
                             children:
                             [
-                              Icon(Icons.call,size: 30,color: CustomColors.grey,),
-                              CustomWidgets.horizontalSpace(10),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Text("Telephone",style: TextStyle(color: CustomColors.grey),),
-                                  Text(
-                                    style:const TextStyle(fontWeight: FontWeight.w600),
-                                    widget.adminUser!.phoneNumber
+                                  Icon(Icons.call,size: 30,color: CustomColors.grey,),
+                                  CustomWidgets.horizontalSpace(10),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Telephone",style: TextStyle(color: CustomColors.grey),),
+                                      Text(
+                                        style:const TextStyle(fontWeight: FontWeight.w600),
+                                        widget.adminUser!.phoneNumber
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -254,8 +260,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 func: () {
                                   CustomWidgets.showAlertDialog(
                                       context,
-                                      "Votre N° de Telephone: ${widget.adminUser!.phoneNumber}",
+                                      "Votre Tel: ${widget.adminUser!.phoneNumber}",
                                       children: CustomWidgets.customTextFormField(
+                                        icon: Icons.call,
                                           funcValid: (value){
                                               return null;
                                           },
@@ -274,15 +281,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             );
                                             setState(() {
                                               widget.adminUser!.phoneNumber = numeroEditEditingController.text;
+                                              Navigator.pop(context);
+                                              CustomFunctions.ClearTextFields([nomEditEditingController]);
                                             });
                                           },
-                                          color: CustomColors.transparent,
+                                          color: CustomColors.green,
                                           shadowColor: CustomColors.transparent,
                                           surfaceTintColor: CustomColors.transparent,
-                                          colorText: CustomColors.grey,
+                                          colorText: CustomColors.white,
                                           radius: 30,
-                                          borderColor: CustomColors.grey,
-                                          borderWidth: 1.2,
                                         ),
                                         CustomWidgets.customButton(
                                           text: "Annuler",
@@ -292,13 +299,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               CustomFunctions.ClearTextFields([numeroEditEditingController]);
                                             });
                                           },
-                                          color: CustomColors.transparent,
+                                          color: CustomColors.red,
                                           shadowColor: CustomColors.transparent,
                                           surfaceTintColor: CustomColors.transparent,
-                                          colorText: CustomColors.grey,
+                                          colorText: CustomColors.white,
                                           radius: 30,
-                                          borderColor: CustomColors.grey,
-                                          borderWidth: 1.2,
                                         ),
                                       ]
                                   );
@@ -384,14 +389,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               children:
                                               [
                                                 CustomWidgets.customTextFormField(
+                                                    icon: Icons.lock,
                                                     funcValid: (value){
-                                                      if(value!.isEmpty) return "Entrer ancient mot de pass";
+                                                      if(value!.isEmpty) return "Entrer mot de pass";
                                                       else if(value != data!["password"]){
                                                         return "Le mot de pass incorrect";
                                                       }
                                                         return null;
                                                     },
-                                                    isObscureText: true,
+                                                    isObscureText: passwordVisible,
                                                     suffixIcon: IconButton(
                                                       icon: Icon(passwordVisible
                                                           ? Icons.visibility
@@ -404,12 +410,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           },
 
                                                         );
+
                                                       },
                                                     ),
                                                     editingController: currentPasswordEditEditingController,
-                                                    hintText: "Ancient mot de pass"),
+                                                    hintText: "Mot de pass"),
                                                 CustomWidgets.verticalSpace(20.0),
                                                 CustomWidgets.customTextFormField(
+                                                  icon: Icons.lock_open,
                                                     funcValid: (value){
                                                         if(value!.isEmpty) {
                                                           return "Entrer la Nouvelle de mot de pass";
@@ -421,6 +429,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     hintText: "Nouvell mot de pass"),
                                                 CustomWidgets.verticalSpace(20.0),
                                                 CustomWidgets.customTextFormField(
+                                                    icon: Icons.lock_open,
+
                                                     funcValid: (value){
                                                       if(value!.isEmpty) {
                                                         return "Entrer la Confirmation de mot de pass";
@@ -432,7 +442,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     isObscureText: true,
                                                     editingController: passwordConfirmationEditEditingController,
                                                     hintText: "Confirmer mot de pass"),
-                                                CustomWidgets.verticalSpace(20.0),
                                               ],
                                             ),
                                           ),
@@ -452,6 +461,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       passwordEditEditingController.text,
                                                   ).then((value){
                                                     print("Password updated");
+                                                    Navigator.pop(context);
                                                   }).catchError((onError){
                                                     print("Update error");
                                                   });
@@ -459,15 +469,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   print("Auth error");
                                                 });
                                               }
-                                              Navigator.pop(context);
                                             },
-                                            color: CustomColors.transparent,
+                                            color: CustomColors.green,
                                             shadowColor: CustomColors.transparent,
                                             surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.grey,
+                                            colorText: CustomColors.white,
                                             radius: 30,
-                                            borderColor: CustomColors.grey,
-                                            borderWidth: 1.2,
                                           ),
                                           CustomWidgets.customButton(
                                             text: "Annuler",
@@ -477,13 +484,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 CustomFunctions.ClearTextFields([nomEditEditingController]);
                                               });
                                             },
-                                            color: CustomColors.transparent,
+                                            color: CustomColors.red,
                                             shadowColor: CustomColors.transparent,
                                             surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.grey,
+                                            colorText: CustomColors.white,
                                             radius: 30,
-                                            borderColor: CustomColors.grey,
-                                            borderWidth: 1.2,
                                           ),
                                         ]
                                         );

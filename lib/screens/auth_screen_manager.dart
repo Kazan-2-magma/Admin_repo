@@ -24,8 +24,8 @@ class _AuthPageState extends State<AuthPage> {
   @override
   void initState() {
     super.initState();
-
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +33,21 @@ class _AuthPageState extends State<AuthPage> {
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot){
+          print(snapshot.data);
           if(snapshot.hasData){
             return FutureBuilder<Map<String, dynamic>?>(
                 future: firebaseService.getUserInfo(snapshot.data!.uid),
                 builder: (context,dataSnapshot){
                   if(dataSnapshot.connectionState == ConnectionState.waiting){
                     return const  Center(
-                      child : CircularProgressIndicator()
+                        child : CircularProgressIndicator()
                     );
                   }else if(dataSnapshot.hasData){
                     return ScreenManager(userData: AdminUser.fromJson(dataSnapshot.data),);
                   }else{
-                    return const Text("ERROR");
+                    return LoginScreen();
                   }
-            }
+                }
             );
           }else{
             return LoginScreen();

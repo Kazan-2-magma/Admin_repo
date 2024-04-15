@@ -15,6 +15,7 @@ class Projet {
 
   Map<String, dynamic> toJson() {
     return {
+      "id" : id,
       'nomProjet': nomProjet,
       'projetUrl': projetUrl,
       "phoneNumber" : phoneNumber,

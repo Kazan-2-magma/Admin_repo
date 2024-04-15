@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
-import 'package:cinq_etoils/screens/ClientScreen.dart';
+import 'package:cinq_etoils/screens/UsersScreen.dart';
 import 'package:cinq_etoils/screens/profile_screen.dart';
 import 'package:cinq_etoils/screens/project_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,30 +20,25 @@ import '../shared/Widgets/CustomWidgets.dart';
 import 'home_screen.dart';
 
 class ScreenManager extends StatefulWidget {
-
   AdminUser? userData;
-
   ScreenManager({this.userData});
 
 
   @override
   State<ScreenManager> createState() => _ScreenManagerState();
+
 }
 
 class _ScreenManagerState extends State<ScreenManager> {
   String title = "";
   Widget currentScreen = Container();
+  final FirebaseServiceUser firebaseServiceuser=FirebaseServiceUser();
+
 
   @override
   void initState() {
     title = "Home";
     currentScreen = HomeScreen();
-
-    print("From screen manager ${widget.userData?.toJson()}");
-
-    User? user = FirebaseAuth.instance.currentUser;
-    print(user);
-
     super.initState();
   }
 
@@ -59,7 +54,9 @@ class _ScreenManagerState extends State<ScreenManager> {
               title: Text(
                   title,
                   style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.w700))),
+                      fontSize: 22, fontWeight: FontWeight.w700)
+              )
+          ),
           slider: _SliderView(
             adminUser: widget.userData,
             onItemClick: (title,widget){
@@ -74,7 +71,8 @@ class _ScreenManagerState extends State<ScreenManager> {
           child: Container(
             child: currentScreen,
           ),
-        ));
+        )
+    );
   }
 }
 
@@ -92,13 +90,14 @@ class _SliderView extends StatefulWidget{
 
 class _SliderViewState extends State<_SliderView> {
   late List<Menu> list;
+  String? _imageStr;
   @override
   void initState() {
     super.initState();
     list =[
       Menu(Icons.home, 'Home',HomeScreen(adminUser: widget.adminUser),false),
       Menu(Icons.business_center_outlined, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),
-      Menu(Icons.people, 'Utilisateurs',ClientScreen(adminUser :widget.adminUser),false),
+      Menu(Icons.people, 'Utilisateurs',UsersScreen(adminUser :widget.adminUser),false),
       Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser),false),
       //Menu(Icons.arrow_back_ios, 'LogOut',Container())
     ];
@@ -158,7 +157,7 @@ class _SliderViewState extends State<_SliderView> {
                   radius: 50,
                   name: widget.adminUser!.getFullname(),
                   fontsize: 21,
-                  img: "",
+                  img: _imageStr,
                 ),
               ),
               const SizedBox(
@@ -184,12 +183,12 @@ class _SliderViewState extends State<_SliderView> {
 
           ...list.map((e){
             return _SliderMenuItem(
-                title: e.title,
-                currentScreen: e.widget,
-                iconData: e.iconData,
-                isSelected: e.isSelected,
-                onItemClick: widget.onItemClick,
-                handleItemSelection: handleItemSelection, // Pass handleItemSelection
+              title: e.title,
+              currentScreen: e.widget,
+              iconData: e.iconData,
+              isSelected: e.isSelected,
+              onItemClick: widget.onItemClick,
+              handleItemSelection: handleItemSelection, // Pass handleItemSelection
 
             );
           }),

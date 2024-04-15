@@ -26,22 +26,27 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _imageStr;
-  XFile? _imageProfile;
   XFile? _image;
   final picker = ImagePicker();
   var editNom = TextEditingController(),editPhone = TextEditingController(),editEmail = TextEditingController();
 
   TextEditingController nomEditEditingController =TextEditingController();
   TextEditingController numeroEditEditingController =TextEditingController();
+  TextEditingController currentPasswordEditEditingController =TextEditingController();
+  TextEditingController passwordEditEditingController =TextEditingController();
+  TextEditingController passwordConfirmationEditEditingController =TextEditingController();
   bool passwordVisible = true;
+  Map<String, dynamic>? data;
+
 
   @override
   void initState() {
     super.initState();
-    if(widget.adminUser!.photoUrl.isNotEmpty){
-      //_image = convertStringToXFile(widget.adminUser!.photoUrl);
-    }
-    print("From profile admin : ${widget.adminUser}");
+    fetchData();
+  }
+
+  void fetchData() async{
+    data = await widget._firebaseServiceUser.getUserInfo(widget.adminUser!.id_user);
   }
   @override
   Widget build(BuildContext context) {
@@ -53,137 +58,222 @@ class _ProfileScreenState extends State<ProfileScreen> {
           width:MediaQuery.of(context).size.width,
           color: CustomColors.lightGrey,
           padding: EdgeInsets.symmetric(horizontal: 7.0, vertical:20),
-          child: Column(
-            children:
-            [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                decoration: BoxDecoration(
-                  color: CustomColors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: CustomColors.grey,
-                      spreadRadius: 0,
-                      offset: const Offset(1.5, 1.5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children:
-                  [
-                    Container(
-                      padding: EdgeInsets.symmetric( horizontal:20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children:
-                        [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  getImageFromGallery();
-                                },
-                                child: _image != null
-                                    ? CircleAvatar(
-                                    radius: 60,
-                                    backgroundImage : FileImage(File(_image!.path)),)
-                                    : ProfilePicture(
-                                        //IMAGE
-                                        radius: 50,
-                                        name: widget.adminUser!.getFullname(),
-                                        fontsize: 21,
-                                        img: _imageStr,
-                                ),
-                              ),
-                              CustomWidgets.horizontalSpace(10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+          child: SingleChildScrollView(
+            child: Column(
+              children:
+              [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                    color: CustomColors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: CustomColors.grey,
+                        spreadRadius: 0,
+                        offset: const Offset(1.5, 1.5),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children:
+                      [
+                        Container(
+                          padding: EdgeInsets.symmetric( horizontal:20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:
+                            [
+                              Row(
                                 children: [
-                                  Text(
-                                    "${widget.adminUser!.firstName} ${widget.adminUser!.lastName}",
-                                    style:const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      getImageFromGallery();
+                                    },
+                                    child: _image != null
+                                        ? CircleAvatar(
+                                        radius: 60,
+                                        backgroundImage : FileImage(File(_image!.path)),
+                                      )
+                                        : widget.adminUser!.photoUrl.isNotEmpty
+                                        ? CircleAvatar(
+                                          radius: 60,
+                                          backgroundImage: MemoryImage(base64Decode(widget.adminUser!.photoUrl)),
+                                      )
+                                        : ProfilePicture(
+                                            radius: 50,
+                                            name: widget.adminUser!.getFullname(),
+                                            fontsize: 21,
+                                            img: _imageStr,
+                                      ),
                                   ),
-                                  Row(
+                                  CustomWidgets.horizontalSpace(10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Icons.person_pin_rounded,color: CustomColors.grey,size: 15,),
                                       Text(
-                                        textAlign: TextAlign.start,
-                                        widget.adminUser!.role,
-                                        style: TextStyle(
-                                          color: CustomColors.grey,
-                                          fontSize: 15,
+                                        widget.adminUser!.getFullname(),
+                                        style:const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
                                         ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.person_pin_rounded,color: CustomColors.grey,size: 15,),
+                                          Text(
+                                            textAlign: TextAlign.start,
+                                            widget.adminUser!.role,
+                                            style: TextStyle(
+                                              color: CustomColors.grey,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1.0,indent: 45,),
+                        Container(
+                          height: 50,
+                          padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:
+                            [
+                              Row(
+                                children: [
+                                  Icon(Icons.person,size: 30,color: CustomColors.grey,),
+                                  CustomWidgets.horizontalSpace(10),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Nom",style: TextStyle(color: CustomColors.grey),),
+                                      Text(
+                                        widget.adminUser!.getFullname(),
+                                        style:const TextStyle(fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
                                 ],
+                              ),
+                              CustomWidgets.customIconButton(
+                                  func: () {
+                                      CustomWidgets.showAlertDialog(
+                                          context,
+                                          "Votre ancien nom ${widget.adminUser!.getFullname()}",
+                                          children:  CustomWidgets.customTextFormField(
+                                              funcValid: (value){
+                                                return null;
+                                              },
+                                              editingController: nomEditEditingController,
+                                              hintText: "Nouvelle nom"),
+                                          list:
+                                          [
+                                            CustomWidgets.customButton(
+                                            text: "Sauvgarder",
+                                            func: (){
+                                              if(nomEditEditingController.text.isNotEmpty){
+                                               setState(() {
+                                                 data?["firstName"] = splitFullName(nomEditEditingController.text)[0];
+                                                 data?["lastName"] = splitFullName(nomEditEditingController.text)[1];
+                                               });
+                                                print(data!["lastName"]);
+                                              }
+                                              widget._firebaseServiceUser.modifyUserById(
+                                                  widget.adminUser!.id_user,
+                                                  AdminUser.fromJson(data)
+                                              );
+                                              setState(() {
+                                                widget.adminUser!.setFullName(nomEditEditingController.text);
+                                              });
+                                              Navigator.pop(context);
+                                            },
+                                            color: CustomColors.transparent,
+                                            shadowColor: CustomColors.transparent,
+                                            surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.grey,
+                                            radius: 30,
+                                            borderColor: CustomColors.grey,
+                                            borderWidth: 1.2,
+                                          ),
+                                            CustomWidgets.customButton(
+                                              text: "Annuler",
+                                              func: (){
+                                                Navigator.pop(context);
+                                                setState(() {
+                                                  CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                                });
+                                              },
+                                              color: CustomColors.transparent,
+                                              shadowColor: CustomColors.transparent,
+                                              surfaceTintColor: CustomColors.transparent,
+                                              colorText: CustomColors.grey,
+                                              radius: 30,
+                                              borderColor: CustomColors.grey,
+                                              borderWidth: 1.2,
+                                            ),
+                                          ]
+                                      );
+                                  },
+                                  icon: Icon(Icons.edit,color: CustomColors.grey,),
                               )
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const Divider(height: 1.0,indent: 45,),
-                    Container(
-                      height: 50,
-                      padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                        [
-                          Row(
-                            children: [
-                              Icon(Icons.person,size: 30,color: CustomColors.grey,),
+                        ),
+                    
+                        const Divider(height: 1.0,indent: 45),
+                        Container(
+                          height: 50,
+                          padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                          child: Row(
+                            children:
+                            [
+                              Icon(Icons.call,size: 30,color: CustomColors.grey,),
                               CustomWidgets.horizontalSpace(10),
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Nom",style: TextStyle(color: CustomColors.grey),),
+                                  Text("Telephone",style: TextStyle(color: CustomColors.grey),),
                                   Text(
-                                    "${widget.adminUser!.lastName} ${widget.adminUser!.firstName}",
                                     style:const TextStyle(fontWeight: FontWeight.w600),
+                                    widget.adminUser!.phoneNumber
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                          CustomWidgets.customIconButton(
-                              func: () {
+                              CustomWidgets.customIconButton(
+                                func: () {
                                   CustomWidgets.showAlertDialog(
                                       context,
-                                      "Votre old nome: hna smiyto le9dima",
-                                      children:  CustomWidgets.customTextFormField(
+                                      "Votre N° de Telephone: ${widget.adminUser!.phoneNumber}",
+                                      children: CustomWidgets.customTextFormField(
                                           funcValid: (value){
-
+                                              return null;
                                           },
-                                          editingController: nomEditEditingController,
-                                          hintText: "Nouvell nom"),
-                                      list: [ CustomWidgets.customButton(
-                                        text: "Sauvgarder",
-                                        func: (){
-                                          setState(() {
-                                            ///////////////// yassine helllp!!!!!
-                                          });
-                                        },
-                                        color: CustomColors.transparent,
-                                        shadowColor: CustomColors.transparent,
-                                        surfaceTintColor: CustomColors.transparent,
-                                        colorText: CustomColors.grey,
-                                        radius: 30,
-                                        borderColor: CustomColors.grey,
-                                        borderWidth: 1.2,
-                                      ),CustomWidgets.customButton(
-                                          text: "Annuler",
+                                          editingController: numeroEditEditingController,
+                                          hintText: "Nouvell numero"),
+                                      list: [
+                                        CustomWidgets.customButton(
+                                          text: "Sauvgarder",
                                           func: (){
-                                            Navigator.pop(context);
+                                            if(numeroEditEditingController.text.isNotEmpty){
+                                              data!["phoneNumber"] = numeroEditEditingController.text;
+                                            }
+                                            widget._firebaseServiceUser.modifyUserById(
+                                                widget.adminUser!.id_user,
+                                                AdminUser.fromJson(data)
+                                            );
                                             setState(() {
-                                              CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                              widget.adminUser!.phoneNumber = numeroEditEditingController.text;
                                             });
                                           },
                                           color: CustomColors.transparent,
@@ -193,232 +283,229 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           radius: 30,
                                           borderColor: CustomColors.grey,
                                           borderWidth: 1.2,
-                                        ),]
+                                        ),
+                                        CustomWidgets.customButton(
+                                          text: "Annuler",
+                                          func: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              CustomFunctions.ClearTextFields([numeroEditEditingController]);
+                                            });
+                                          },
+                                          color: CustomColors.transparent,
+                                          shadowColor: CustomColors.transparent,
+                                          surfaceTintColor: CustomColors.transparent,
+                                          colorText: CustomColors.grey,
+                                          radius: 30,
+                                          borderColor: CustomColors.grey,
+                                          borderWidth: 1.2,
+                                        ),
+                                      ]
                                   );
-                              },
-                              icon: Icon(Icons.edit,color: CustomColors.grey,),
-                          )
-                        ],
-                      ),
-                    ),
-
-                    const Divider(height: 1.0,indent: 45),
-                    Container(
-                      height: 50,
-                      padding:const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
-                      child: Row(
-                        children:
-                        [
-                          Icon(Icons.call,size: 30,color: CustomColors.grey,),
-                          CustomWidgets.horizontalSpace(10),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Telephone",style: TextStyle(color: CustomColors.grey),),
-                              Text(
-                                style:const TextStyle(fontWeight: FontWeight.w600),
-                                widget.adminUser!.phoneNumber
-                              ),
+                                },
+                                icon: Icon(Icons.edit,color: CustomColors.grey,),
+                              )
                             ],
                           ),
-                          CustomWidgets.customIconButton(
-                            func: () {
-                              CustomWidgets.showAlertDialog(
-                                  context,
-                                  "Votre old numero: hna smiyto le9dima",
-                                  children: CustomWidgets.customTextFormField(
-                                      funcValid: (value){
-
-                                      },
-                                      editingController: numeroEditEditingController,
-                                      hintText: "Nouvell numero"),
-                                  list: [
-                                    CustomWidgets.customButton(
-                                      text: "Sauvgarder",
-                                      func: (){
-                                        setState(() {
-                                          ///////////////// yassine helllp!!!!!
-                                        });
-                                      },
-                                      color: CustomColors.transparent,
-                                      shadowColor: CustomColors.transparent,
-                                      surfaceTintColor: CustomColors.transparent,
-                                      colorText: CustomColors.grey,
-                                      radius: 30,
-                                      borderColor: CustomColors.grey,
-                                      borderWidth: 1.2,
-                                    ),
-                                    CustomWidgets.customButton(
-                                      text: "Annuler",
-                                      func: (){
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          CustomFunctions.ClearTextFields([numeroEditEditingController]);
-                                        });
-                                      },
-                                      color: CustomColors.transparent,
-                                      shadowColor: CustomColors.transparent,
-                                      surfaceTintColor: CustomColors.transparent,
-                                      colorText: CustomColors.grey,
-                                      radius: 30,
-                                      borderColor: CustomColors.grey,
-                                      borderWidth: 1.2,
-                                    ),
-                                  ]
-                              );
-                            },
-                            icon: Icon(Icons.edit,color: CustomColors.grey,),
-                          )
-                        ],
-                      ),
-                    ),
-
-                    const Divider(height: 1.0,indent: 45,),
-                    Container(
-                      height: 50,
-                      padding:const  EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
-                      child: Row(
-                        children:
-                        [
-                          Icon(Icons.email,size: 30,color: CustomColors.grey,),
-                          CustomWidgets.horizontalSpace(10),
-
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Email",style: TextStyle(color: CustomColors.grey),),
-                              Text(
-                                widget.adminUser!.email,
-                                style:const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          )
-
-                        ],
-                      ),
-                    ),
-                    const Divider(height: 1.0,indent: 45,),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                        [
-                          Row(
-                            children: [
-                              Icon(Icons.person_pin_rounded,size: 30,color: CustomColors.grey,),
+                        ),
+                    
+                        const Divider(height: 1.0,indent: 45,),
+                        Container(
+                          height: 50,
+                          padding:const  EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                          child: Row(
+                            children:
+                            [
+                              Icon(Icons.email,size: 30,color: CustomColors.grey,),
                               CustomWidgets.horizontalSpace(10),
-
+                    
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("Role",style: TextStyle(color: CustomColors.grey),),
+                                  Text("Email",style: TextStyle(color: CustomColors.grey),),
                                   Text(
+                                    widget.adminUser!.email,
                                     style:const TextStyle(fontWeight: FontWeight.w600),
-                                    widget.adminUser!.role
+                                  ),
+                                ],
+                              )
+                    
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1.0,indent: 45,),
+                        Container(
+                          height: 50,
+                          padding: const EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children:
+                            [
+                              Row(
+                                children: [
+                                  Icon(Icons.person_pin_rounded,size: 30,color: CustomColors.grey,),
+                                  CustomWidgets.horizontalSpace(10),
+                    
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Role",style: TextStyle(color: CustomColors.grey),),
+                                      Text(
+                                        style:const TextStyle(fontWeight: FontWeight.w600),
+                                        widget.adminUser!.role
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                          CustomWidgets.customIconButton(
-                            func: () {  },
-                            icon: Icon(Icons.edit,color: CustomColors.grey,),
-                          )
-
-                        ],
-                      ),
-                    ),
-                    CustomWidgets.verticalSpace(30.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Flexible(
-                          child: CustomWidgets.customButton(
-                              textSize: 16,
-                              text: "Modifier le mot de pass",
-                              func: (){
-                                CustomWidgets.showAlertDialog(
-                                    context,
-                                    "Votre old mot de pass: hna smiyto le9dima",
-                                    children :  CustomWidgets.customTextFormField(
-                                        funcValid: (value){
-
-                                        },
-                                        isObscureText: true,
-                                        suffixIcon: IconButton(
-                                          icon: Icon(passwordVisible
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                            color: CustomColors.blue,),
-                                          onPressed: () {
-                                            setState(
-                                                  () {
-                                                passwordVisible = !passwordVisible;
-                                              },
-
-                                            );
-                                          },
-                                        ),
-                                        editingController: nomEditEditingController,
-                                        hintText: "Nouvell mot de pass"),
-                                    list: [
-                                      CustomWidgets.customButton(
-                                        text: "Sauvgarder",
-                                        func: (){
-                                          setState(() {
-                                            ///////////////// yassine helllp!!!!!
-                                          });
-                                        },
-                                        color: CustomColors.transparent,
-                                        shadowColor: CustomColors.transparent,
-                                        surfaceTintColor: CustomColors.transparent,
-                                        colorText: CustomColors.grey,
-                                        radius: 30,
-                                        borderColor: CustomColors.grey,
-                                        borderWidth: 1.2,
-                                      ),
-                                      CustomWidgets.customButton(
-                                        text: "Annuler",
-                                        func: (){
-                                          Navigator.pop(context);
-                                          setState(() {
-                                            CustomFunctions.ClearTextFields([nomEditEditingController]);
-                                          });
-                                        },
-                                        color: CustomColors.transparent,
-                                        shadowColor: CustomColors.transparent,
-                                        surfaceTintColor: CustomColors.transparent,
-                                        colorText: CustomColors.grey,
-                                        radius: 30,
-                                        borderColor: CustomColors.grey,
-                                        borderWidth: 1.2,
-                                      ),
-                                    ]
-                                    );
-
-                              },
-                          ),
                         ),
-                        CustomWidgets.customButton(
-                            textSize: 16,
-                            color: CustomColors.red,
-                            text: "Deconnecter",
-                            func: (){
-                                widget._firebaseServiceUser.signOut();
-                            },
+                        CustomWidgets.verticalSpace(30.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Flexible(
+                              child: CustomWidgets.customButton(
+                                  textSize: 16,
+                                  text: "Modifier le mot de pass",
+                                  func: (){
+                                    var formKey = GlobalKey<FormState>();
+                                    CustomWidgets.showAlertDialog(
+                                        context,
+                                        "Modifier mot de pass",
+                                        children : Form(
+                                          key: formKey,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children:
+                                              [
+                                                CustomWidgets.customTextFormField(
+                                                    funcValid: (value){
+                                                      if(value!.isEmpty) return "Entrer ancient mot de pass";
+                                                      else if(value != data!["password"]){
+                                                        return "Le mot de pass incorrect";
+                                                      }
+                                                        return null;
+                                                    },
+                                                    isObscureText: true,
+                                                    suffixIcon: IconButton(
+                                                      icon: Icon(passwordVisible
+                                                          ? Icons.visibility
+                                                          : Icons.visibility_off,
+                                                        color: CustomColors.blue,),
+                                                      onPressed: () {
+                                                        setState(
+                                                              () {
+                                                            passwordVisible = !passwordVisible;
+                                                          },
+
+                                                        );
+                                                      },
+                                                    ),
+                                                    editingController: currentPasswordEditEditingController,
+                                                    hintText: "Ancient mot de pass"),
+                                                CustomWidgets.verticalSpace(20.0),
+                                                CustomWidgets.customTextFormField(
+                                                    funcValid: (value){
+                                                        if(value!.isEmpty) {
+                                                          return "Entrer la Nouvelle de mot de pass";
+                                                        }
+                                                        return null;
+                                                    },
+                                                    isObscureText: true,
+                                                    editingController: passwordEditEditingController,
+                                                    hintText: "Nouvell mot de pass"),
+                                                CustomWidgets.verticalSpace(20.0),
+                                                CustomWidgets.customTextFormField(
+                                                    funcValid: (value){
+                                                      if(value!.isEmpty) {
+                                                        return "Entrer la Confirmation de mot de pass";
+                                                      } else if(value != passwordEditEditingController.text){
+                                                        return "Le mot de pass ne match pas";
+                                                      }
+                                                      return null;
+                                                    },
+                                                    isObscureText: true,
+                                                    editingController: passwordConfirmationEditEditingController,
+                                                    hintText: "Confirmer mot de pass"),
+                                                CustomWidgets.verticalSpace(20.0),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        list:
+                                        [
+                                          CustomWidgets.customButton(
+                                            text: "Sauvgarder",
+                                            func: (){
+                                              if(formKey.currentState!.validate()) {
+                                                widget._firebaseServiceUser.reAuthenticateUser(
+                                                    widget.adminUser!.email,
+                                                    currentPasswordEditEditingController.text,
+                                                ).then((_){
+                                                  widget._firebaseServiceUser.updatePassword(
+                                                      widget.adminUser!.id_user,
+                                                      passwordEditEditingController.text,
+                                                  ).then((value){
+                                                    print("Password updated");
+                                                  }).catchError((onError){
+                                                    print("Update error");
+                                                  });
+                                                }).catchError((onError){
+                                                  print("Auth error");
+                                                });
+                                              }
+                                              Navigator.pop(context);
+                                            },
+                                            color: CustomColors.transparent,
+                                            shadowColor: CustomColors.transparent,
+                                            surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.grey,
+                                            radius: 30,
+                                            borderColor: CustomColors.grey,
+                                            borderWidth: 1.2,
+                                          ),
+                                          CustomWidgets.customButton(
+                                            text: "Annuler",
+                                            func: (){
+                                              Navigator.pop(context);
+                                              setState(() {
+                                                CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                              });
+                                            },
+                                            color: CustomColors.transparent,
+                                            shadowColor: CustomColors.transparent,
+                                            surfaceTintColor: CustomColors.transparent,
+                                            colorText: CustomColors.grey,
+                                            radius: 30,
+                                            borderColor: CustomColors.grey,
+                                            borderWidth: 1.2,
+                                          ),
+                                        ]
+                                        );
+                                  },
+                              ),
+                            ),
+                            CustomWidgets.customButton(
+                                textSize: 16,
+                                color: CustomColors.red,
+                                text: "Deconnecter",
+                                func: (){
+                                    widget._firebaseServiceUser.signOut();
+                                },
+                            ),
+                          ],
                         ),
                       ],
                     ),
-
-                  ],
-                ),
-              )
-            ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -447,6 +534,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print(e.toString());
     });
   }
+
 //Image to base64
   Future<String>? convertXFileIntoBase64() async {
     String converter = "";
@@ -466,9 +554,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return null;
     }
   }
-
-
-
+  
   showTextField(String title,TextEditingController controller){
     return showDialog(
         context: context,
@@ -499,5 +585,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
     );
+  }
+  
+  splitFullName(String fullName){
+    var fullNameSplitted = (fullName.contains(" ")) ? fullName.split(" ") : fullName;
+    return fullNameSplitted;
   }
 }

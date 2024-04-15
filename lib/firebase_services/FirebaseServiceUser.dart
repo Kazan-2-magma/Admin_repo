@@ -7,34 +7,35 @@ import '../model/Users.dart';
 class FirebaseServiceUser {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _userCollection = FirebaseFirestore.instance.collection('users');
-
-
   FirebaseAuth get auth => _auth;
-  Future<String?> registerWithEmailAndPassword(String email, String password, UserModel user) async {
+
+
+  Future<void> registerWithEmailAndPassword(String email, String password, UserModel user) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      await _userCollection.doc(result.user!.uid).set(user.toJson(uid: result.user!.uid));
-      return null;
-    } catch (e) {
-      return e.toString();
+
+      await _userCollection.doc(result.user!.uid).set(user.toJson());
+    } on FirebaseAuthException catch (e){
+      if(e.code == "weak-password"){
+        throw "Mot de pass est faible ! doit contenir 6 character";
+      }else if(e.code == "email-already-in-use"){
+        throw "Email est dejà utiliser";
+      }
+    } catch (e){
+      throw e.toString();
     }
   }
 
   Future<void> deleteUser(String userId, String password) async {
     try {
-      // Re-authenticate the user
       AuthCredential credential = EmailAuthProvider.credential(email: _auth.currentUser!.email!, password: password);
       await _auth.currentUser!.reauthenticateWithCredential(credential);
-
-      // Delete user from Firebase Authentication
       await _auth.currentUser?.delete();
 
-      // Delete user document from Firestore
       await _userCollection.doc(userId).delete();
     } catch (e) {
-      // Handle any errors that occur during deletion
       print('Error deleting user: $e');
-      throw e; // Rethrow the error to handle it in the UI if needed
+      throw e;
     }
   }
 
@@ -43,7 +44,7 @@ class FirebaseServiceUser {
       await _userCollection.doc(userId).update(updatedUser.toJson(uid: userId));
     } catch (e) {
       print('Error modifying user: $e');
-      throw e; // Rethrow the error to handle it in the UI if needed
+      throw e;
     }
   }
 
@@ -161,6 +162,14 @@ class FirebaseServiceUser {
     } catch (e) {
       print('Error updating password: $e');
       throw e;
+    }
+  }
+  Future<void> reAuthenticateUser(String email,String password) async{
+    try{
+      AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
+      await _auth.currentUser!.reauthenticateWithCredential(credential);
+    }catch (e){
+      throw e.toString();
     }
   }
 

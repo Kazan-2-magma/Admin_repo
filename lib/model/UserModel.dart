@@ -19,7 +19,14 @@ class UserModel {
     String id_user =""
   });
 
-  String getFullname() => "${this.firstName} ${this.lastName}";
+  String getFullname() => "${firstName} ${lastName}";
+  void setFullName(String fullName){
+    var list = fullName.split(" ");
+    firstName = list[0];
+    lastName = list[1];
+  }
+
+
 
   Map<String, dynamic> toJson({String uid = ""}) {
     return {

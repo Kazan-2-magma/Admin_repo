@@ -2,6 +2,7 @@ import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/screens/home_screen.dart';
+import 'package:cinq_etoils/screens/screens_manager.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +23,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
+
   TextEditingController userEmailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
@@ -38,21 +39,26 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.blue,
         title: const Text("appBar"),
       ),
       body: Container(
-          height:MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          width: MediaQuery
+              .of(context)
+              .size
+              .width,
           color: CustomColors.lightGrey,
           padding: EdgeInsets.all(30),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-            
+
               children: [
                 ClipOval(
                   child: Image.asset(
@@ -63,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top:20),
+                  margin: EdgeInsets.only(top: 20),
                   padding: EdgeInsets.symmetric(horizontal: 45),
                   decoration: BoxDecoration(
                     color: CustomColors.white,
@@ -83,16 +89,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Text("Connexion",style: TextStyle(fontSize: 35,fontWeight: FontWeight.bold,color: CustomColors.blue),),
+                          Text("Connexion", style: TextStyle(fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                              color: CustomColors.blue),),
                           CustomWidgets.customTextFormField(
+                            inputType: TextInputType.emailAddress,
                             editingController: userEmailController,
                             hintText: 'Email',
                             icon: Icons.email,
-                            funcValid: (value){
-                              if(value!.isEmpty) return "L'e-mail est vide";
-                              else if(!emailValidation(value)){
+                            funcValid: (value) {
+                              if (value!.isEmpty)
+                                return "L'e-mail est vide";
+                              else if (!emailValidation(value)) {
                                 return "L'e-mail n'est pas valide";
-                              }else{
+                              } else {
                                 return null;
                               }
                             },
@@ -102,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               icon: Icon(passwordVisible
                                   ? Icons.visibility
                                   : Icons.visibility_off,
-                              color: CustomColors.blue,),
+                                color: CustomColors.blue,),
                               onPressed: () {
                                 setState(
                                       () {
@@ -116,58 +126,57 @@ class _LoginScreenState extends State<LoginScreen> {
                             hintText: 'Mot de passe',
                             icon: Icons.lock,
                             isObscureText: passwordVisible,
-                            funcValid: (value){
-                              if(value!.isEmpty) return "Le mot de passe est vide";
-                              else if(!passwordValidation(value)){
+                            funcValid: (value) {
+                              if (value!.isEmpty)
+                                return "Le mot de passe est vide";
+                              else if (!passwordValidation(value)) {
                                 return "Le mot de pass n'est pas valide";
-                              }else if(value.length < 8){
+                              } else if (value.length < 8) {
                                 return "Le mot de pass doit être en mois de 8 characters";
-                              }else{
+                              } else {
                                 return null;
                               }
                             },
                           ),
-            
-                        RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: 'Mot de passe oublier?',
-                                  style: const TextStyle(color: Colors.blue,
-                                      fontSize: 15.0,
-                                      decoration: TextDecoration. underline, decorationColor:Colors.blue
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      print('Mot de passe oublier"');
-                                    }),
-                            ],
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text: 'Mot de passe oublier?',
+                                    style: const TextStyle(color: Colors.blue,
+                                        fontSize: 15.0,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.blue
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        print('Mot de passe oublier"');
+                                      }),
+                              ],
+                            ),
                           ),
-                        ),
-            
-            
                           CustomWidgets.customButton(
                               text: "Se Connecter",
-                              func: () async{
-                                if(formKey.currentState!.validate()){
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    if(await signIn()){
-                                      // Navigator.of(context).pushReplacement(
-                                      //     MaterialPageRoute(builder: (context) => HomeScreen(userData:data))
-                                      // );
-                                    }else{
-                                      CustomWidgets.showSnackBar(
-                                          context,
-                                          "Login Falide",
-                                          CustomColors.red
-                                      );
-                                    }
+                              func: () async {
+                                if (formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  if (await signIn()) {
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(builder: (context) =>
+                                            ScreenManager())
+                                    );
+                                  } else {
+                                    CustomWidgets.showSnackBar(
+                                        context,
+                                        "Login Falide",
+                                        CustomColors.red
+                                    );
+                                  }
                                 }
                               },
                               color: CustomColors.green),
-
                         ],
                       ),
                     ),
@@ -178,33 +187,35 @@ class _LoginScreenState extends State<LoginScreen> {
           )),
     );
   }
+
   Future<bool> signIn() async {
     bool signIn = false;
     setState(() {
       isLoading = true;
     });
-    List<UserModel> currentUser = await _firebaseServiceUser.rechercheUserParEmailEtPassword(
-        userEmailController.text, passwordController.text,);
-    //print(currentUser);
-    if(currentUser.isNotEmpty){
+    List<UserModel> currentUser = await _firebaseServiceUser
+        .rechercheUserParEmailEtPassword(
+      userEmailController.text, passwordController.text,);
+    print(currentUser.first.id_user);
+    if (currentUser.isNotEmpty) {
       UserModel? user = currentUser.first;
-      if(user.role == "admin"){
+      if (user.role == "admin") {
         String? res = await _firebaseServiceUser.signInWithEmailAndPassword(
           userEmailController.text,
           passwordController.text,
         );
-        if(res == null){
+        if (res == null) {
           CustomWidgets.showSnackBar(
               context,
               "Succès Vous êtes connecté",
               CustomColors.green
           );
           data = await _firebaseServiceUser.getUserInfo(user.id_user);
-          print(data);
+          print("sign in data : ${data}");
           signIn = true;
         }
       }
-    }else{
+    } else {
       CustomWidgets.showSnackBar(
           context,
           "Erreur Cette application est réservée aux administrateurs.",
@@ -213,6 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
       signIn = false;
     }
     return signIn;
+  }
 
   }
-}

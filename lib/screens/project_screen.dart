@@ -269,7 +269,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         centerTitleStyle: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
                         hintText: "Chercher Ici...",
-                        onChanged: (String) {},
+                        onChanged: (value) {
+                          setState(() {
+                            _searchController.text = value;
+                          });
+                        },
                         searchTextEditingController: _searchController,
                       ),
                     ),
@@ -364,7 +368,25 @@ class _ProjectScreenState extends State<ProjectScreen> {
                               },
                               separatorBuilder: (context, index) => CustomWidgets.verticalSpace(7.0),
                               itemCount: searchResults.length);
-                        } else {
+                        } else if(dataSnapshot.connectionState == ConnectionState.none)
+                        {
+                            return const Center(
+                              child: Column(
+                                children:
+                                [
+                                  Icon(Icons.warning_outlined),
+                                  Text(
+                                    "Check Your Connection",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 30.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                        }else {
                           return const Center(
                             child: Text(
                               "No Project Found",
@@ -515,7 +537,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
             }).catchError((onError) => print("Error : ${onError.toString()}"));
           }),
           CustomWidgets.customButton(text: "Non", func: () {
-            CustomWidgets.showSnackBar(context,"Suppression failed", CustomColors.red);
+            CustomWidgets.showSnackBar(context,"Operation annuler", CustomColors.grey);
             Navigator.pop(context);
           }),
         ]

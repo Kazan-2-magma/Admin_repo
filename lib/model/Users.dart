@@ -69,7 +69,7 @@ class Users extends UserModel {
   String password;
 
   Users({
-    required this.id_user,
+    String this.id_user = "",
     required this.firstName,
     required this.lastName,
     required this.phoneNumber,

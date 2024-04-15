@@ -1,5 +1,7 @@
 
+import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/Users.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,6 +10,11 @@ import '../../model/UserModel.dart';
 import '../CustomColors.dart';
 
 class CustomWidgets{
+  static ScaffoldMessengerState? scaffoldMessengerState;
+
+  static void init(BuildContext context) {
+    scaffoldMessengerState = ScaffoldMessenger.of(context);
+  }
 
 
 
@@ -191,7 +198,7 @@ class CustomWidgets{
                  ),
                  CustomWidgets.customIconButton(
                    func: (){
-                     ///////////////////////////////////////
+
                    },
                    icon:Icon(
                      Icons.delete,
@@ -272,7 +279,7 @@ class CustomWidgets{
  }
 
  static void showSnackBar(context,content,color){
-   ScaffoldMessenger.of(context).showSnackBar(
+   scaffoldMessengerState?.showSnackBar(
      SnackBar(
           content: Text(
             content,

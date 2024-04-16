@@ -313,7 +313,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                    
                         const Divider(height: 1.0,indent: 45,),
                         Container(
                           height: 50,
@@ -323,7 +322,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             [
                               Icon(Icons.email,size: 30,color: CustomColors.grey,),
                               CustomWidgets.horizontalSpace(10),
-                    
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,7 +333,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ],
                               )
-                    
                             ],
                           ),
                         ),

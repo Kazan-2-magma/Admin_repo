@@ -6,8 +6,9 @@ class FirebaseServiceProject{
   
   Future<String?> addProject(Projet projet) async{
     try{
+      String id = _firebaseFirestore.collection("projects").doc().id;
       await _firebaseFirestore.collection("projects")
-          .doc().set(projet.toJson());
+          .doc().set(projet.toJson(id: id));
       return "Project Added successfuly";
     }catch (e){
       print("Erreur lors de l\'ajout du projet: $e");

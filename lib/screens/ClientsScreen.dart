@@ -1,7 +1,6 @@
 
 
 import 'package:animation_search_bar/animation_search_bar.dart';
-import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
@@ -31,8 +30,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
   bool isVisible = true;
   bool isVisibleConf = true;
   Stream<List<UserModel>>? usersList;
-  List<Map<String,dynamic>> projectsList = [];
-
+  List<Map<String,dynamic>>? projectsList;
   TextEditingController _searchController = TextEditingController(),
       firstName = TextEditingController(),
       lastName = TextEditingController(),
@@ -42,23 +40,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
       confirmPassword = TextEditingController(),
       role = TextEditingController();
   String? selectedProjectId;
-  List<bool> checkBoxes = [];
 
   @override
   void initState(){
     super.initState();
     usersList = widget._firebaseServiceUser.getUsers();
-    setState(() {
-      checkBoxes = List<bool>.filled(3, false);
-    });
-    fetchDataSize();
+    fetchProjectsData();
   }
-  void fetchDataSize()async {
-    var data = await widget._firebaseServiceProject.getProjects();
-    print(data.length);
-    setState(() {
-      projectsList = data;
-    });
+  void fetchProjectsData() async{
+    projectsList =await widget._firebaseServiceProject.getProjects();
   }
 
   @override
@@ -66,6 +56,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
     CustomWidgets.init(context);
     var dropMenuValue;
     TextEditingController dropDownSearchBarController = TextEditingController();
+
     return Scaffold(
       body: Container(
           padding: const EdgeInsets.only(top:5),
@@ -84,8 +75,8 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
                         [
-                          const Expanded(flex:2,child: Text("Choisi projet:",style: TextStyle(fontSize: 15),)),
-                          const SizedBox(width: 30,),
+                          Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
+                          SizedBox(width: 30,),
                           DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(
                               isExpanded: true,
@@ -96,7 +87,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                   color: Theme.of(context).hintColor,
                                 ),
                               ),
-                              items: projectsList.map((e){
+                              items: projectsList?.map((e){
                                 return DropdownMenuItem<String>(
                                     value: e["id"],
                                     child: Text(e["nomProjet"])
@@ -188,61 +179,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                       UserModel user =  snapshot.data![index].role == "admin"
                                           ? snapshot.data![index] as AdminUser
                                           : snapshot.data![index] as Users;
-                                      return Card(
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                bottomLeft: Radius.circular(10)
-                                            )
-                                        ),
-                                        elevation: 0.6,
-                                        child: ClipPath(
-                                          clipper: ShapeBorderClipper(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10)
-                                              )
-                                          ),
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  left: BorderSide(color: CustomColors.green, width: 7),
-                                                ),
-                                              ),
-                                              child:ListTile(
-                                                  contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
-                                                  title: Text(
-                                                    "${user.firstName} ${user.lastName}",
-                                                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
-                                                  ),
-                                                  subtitle:Text("Email: ${user.email}\nTel: ${user.phoneNumber}"),
-                                                  trailing: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children:
-                                                    [
-                                                      const VerticalDivider(),
-                                                      Checkbox(
-                                                        value: checkBoxes[index],
-                                                        onChanged: (value){
-                                                          setState(() {
-                                                            checkBoxes[index] = value!;
-                                                          });
-                                                        },
-                                                      ),
-                                                      CustomWidgets.customIconButton(
-                                                        func: (){
-
-                                                        },
-                                                        icon:Icon(
-                                                          Icons.delete,
-                                                          color: CustomColors.red,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                              )
-                                          ),
-                                        ),
-                                      );
+                                      return CustomWidgets.customCardUser(user);
                                     },
                                   )
                               );
@@ -268,8 +205,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     child: CustomWidgets.customButtonWithIcon(
                         text: "Envoyer",
                         func: (){
-                          print("Cick");
-
                         },
                         color: CustomColors.green,
                         icon: Icons.send
@@ -286,6 +221,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
     var formKey = GlobalKey<FormState>();
     var groupValue = "user";
     showBottomSheet(
+
         context: context,
         builder: (context){
           return StatefulBuilder(
@@ -327,26 +263,27 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             },
                             editingController: firstName,
                             hintText: "Prenom de Utilisateur",
+
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.person,
+
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le nom de Utilisateur";
                               return null;
                             },
                             editingController: lastName,
                             hintText: "Nom de Utilisateur",
+
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.email,
+
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le Email de Utilisateur";
-                              else if(emailValidation(value)){
-                                return "Email n'est pas valid";
-                              }
                               return null;
                             },
                             editingController: email,
@@ -359,9 +296,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             inputType: TextInputType.number,
                             funcValid: (value){
                               if(value!.isEmpty) return "N° de Telephone de Utilisateur";
-                              else if(passwordValidation(value)){
-                                return "N° de Telephone n'est pas valid";
-                              }
                               return null;
                             },
                             editingController: phoneNumber,
@@ -421,7 +355,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                         ),
                                       ),
                                       value: selectedProjectId,
-                                      items: projectsList.map((e){
+                                      items: projectsList?.map((e){
                                         return DropdownMenuItem<String>(
                                             value: e["id"],
                                             child: Text(e["nomProjet"])
@@ -507,9 +441,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             ),
                             funcValid: (value){
                               if(value!.isEmpty) return "Enter Mot de pass de Utilisateur";
-                              else if(passwordValidation(value)){
-                                return "Password n'est pas valid";
-                              }
                               return null;
                             },
                             editingController: password,
@@ -604,9 +535,4 @@ class _ClientsScreenState extends State<ClientsScreen> {
         }
     );
   }
-
-  void selectedUsers(){
-
-  }
-
 }

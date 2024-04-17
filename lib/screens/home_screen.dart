@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Container(
                 padding: EdgeInsets.all(10),
                 width: MediaQuery.of(context).size.width,
-                height: 10,
+                height: 150,
                 child: Card(
                   shadowColor: Colors.black,
                   clipBehavior: Clip.antiAliasWithSaveLayer,

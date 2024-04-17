@@ -51,11 +51,11 @@ class _ScreenManagerState extends State<ScreenManager> {
         body: SliderDrawer(
           key: _sliderDrawerKey,
           appBar: SliderAppBar(
-              appBarColor: Colors.white,
+              appBarColor: CustomColors.blue,
               title: Text(
                   title,
                   style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.w700)
+                      fontSize: 25,color: Colors.white)
               )
           ),
           slider: _SliderView(
@@ -96,7 +96,7 @@ class _SliderViewState extends State<_SliderView> {
   void initState() {
     super.initState();
     list =[
-      Menu(Icons.home, 'Home',HomeScreen(adminUser: widget.adminUser),false),
+      Menu(Icons.home, 'Accueil',HomeScreen(adminUser: widget.adminUser),false),
       Menu(Icons.people_alt_rounded, 'Clients',ClientsScreen(adminUser :widget.adminUser),false),
       Menu(Icons.people, 'Utilisateurs',UsersScreen(adminUser :widget.adminUser),false),
       Menu(Icons.business_center, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),

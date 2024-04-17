@@ -179,7 +179,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                       UserModel user =  snapshot.data![index].role == "admin"
                                           ? snapshot.data![index] as AdminUser
                                           : snapshot.data![index] as Users;
-                                      return CustomWidgets.customCardUser(user);
+                                      return CustomWidgets.customCardUser(user,borderSideColor: CustomColors.red);
                                     },
                                   )
                               );

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1060502762193",
-    "project_id": "admin-manager-app-3fee8",
-    "storage_bucket": "admin-manager-app-3fee8.appspot.com"
+    "project_number": "845852301973",
+    "project_id": "cinqetoileapp",
+    "storage_bucket": "cinqetoileapp.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1060502762193:android:da8bc03adf76b1c4b04bf0",
+        "mobilesdk_app_id": "1:845852301973:android:899e47e8532dc2f9e0999c",
         "android_client_info": {
           "package_name": "com.example.admin_manager"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDJfLryZSZQipSr96Q6WoDHskIY8DuKE9Q"
+          "current_key": "AIzaSyABVka0fYewL1s7yz2kRlewncqDpZAicmA"
         }
       ],
       "services": {

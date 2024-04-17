@@ -47,28 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC30mIyelA3ZIvKPDObEke9aqzH9sWambU',
-    appId: '1:1060502762193:web:d241e98a9ff561c3b04bf0',
-    messagingSenderId: '1060502762193',
-    projectId: 'admin-manager-app-3fee8',
-    authDomain: 'admin-manager-app-3fee8.firebaseapp.com',
-    storageBucket: 'admin-manager-app-3fee8.appspot.com',
+    apiKey: 'AIzaSyAJZoW2Us_RDSzob0MKNO3hoquS3IRiY1g',
+    appId: '1:845852301973:web:907b1098e1c2e602e0999c',
+    messagingSenderId: '845852301973',
+    projectId: 'cinqetoileapp',
+    authDomain: 'cinqetoileapp.firebaseapp.com',
+    storageBucket: 'cinqetoileapp.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDJfLryZSZQipSr96Q6WoDHskIY8DuKE9Q',
-    appId: '1:1060502762193:android:da8bc03adf76b1c4b04bf0',
-    messagingSenderId: '1060502762193',
-    projectId: 'admin-manager-app-3fee8',
-    storageBucket: 'admin-manager-app-3fee8.appspot.com',
+    apiKey: 'AIzaSyABVka0fYewL1s7yz2kRlewncqDpZAicmA',
+    appId: '1:845852301973:android:899e47e8532dc2f9e0999c',
+    messagingSenderId: '845852301973',
+    projectId: 'cinqetoileapp',
+    storageBucket: 'cinqetoileapp.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCQgvfsj0Ida58uVRnP0z-CJ-KIJ-UfSDo',
-    appId: '1:1060502762193:ios:10eeda01a23deea2b04bf0',
-    messagingSenderId: '1060502762193',
-    projectId: 'admin-manager-app-3fee8',
-    storageBucket: 'admin-manager-app-3fee8.appspot.com',
+    apiKey: 'AIzaSyBQB9U4e6O8c12Ly1X2DF0GPYopmb289-s',
+    appId: '1:845852301973:ios:599827ae19da51b2e0999c',
+    messagingSenderId: '845852301973',
+    projectId: 'cinqetoileapp',
+    storageBucket: 'cinqetoileapp.appspot.com',
     iosBundleId: 'com.example.adminManager',
   );
+
 }

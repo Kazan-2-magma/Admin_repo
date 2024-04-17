@@ -75,7 +75,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
                         [
-                          Expanded(child: Text("List des clients:",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),)),
+                          Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
                           SizedBox(width: 30,),
                           DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(

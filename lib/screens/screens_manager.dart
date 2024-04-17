@@ -166,10 +166,10 @@ class _SliderViewState extends State<_SliderView> {
                 width: 15,
               ),
               Expanded(
-                child: const Text(
-                  'Nikolass Teeessslllaaa',
+                child: Text(
+                  widget.adminUser!.getFullname(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.w600,
                     fontSize: 20,

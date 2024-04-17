@@ -220,7 +220,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
 class ProjectScreen extends StatefulWidget {
-  FirebaseServiceProject firebaseServiceProject = FirebaseServiceProject();
+  FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
   AdminUser? adminUser;
   ProjectScreen({this.adminUser});
 
@@ -242,6 +242,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
   void initState() {
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -493,7 +495,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           text: "Ajouter",
           func: () {
             if (formKey.currentState!.validate()) {
-              widget.firebaseServiceProject
+              widget._firebaseServiceProject
                   .addProject(Projet(
                 emailProfessionel: emailProfessionel.text,
                 nomProjet: projectName.text,
@@ -527,7 +529,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         "Voulez-vous vraiment supprimer cette projet?",
         list: [
           CustomWidgets.customButton(color: CustomColors.red,text: "Oui", func: (){
-            widget.firebaseServiceProject.deleteProject(project_id)
+            widget._firebaseServiceProject.deleteProject(project_id)
                 .then((value){
                   CustomWidgets.showSnackBar(context,"Suppression success", CustomColors.green);
                   setState(() {
@@ -645,7 +647,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                           phoneNumber: phoneNumber.text,
                                           projetUrl: projetUrl.text ?? "",
                                       );
-                                      widget.firebaseServiceProject.updateProject(project_id, project)
+                                      widget._firebaseServiceProject.updateProject(project_id, project)
                                       .then((value){
                                         print("Projet Updated Success");
                                         setState(() {

@@ -1,6 +1,7 @@
 
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
@@ -40,6 +41,7 @@ class _UsersScreenState extends State<UsersScreen> {
       confirmPassword = TextEditingController(),
       role = TextEditingController();
       String? selectedProjectId;
+  List<bool> checkBoxes = [];
 
   @override
   void initState(){
@@ -142,6 +144,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   child: CustomWidgets.customButtonWithIcon(
                       text: "Envoyer",
                       func: (){
+                        selectedUser();
                         },
                       color: CustomColors.green,
                       icon: Icons.send
@@ -221,6 +224,9 @@ class _UsersScreenState extends State<UsersScreen> {
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le Email de Utilisateur";
+                              else if(emailValidation(value)){
+                                return "Email n'est pas valid";
+                              }
                               return null;
                             },
                             editingController: email,
@@ -233,6 +239,9 @@ class _UsersScreenState extends State<UsersScreen> {
                             inputType: TextInputType.number,
                             funcValid: (value){
                               if(value!.isEmpty) return "N° de Telephone de Utilisateur";
+                              else if(phoneNumberValidation(value)){
+                                return "N° de Telephone n'est valid";
+                              }
                               return null;
                             },
                             editingController: phoneNumber,
@@ -378,6 +387,9 @@ class _UsersScreenState extends State<UsersScreen> {
                             ),
                             funcValid: (value){
                               if(value!.isEmpty) return "Enter Mot de pass de Utilisateur";
+                              else if(passwordValidation(value)){
+                                return "Mot de pass n'est pas valid";
+                              }
                               return null;
                             },
                             editingController: password,
@@ -471,5 +483,13 @@ class _UsersScreenState extends State<UsersScreen> {
           );
         }
     );
+  }
+
+  Future<void> selectedUser() async {
+    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+    List<UserModel> userList = await userStream.first;
+    userList.forEach((user) {
+      print(user.firstName); // Example usage
+    });
   }
 }

@@ -13,7 +13,7 @@ class Projet {
     this.projetUrl = "",
   });
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({String id = ""}) {
     return {
       "id" : id,
       'nomProjet': nomProjet,

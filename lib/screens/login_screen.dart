@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),),
                                         list: [
                                           CustomWidgets.customButton(
-                                            text: "Se Connecter",
+                                            text: "Envoyer",
                                             func: ()  {
                                               if (emailMotDePassOublier.currentState!.validate()) {
 
@@ -194,20 +194,28 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 }
                                               }
                                             ,
-                                            color: CustomColors.green),]
+                                            color: CustomColors.green),
+                                          CustomWidgets.customButton(
+                                            text: "Annuler",
+                                            func: ()  {
+                                              Navigator.pop(context);
+                                              }
+                                            ,
+                                            color: CustomColors.red),
+                                        ]
 
 
 
 
                                       );
 
-                                        print('Mot de passe oublier"');
+                                        print('Mot de passe oublier');
                                       }),
                               ],
                             ),
                           ),
                           CustomWidgets.customButton(
-                              text: "Se Connecter",
+                              text: "Se connecter",
                               func: () async {
                                 if (formKey.currentState!.validate()) {
                                   setState(() {

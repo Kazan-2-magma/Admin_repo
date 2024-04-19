@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
@@ -27,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userEmailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  var emailMotDePassOublier = GlobalKey<FormState>();
   bool isLoading = false;
   var data;
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
@@ -150,6 +153,54 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
+                                      //generateRandomPassword();
+                                      CustomWidgets.showAlertDialog(context, "Mot de passe oublier?",
+                                        children: Form(
+                                          key : emailMotDePassOublier,
+                                          child:CustomWidgets.customTextFormField(
+                                            inputType: TextInputType.emailAddress,
+                                            editingController: userEmailController,
+                                            hintText: 'Email',
+                                            icon: Icons.email,
+                                            funcValid: (value) {
+                                              if (value!.isEmpty)
+                                                return "L'e-mail est vide";
+                                              else if (!emailValidation(value)) {
+                                                return "L'e-mail n'est pas valide";
+                                              } else {
+                                                return null;
+                                              }
+                                            },
+                                          ),),
+                                        list: [
+                                          CustomWidgets.customButton(
+                                            text: "Se Connecter",
+                                            func: ()  {
+                                              if (emailMotDePassOublier.currentState!.validate()) {
+
+                                                  CustomWidgets.showSnackBar(context,
+                                                      "Le nouveau Mot de pass est evoyer a votre email:"
+                                                          " ${userEmailController.text+">>"
+                                                          +generateRandomPassword()} ",
+                                                      CustomColors.green);
+                                                  Navigator.pop(context);
+                                              }
+                                                else {
+                                                  CustomWidgets.showSnackBar(
+                                                      context,
+                                                      "Login Falide",
+                                                      CustomColors.red
+                                                  );
+                                                }
+                                              }
+                                            ,
+                                            color: CustomColors.green),]
+
+
+
+
+                                      );
+
                                         print('Mot de passe oublier"');
                                       }),
                               ],
@@ -225,5 +276,35 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return signIn;
   }
+  String generateRandomPassword(){
+    var letters_Min =["a", "b", "c", "d", "e", "f","g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v","w", "x", "y", "z"];
+    var letters_Maj =["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K","L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V","W", "X", "Y", "Z"];
+    var numbers =["0","1","2","3","4","5","6","7","8","9"];
+    var special_Chars =["!","@","#","%","^","&","*","_","-","<",">",".","?","/"];
+    int length = Random().nextInt(4)+6;
+    print(length);
+    var new_Password = [];
+    for (int i = 0; i < length; i++) {
+      new_Password.add(letters_Min[Random().nextInt(letters_Min.length)]);
+      new_Password.add(letters_Maj[Random().nextInt(letters_Maj.length)]);
+      new_Password.add(numbers[Random().nextInt(numbers.length)]);
+      new_Password.add(letters_Maj[Random().nextInt(letters_Maj.length)]);
+      new_Password.add(numbers[Random().nextInt(numbers.length)]);
+    }
+    new_Password.shuffle();
+    new_Password = new_Password.sublist(0,length);
+    String new_Pass = "";
+    for (int i = 0; i < new_Password.length; i++) {
+      new_Pass += new_Password[i];
+    }
+    print(new_Password);
+    print(new_Pass);
+
+    return new_Pass;
+
+
+
+  }
+
 
   }

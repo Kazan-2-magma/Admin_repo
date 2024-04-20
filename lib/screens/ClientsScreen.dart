@@ -66,184 +66,189 @@ class _ClientsScreenState extends State<ClientsScreen> {
               child: Stack(
                 children:
                 [
-                  Column(
-                    children:
-                    [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                        [
-                          const Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
-                          const SizedBox(width: 30,),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton2<String>(
-                              hint: Text(
-                                'Choisir un projet',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: CustomColors.grey,
-                                ),
-                              ),
-                              value: selectedProjectId,
-                              items: projectsList.map((e){
-                                return DropdownMenuItem<String>(
-                                    value: e["id"],
-                                    child: Text(e["nomProjet"])
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                print(value);
-                                setState((){
-                                  selectedProjectId = value;
-                                });
-                              },
-                              buttonStyleData: const ButtonStyleData(
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                height: 40,
-                                width: 200,
-                              ),
-                              dropdownStyleData: const DropdownStyleData(
-                                maxHeight: 200,
-                              ),
-                              menuItemStyleData: const MenuItemStyleData(
-                                height: 40,
-                              ),
-                              dropdownSearchData: DropdownSearchData(
-                                searchController: dropDownSearchTextEditingController,
-                                searchInnerWidgetHeight: 50,
-                                searchInnerWidget: Container(
-                                  height: 50,
-                                  padding: const EdgeInsets.only(
-                                    top: 8,
-                                    bottom: 4,
-                                    right: 8,
-                                    left: 8,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 70
+                    ),
+                    child: Column(
+                      children:
+                      [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children:
+                          [
+                            const Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
+                            const SizedBox(width: 30,),
+                            DropdownButtonHideUnderline(
+                              child: DropdownButton2<String>(
+                                hint: Text(
+                                  'Choisir un projet',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: CustomColors.grey,
                                   ),
-                                  child: TextFormField(
-                                    expands: true,
-                                    maxLines: null,
-                                    controller: dropDownSearchTextEditingController,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical: 8,
-                                      ),
-                                      hintText: 'Chercher un projet...',
-                                      hintStyle: const TextStyle(fontSize: 12),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
+                                ),
+                                value: selectedProjectId,
+                                items: projectsList.map((e){
+                                  return DropdownMenuItem<String>(
+                                      value: e["id"],
+                                      child: Text(e["nomProjet"])
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  print(value);
+                                  setState((){
+                                    selectedProjectId = value;
+                                  });
+                                },
+                                buttonStyleData: const ButtonStyleData(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  height: 40,
+                                  width: 200,
+                                ),
+                                dropdownStyleData: const DropdownStyleData(
+                                  maxHeight: 200,
+                                ),
+                                menuItemStyleData: const MenuItemStyleData(
+                                  height: 40,
+                                ),
+                                dropdownSearchData: DropdownSearchData(
+                                  searchController: dropDownSearchTextEditingController,
+                                  searchInnerWidgetHeight: 50,
+                                  searchInnerWidget: Container(
+                                    height: 50,
+                                    padding: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 4,
+                                      right: 8,
+                                      left: 8,
+                                    ),
+                                    child: TextFormField(
+                                      expands: true,
+                                      maxLines: null,
+                                      controller: dropDownSearchTextEditingController,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 8,
+                                        ),
+                                        hintText: 'Chercher un projet...',
+                                        hintStyle: const TextStyle(fontSize: 12),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  searchMatchFn: (item, searchValue) {
+                                    return item.value.toString().contains(searchValue);
+                                  },
                                 ),
-                                searchMatchFn: (item, searchValue) {
-                                  return item.value.toString().contains(searchValue);
+                                //This to clear the search value when you close the menu
+                                onMenuStateChange: (isOpen) {
+                                  if (!isOpen) {
+                                    dropDownSearchTextEditingController.clear();
+                                  }
                                 },
                               ),
-                              //This to clear the search value when you close the menu
-                              onMenuStateChange: (isOpen) {
-                                if (!isOpen) {
-                                  dropDownSearchTextEditingController.clear();
-                                }
-                              },
                             ),
-                          ),
-                          CustomWidgets.customIconButton(
-                              color: CustomColors.green,
-                              func: (){
-                                BottomSheet("");
-                              },
-                              icon:const Icon(
-                                  Icons.add_business_rounded
-                              )
-                          )
-                        ],
-                      ),
-                      const Divider(),
-                      FutureBuilder(
-                        future: clientsList,
-                        builder: (context,snapshot){
-                           if(snapshot.connectionState == ConnectionState.waiting){
-                             return const Center(
-                               child: CircularProgressIndicator(),
-                             );
-                           }
-                           else if(snapshot.hasData){
-                             var data = snapshot.data;
-                             return Expanded(
-                               child: ListView.separated(
-                                    separatorBuilder: (context,index) => const SizedBox(height:10.0),
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder: (context,index){
-                                      return Card(
-                                        shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(10),
-                                                bottomLeft: Radius.circular(10)
-                                            )
-                                        ),
-                                        elevation: 0.6,
-                                        child: ClipPath(
-                                          clipper: ShapeBorderClipper(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10)
+                            CustomWidgets.customIconButton(
+                                color: CustomColors.green,
+                                func: (){
+                                  BottomSheet("");
+                                },
+                                icon:const Icon(
+                                    Icons.add_business_rounded
+                                )
+                            )
+                          ],
+                        ),
+                        const Divider(),
+                        FutureBuilder(
+                          future: clientsList,
+                          builder: (context,snapshot){
+                             if(snapshot.connectionState == ConnectionState.waiting){
+                               return const Center(
+                                 child: CircularProgressIndicator(),
+                               );
+                             }
+                             else if(snapshot.hasData){
+                               var data = snapshot.data;
+                               return Expanded(
+                                 child: ListView.separated(
+                                      separatorBuilder: (context,index) => const SizedBox(height:10.0),
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context,index){
+                                        return Card(
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(10),
+                                                  bottomLeft: Radius.circular(10)
                                               )
                                           ),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                left: BorderSide(color: CustomColors.green, width: 7),
-                                              ),
-                                            ),
-                                            child: ListTile(
-                                                contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
-                                                title: Text(
-                                                  data![index].getFullName(),
-                                                  style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
-                                                ),
-                                                subtitle:Text("Email ${data[index].email}\nTel\n${data[index].phoneNumber}"),
-                                                trailing: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children:
-                                                  [
-                                                    const VerticalDivider(),
-                                                    CustomWidgets.customIconButton(
-                                                      func: (){
-                                                        ///////////////////////////////////////
-                                                      },
-                                                      icon:Icon(
-                                                        Icons.edit,
-                                                        color: CustomColors.green,
-                                                      ),
-                                                    ),
-                                                    CustomWidgets.customIconButton(
-                                                      func: (){
-                                                      },
-                                                      icon:Icon(
-                                                        Icons.delete,
-                                                        color: CustomColors.red,
-                                                      ),
-                                                    ),
-                                                  ],
+                                          elevation: 0.6,
+                                          child: ClipPath(
+                                            clipper: ShapeBorderClipper(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10)
                                                 )
                                             ),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  left: BorderSide(color: CustomColors.green, width: 7),
+                                                ),
+                                              ),
+                                              child: ListTile(
+                                                  contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+                                                  title: Text(
+                                                    data![index].getFullName(),
+                                                    style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+                                                  ),
+                                                  subtitle:Text("Email ${data[index].email}\nTel\n${data[index].phoneNumber}"),
+                                                  trailing: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children:
+                                                    [
+                                                      const VerticalDivider(),
+                                                      CustomWidgets.customIconButton(
+                                                        func: (){
+                                                          ///////////////////////////////////////
+                                                        },
+                                                        icon:Icon(
+                                                          Icons.edit,
+                                                          color: CustomColors.green,
+                                                        ),
+                                                      ),
+                                                      CustomWidgets.customIconButton(
+                                                        func: (){
+                                                        },
+                                                        icon:Icon(
+                                                          Icons.delete,
+                                                          color: CustomColors.red,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                               ),
-                             );
-                           }else{
-                             return const Center(
-                               child: Text(
-                                 "No Client"
-                               ),
-                             );
-                           }
-                        },
-                      )
-                    ],
+                                        );
+                                      },
+                                 ),
+                               );
+                             }else{
+                               return const Center(
+                                 child: Text(
+                                   "No Client"
+                                 ),
+                               );
+                             }
+                          },
+                        )
+                      ],
+                    ),
                   ),
                   Positioned(
                     left: 0,

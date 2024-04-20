@@ -6,6 +6,7 @@ import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
+import 'package:cinq_etoils/twilio/twilio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,6 +31,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
   bool isVisible = true;
   bool isVisibleConf = true;
+  bool isSending = false;
   Stream<List<UserModel>>? usersList;
   List<Map<String,dynamic>>? projectsList;
   TextEditingController _searchController = TextEditingController(),
@@ -73,86 +75,95 @@ class _UsersScreenState extends State<UsersScreen> {
           child: Stack(
             children:
             [
-              Column(
-                children:
-                [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:
-                    [
-                      Flexible(
-                        child: AnimationSearchBar(
-                          searchBarWidth: MediaQuery.of(context).size.width - 70,
-                          isBackButtonVisible: false,
-                          centerTitle: "List Des Utilisateurs : ",
-                          centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                          hintText: "Chercher un client...",
-                          onChanged: (String) {
+              if(isSending)
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 70
+                ),
+                child: Column(
+                  children:
+                  [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children:
+                      [
+                        Flexible(
+                          child: AnimationSearchBar(
+                            searchBarWidth: MediaQuery.of(context).size.width - 70,
+                            isBackButtonVisible: false,
+                            centerTitle: "List Des Utilisateurs : ",
+                            centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
+                            hintText: "Chercher un client...",
+                            onChanged: (String) {
 
-                          },
-                          searchTextEditingController: _searchController,
+                            },
+                            searchTextEditingController: _searchController,
+                          ),
                         ),
-                      ),
-                      CustomWidgets.customIconButton(
-                          color: CustomColors.green,
-                          func: (){
-                            BottomSheet("");
-                          },
-                          icon:const Icon(
-                              Icons.add_business_rounded
-                          )
-                      )
-                    ],
-                  ),
-                  const Divider(),
-                  StreamBuilder(
-                      stream: usersList,
-                      builder: (context,snapshot){
-                        if(snapshot.connectionState == ConnectionState.waiting){
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }else if(snapshot.hasData ){
-                          checkBoxes = List<bool>.filled(snapshot.data!.length,false);
-                          return Expanded(
-                              child: ListView.separated(
-                                separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context,index){
-                                  UserModel user =  snapshot.data![index].role == "admin"
-                                      ? snapshot.data![index] as AdminUser
-                                      : snapshot.data![index] as Users;
-                                  return StatefulBuilder(
-                                    builder: (context,setState){
-                                      return CustomWidgets.customCardUser(
-                                          user,
-                                          isCheck: checkBoxes[index],
-                                          func: (value){
-                                            setState((){
-                                              checkBoxes[index] = value!;
-                                            });
-                                          }
-                                      );
-                                    },
-                                  );
-                                },
-                              )
-                          );
-                        }else{
-                          return const Center(
-                            child: Text(
-                              "No Clients Found",
-                              style:TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold
+                        CustomWidgets.customIconButton(
+                            color: CustomColors.green,
+                            func: (){
+                              BottomSheet("");
+                            },
+                            icon:const Icon(
+                                Icons.add_business_rounded
+                            )
+                        )
+                      ],
+                    ),
+                    const Divider(),
+                    StreamBuilder(
+                        stream: usersList,
+                        builder: (context,snapshot){
+                          if(snapshot.connectionState == ConnectionState.waiting){
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }else if(snapshot.hasData ){
+                            checkBoxes = List<bool>.filled(snapshot.data!.length,false);
+                            return Expanded(
+                                child: ListView.separated(
+                                  separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context,index){
+                                    UserModel user =  snapshot.data![index].role == "admin"
+                                        ? snapshot.data![index] as AdminUser
+                                        : snapshot.data![index] as Users;
+                                    return StatefulBuilder(
+                                      builder: (context,setState){
+                                        return CustomWidgets.customCardUser(
+                                            user,
+                                            isCheck: checkBoxes[index],
+                                            func: (value){
+                                              setState((){
+                                                checkBoxes[index] = value!;
+                                              });
+                                            }
+                                        );
+                                      },
+                                    );
+                                  },
+                                )
+                            );
+                          }else{
+                            return const Center(
+                              child: Text(
+                                "No Clients Found",
+                                style:TextStyle(
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.bold
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         }
-                      }
-                  )
-                ],
-                  ),
+                    )
+                  ],
+                    ),
+              ),
               Positioned(
                   left: 0,
                   right: 0,
@@ -501,8 +512,34 @@ class _UsersScreenState extends State<UsersScreen> {
   Future<void> selectedUser() async {
     Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
     List<UserModel> userList = await userStream.first;
-    userList.forEach((user) {
-      print(user.firstName);
-    });
+    for(int i=0;i<userList.length;i++){
+      if(checkBoxes[i]){
+        String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
+        await sendMessage("Aa test test !! Lmhm ila wsalkom Had lmsg A si bilal ou si Youssef Sifto li bli rah wsalkom !! wajazakom allah khayra",
+            phoneNumberWithCountryCode)
+            .then((response){
+              if(response.statusCode == 100){
+                setState(() {
+                  isSending = true;
+                });
+              }else if(response.statusCode == 201){
+                setState(() {
+                  isSending = false;
+                });
+                CustomWidgets.showSnackBar(
+                    context,
+                    "Les Messages est Envoyer",
+                    Colors.green
+                );
+              }
+        }).catchError((onError){
+          print(onError.toString());
+        });
+      }
+    }
+  }
+
+  String modifyPhoneNumber(String phoneNumber){
+    return phoneNumber.replaceRange(0,1, "+212");
   }
 }

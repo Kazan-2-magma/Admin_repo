@@ -49,6 +49,8 @@ dependencies:
   flutter_profile_picture: ^2.0.0
   modal_bottom_sheet:
   provider: ^6.1.2
+  twilio_flutter: ^0.3.0
+
 
 
 dev_dependencies:

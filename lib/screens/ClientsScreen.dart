@@ -1,8 +1,11 @@
 
 
 import 'package:animation_search_bar/animation_search_bar.dart';
+import 'package:cinq_etoils/data_verification/email_password_verification.dart';
+import 'package:cinq_etoils/firebase_services/FirebaseServiceClients.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/Client.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,7 +18,7 @@ import '../model/UserModel.dart';
 import '../model/Users.dart';
 
 class ClientsScreen extends StatefulWidget {
-  final FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+  final FirebaseServiceClients _firebaseServiceClients = FirebaseServiceClients();
   final FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
   AdminUser? adminUser;
   ClientsScreen({super.key, this.adminUser});
@@ -26,35 +29,30 @@ class ClientsScreen extends StatefulWidget {
 
 class _ClientsScreenState extends State<ClientsScreen> {
   TextEditingController dropDownSearchTextEditingController = TextEditingController();
-
-  bool isVisible = true;
-  bool isVisibleConf = true;
-  Stream<List<UserModel>>? usersList;
-  List<Map<String,dynamic>>? projectsList;
+  List<Map<String,dynamic>> projectsList = [];
+  Future<List<Client>?>? clientsList;
   TextEditingController _searchController = TextEditingController(),
       firstName = TextEditingController(),
       lastName = TextEditingController(),
       phoneNumber = TextEditingController(),
-      email = TextEditingController(),
-      password = TextEditingController(),
-      confirmPassword = TextEditingController(),
-      role = TextEditingController();
+      email = TextEditingController();
   String? selectedProjectId;
+  List<String> list = ["jfd","ddf"];
 
   @override
   void initState(){
     super.initState();
-    usersList = widget._firebaseServiceUser.getUsers();
-    fetchProjectsData();
+    fetchData();
+    clientsList =  widget._firebaseServiceClients.getClients();
   }
-  void fetchProjectsData() async{
-    projectsList =await widget._firebaseServiceProject.getProjects();
+  void fetchData() async{
+    projectsList = await widget._firebaseServiceProject.getProjects();
+    print(projectsList);
   }
 
   @override
   Widget build(BuildContext context){
     CustomWidgets.init(context);
-    var dropMenuValue;
     TextEditingController dropDownSearchBarController = TextEditingController();
 
     return Scaffold(
@@ -75,27 +73,27 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children:
                         [
-                          Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
-                          SizedBox(width: 30,),
+                          const Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
+                          const SizedBox(width: 30,),
                           DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(
-                              isExpanded: true,
                               hint: Text(
                                 'Choisir un projet',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Theme.of(context).hintColor,
+                                  color: CustomColors.grey,
                                 ),
                               ),
-                              items: projectsList?.map((e){
+                              value: selectedProjectId,
+                              items: projectsList.map((e){
                                 return DropdownMenuItem<String>(
                                     value: e["id"],
                                     child: Text(e["nomProjet"])
                                 );
                               }).toList(),
-                              value: selectedProjectId,
                               onChanged: (value) {
-                                setState(() {
+                                print(value);
+                                setState((){
                                   selectedProjectId = value;
                                 });
                               },
@@ -111,7 +109,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                 height: 40,
                               ),
                               dropdownSearchData: DropdownSearchData(
-                                searchController: dropDownSearchBarController,
+                                searchController: dropDownSearchTextEditingController,
                                 searchInnerWidgetHeight: 50,
                                 searchInnerWidget: Container(
                                   height: 50,
@@ -124,7 +122,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                   child: TextFormField(
                                     expands: true,
                                     maxLines: null,
-                                    controller: dropDownSearchBarController,
+                                    controller: dropDownSearchTextEditingController,
                                     decoration: InputDecoration(
                                       isDense: true,
                                       contentPadding: const EdgeInsets.symmetric(
@@ -146,7 +144,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               //This to clear the search value when you close the menu
                               onMenuStateChange: (isOpen) {
                                 if (!isOpen) {
-                                  dropDownSearchBarController.clear();
+                                  dropDownSearchTextEditingController.clear();
                                 }
                               },
                             ),
@@ -163,38 +161,87 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         ],
                       ),
                       const Divider(),
-                      StreamBuilder(
-                          stream: usersList,
-                          builder: (context,snapshot){
-                            if(snapshot.connectionState == ConnectionState.waiting){
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }else if(snapshot.hasData ){
-                              return Expanded(
-                                  child: ListView.separated(
-                                    separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
+                      FutureBuilder(
+                        future: clientsList,
+                        builder: (context,snapshot){
+                           if(snapshot.connectionState == ConnectionState.waiting){
+                             return const Center(
+                               child: CircularProgressIndicator(),
+                             );
+                           }
+                           else if(snapshot.hasData){
+                             var data = snapshot.data;
+                             return Expanded(
+                               child: ListView.separated(
+                                    separatorBuilder: (context,index) => const SizedBox(height:10.0),
                                     itemCount: snapshot.data!.length,
                                     itemBuilder: (context,index){
-                                      UserModel user =  snapshot.data![index].role == "admin"
-                                          ? snapshot.data![index] as AdminUser
-                                          : snapshot.data![index] as Users;
-                                      return CustomWidgets.customCardUser(user);
+                                      return Card(
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft: Radius.circular(10)
+                                            )
+                                        ),
+                                        elevation: 0.6,
+                                        child: ClipPath(
+                                          clipper: ShapeBorderClipper(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10)
+                                              )
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                left: BorderSide(color: CustomColors.green, width: 7),
+                                              ),
+                                            ),
+                                            child: ListTile(
+                                                contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+                                                title: Text(
+                                                  data![index].getFullName(),
+                                                  style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+                                                ),
+                                                subtitle:Text("Email ${data[index].email}\nTel\n${data[index].phoneNumber}"),
+                                                trailing: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children:
+                                                  [
+                                                    const VerticalDivider(),
+                                                    CustomWidgets.customIconButton(
+                                                      func: (){
+                                                        ///////////////////////////////////////
+                                                      },
+                                                      icon:Icon(
+                                                        Icons.edit,
+                                                        color: CustomColors.green,
+                                                      ),
+                                                    ),
+                                                    CustomWidgets.customIconButton(
+                                                      func: (){
+                                                      },
+                                                      icon:Icon(
+                                                        Icons.delete,
+                                                        color: CustomColors.red,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                      );
                                     },
-                                  )
-                              );
-                            }else{
-                              return const Center(
-                                child: Text(
-                                  "No Clients Found",
-                                  style:TextStyle(
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                              );
-                            }
-                          }
+                               ),
+                             );
+                           }else{
+                             return const Center(
+                               child: Text(
+                                 "No Client"
+                               ),
+                             );
+                           }
+                        },
                       )
                     ],
                   ),
@@ -219,7 +266,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   void BottomSheet(String user_id){
     var formKey = GlobalKey<FormState>();
-    var groupValue = "user";
     showBottomSheet(
 
         context: context,
@@ -247,7 +293,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                   onPressed: () => Navigator.pop(context),
                                   icon:const Icon(Icons.arrow_back_ios)),
                               const Text(
-                                "Ajouter Utilisateurs",
+                                "Ajouter Client",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30.0,
@@ -258,11 +304,11 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           CustomWidgets.customTextFormField(
                             icon: Icons.person,
                             funcValid: (value){
-                              if(value!.isEmpty) return "Entre le nom de Utilisateur";
+                              if(value!.isEmpty) return "Entre le nom de Client";
                               return null;
                             },
                             editingController: firstName,
-                            hintText: "Prenom de Utilisateur",
+                            hintText: "Prenom de Client",
 
                           ),
                           CustomWidgets.verticalSpace(20.0),
@@ -270,207 +316,44 @@ class _ClientsScreenState extends State<ClientsScreen> {
                             icon: Icons.person,
 
                             funcValid: (value){
-                              if(value!.isEmpty) return "Entre le nom de Utilisateur";
+                              if(value!.isEmpty) return "Entre le nom de Client";
                               return null;
                             },
                             editingController: lastName,
-                            hintText: "Nom de Utilisateur",
+                            hintText: "Nom de Client",
 
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.email,
-
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
-                              if(value!.isEmpty) return "Entre le Email de Utilisateur";
+                              if(value!.isEmpty) return "Entre le Email de Client";
+                              else if(!emailValidation(value)){
+                                return "Email n'est pas valid";
+                              }
                               return null;
                             },
                             editingController: email,
-                            hintText: "Email de Utilisateur",
+                            hintText: "Email de Client",
                           ),
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.call,
-
                             inputType: TextInputType.number,
                             funcValid: (value){
-                              if(value!.isEmpty) return "N° de Telephone de Utilisateur";
+                              if(value!.isEmpty) return "N° de Telephone de Client";
+                              else if(phoneNumberValidation(value)){
+                                return "N° d Telephone n'est pas valide";
+                              }
                               return null;
                             },
                             editingController: phoneNumber,
-                            hintText: "N° Telephone de Utilisateur",
+                            hintText: "N° Telephone de Client",
                           ),
                           CustomWidgets.verticalSpace(20.0),
-
-
-                          Row(
-                            children:
-                            [
-                              Expanded(
-                                  child: RadioListTile(
-                                    title: Text("Admin"),
-                                    value: "Admin",
-                                    onChanged: (value){
-                                      setState((){
-                                        groupValue = value!;
-                                      });
-                                    },
-                                    groupValue: groupValue,
-                                  )
-                              ),
-                              Flexible(
-                                child: RadioListTile(
-                                  title:const Text(
-                                    "Partenaire",
-                                    style: TextStyle(
-                                        fontSize: 15.0
-                                    ),
-                                  ),
-                                  value: "partenaire",
-                                  onChanged: (value){
-                                    setState((){
-                                      groupValue = value!;
-                                    });
-                                  },
-                                  groupValue: groupValue,
-                                ),
-                              ),
-                            ],
-                          ),
-                          if(groupValue == "partenaire")
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              child: Row(
-                                children: [
-                                  const Expanded(
-                                      child: Text("Projet : ",style: TextStyle(fontSize: 15),)),
-                                  DropdownButtonHideUnderline(
-                                    child: DropdownButton2<String>(
-                                      hint: Text(
-                                        'Choisir un projet',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: CustomColors.grey,
-                                        ),
-                                      ),
-                                      value: selectedProjectId,
-                                      items: projectsList?.map((e){
-                                        return DropdownMenuItem<String>(
-                                            value: e["id"],
-                                            child: Text(e["nomProjet"])
-                                        );
-                                      }).toList(),
-                                      onChanged: (value) {
-                                        print(value);
-                                        setState((){
-                                          selectedProjectId = value;
-                                        });
-                                      },
-                                      buttonStyleData: const ButtonStyleData(
-                                        padding: EdgeInsets.symmetric(horizontal: 16),
-                                        height: 40,
-                                        width: 200,
-                                      ),
-                                      dropdownStyleData: const DropdownStyleData(
-                                        maxHeight: 200,
-                                      ),
-                                      menuItemStyleData: const MenuItemStyleData(
-                                        height: 40,
-                                      ),
-                                      dropdownSearchData: DropdownSearchData(
-                                        searchController: dropDownSearchTextEditingController,
-                                        searchInnerWidgetHeight: 50,
-                                        searchInnerWidget: Container(
-                                          height: 50,
-                                          padding: const EdgeInsets.only(
-                                            top: 8,
-                                            bottom: 4,
-                                            right: 8,
-                                            left: 8,
-                                          ),
-                                          child: TextFormField(
-                                            expands: true,
-                                            maxLines: null,
-                                            controller: dropDownSearchTextEditingController,
-                                            decoration: InputDecoration(
-                                              isDense: true,
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                horizontal: 10,
-                                                vertical: 8,
-                                              ),
-                                              hintText: 'Chercher un projet...',
-                                              hintStyle: const TextStyle(fontSize: 12),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        searchMatchFn: (item, searchValue) {
-                                          return item.value.toString().contains(searchValue);
-                                        },
-                                      ),
-                                      //This to clear the search value when you close the menu
-                                      onMenuStateChange: (isOpen) {
-                                        if (!isOpen) {
-                                          dropDownSearchTextEditingController.clear();
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-
                           CustomWidgets.verticalSpace(20.0),
-                          CustomWidgets.customTextFormField(
-                            icon: Icons.lock,
-
-                            inputType: TextInputType.visiblePassword,
-                            isObscureText: isVisible,
-                            suffixIcon: IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    isVisible = !isVisible;
-                                    print(isVisible);
-                                  });
-                                },
-                                icon : isVisible ? const Icon(Icons.visibility_off,color: Colors.blue,) : const Icon(Icons.visibility,color: Colors.blue)
-                            ),
-                            funcValid: (value){
-                              if(value!.isEmpty) return "Enter Mot de pass de Utilisateur";
-                              return null;
-                            },
-                            editingController: password,
-                            hintText: "Mot de pass de Utilisateur",
-                          ),
                           CustomWidgets.verticalSpace(20.0),
-                          CustomWidgets.customTextFormField(
-                            icon: Icons.lock,
-
-                            inputType: TextInputType.visiblePassword,
-                            isObscureText: isVisibleConf,
-                            suffixIcon: IconButton(
-                                onPressed: (){
-                                  setState(() {
-                                    print("set");
-                                    isVisibleConf = !isVisibleConf;
-                                  });
-                                },
-                                icon : isVisibleConf ? const Icon(Icons.visibility_off,color: Colors.blue) : const Icon(Icons.visibility,color: Colors.blue)
-                            ),
-                            funcValid: (value){
-                              if(value!.isEmpty) return "Confirmer Mot de pass de Utilisateur";
-                              else if(value != password.text) return "Le mot de pass ne match pas";
-                              return null;
-                            },
-                            editingController: confirmPassword,
-                            hintText: "Confirmer Mot de pass de Utilisateur",
-                          ),
-                          CustomWidgets.verticalSpace(20.0),
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
@@ -479,39 +362,28 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                   child: CustomWidgets.customButton(
                                       text: "Ajouter",
                                       func: (){
-                                        widget._firebaseServiceUser.registerWithEmailAndPassword(
-                                            email.text,
-                                            password.text,
-                                            groupValue == "admin"
-                                                ? AdminUser(
-                                                firstName: firstName.text,
-                                                lastName: lastName.text,
-                                                phoneNumber: phoneNumber.text,
-                                                email: email.text,
-                                                photoUrl: "",
-                                                role: groupValue,
-                                                password: password.text
-                                            )
-                                                : Users(
-                                                firstName: firstName.text,
-                                                lastName: lastName.text,
-                                                phoneNumber: phoneNumber.text,
-                                                email: email.text,
-                                                photoUrl: "",
-                                                role: groupValue,
-                                                password: password.text,
-                                                idProjet: ''
-                                            )
-                                        ).then((value){
-                                          CustomWidgets.showSnackBar(
-                                            context,
-                                            "Success! Utilsateur est Ajouter",
-                                            Colors.green,
-                                          );
-                                        }).catchError((e){
-                                          print("ERROR : ADDING NEW USER");
-                                        });
-                                        Navigator.pop(context);
+                                        if(formKey.currentState!.validate()) {
+                                            widget._firebaseServiceClients.addClient(
+                                              Client(
+                                                  firstName: firstName.text,
+                                                  lastName: lastName.text,
+                                                  email: email.text,
+                                                  phoneNumber: phoneNumber.text
+                                              )
+                                            ).then((value){
+                                              print("Client added");
+                                              CustomWidgets.showSnackBar(
+                                                  context,
+                                                  "Client est Ajouter",
+                                                  CustomColors.green
+                                              );
+                                              setState;
+                                              Navigator.pop(context);
+                                            }).catchError((onError){
+                                              print(onError.toString());
+                                            });
+                                        }
+
                                       },
                                       color: CustomColors.green
                                   )

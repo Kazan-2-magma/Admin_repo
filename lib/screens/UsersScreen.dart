@@ -42,6 +42,8 @@ class _UsersScreenState extends State<UsersScreen> {
       role = TextEditingController();
       String? selectedProjectId;
   List<bool> checkBoxes = [];
+  int length = 0;
+  bool isCheck = false;
 
   @override
   void initState(){
@@ -52,6 +54,7 @@ class _UsersScreenState extends State<UsersScreen> {
   void fetchProjectsData() async{
     projectsList =await widget._firebaseServiceProject.getProjects();
   }
+
 
   @override
   Widget build(BuildContext context){
@@ -110,6 +113,7 @@ class _UsersScreenState extends State<UsersScreen> {
                             child: CircularProgressIndicator(),
                           );
                         }else if(snapshot.hasData ){
+                          checkBoxes = List<bool>.filled(snapshot.data!.length,false);
                           return Expanded(
                               child: ListView.separated(
                                 separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
@@ -118,7 +122,19 @@ class _UsersScreenState extends State<UsersScreen> {
                                   UserModel user =  snapshot.data![index].role == "admin"
                                       ? snapshot.data![index] as AdminUser
                                       : snapshot.data![index] as Users;
-                                  return CustomWidgets.customCardUser(user);
+                                  return StatefulBuilder(
+                                    builder: (context,setState){
+                                      return CustomWidgets.customCardUser(
+                                          user,
+                                          isCheck: checkBoxes[index],
+                                          func: (value){
+                                            setState((){
+                                              checkBoxes[index] = value!;
+                                            });
+                                          }
+                                      );
+                                    },
+                                  );
                                 },
                               )
                           );
@@ -161,7 +177,6 @@ class _UsersScreenState extends State<UsersScreen> {
     var formKey = GlobalKey<FormState>();
     var groupValue = "user";
     showBottomSheet(
-
         context: context,
         builder: (context){
           return StatefulBuilder(
@@ -368,8 +383,6 @@ class _UsersScreenState extends State<UsersScreen> {
                                 ],
                               ),
                             ),
-
-
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.lock,
@@ -489,7 +502,7 @@ class _UsersScreenState extends State<UsersScreen> {
     Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
     List<UserModel> userList = await userStream.first;
     userList.forEach((user) {
-      print(user.firstName); // Example usage
+      print(user.firstName);
     });
   }
 }

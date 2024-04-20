@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController currentPasswordEditEditingController =TextEditingController();
   TextEditingController passwordEditEditingController =TextEditingController();
   TextEditingController passwordConfirmationEditEditingController =TextEditingController();
-  bool passwordVisible = false;
+  bool passwordVisible = true;
   Map<String, dynamic>? data;
 
 
@@ -230,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-                    
+
                         const Divider(height: 1.0,indent: 45),
                         Container(
                           height: 50,
@@ -348,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   Icon(Icons.person_pin_rounded,size: 30,color: CustomColors.grey,),
                                   CustomWidgets.horizontalSpace(10),
-                    
+
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -378,114 +378,120 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     CustomWidgets.showAlertDialog(
                                         context,
                                         "Modifier mot de pass",
-                                        children : Form(
-                                          key: formKey,
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children:
-                                              [
-                                                CustomWidgets.customTextFormField(
-                                                    icon: Icons.lock,
-                                                    funcValid: (value){
-                                                      if(value!.isEmpty) return "Entrer mot de pass";
-                                                      else if(value != data!["password"]){
-                                                        return "Le mot de pass incorrect";
-                                                      }
-                                                        return null;
-                                                    },
-                                                    isObscureText: passwordVisible,
-                                                    suffixIcon: IconButton(
-                                                      icon: Icon(passwordVisible
-                                                          ? Icons.visibility
-                                                          : Icons.visibility_off,
-                                                        color: CustomColors.blue,),
-                                                      onPressed: () {
-                                                        setState(
-                                                              () {
-                                                            passwordVisible = !passwordVisible;
+                                        children : StatefulBuilder(
+                                          builder : (context,setState){
+                                            return  Form(
+                                              key: formKey,
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children:
+                                                  [
+                                                    CustomWidgets.customTextFormField(
+                                                        inputType: TextInputType.visiblePassword,
+                                                        icon: Icons.lock,
+                                                        funcValid: (value){
+                                                          if(value!.isEmpty) return "Entrer mot de pass";
+                                                          else if(value != data!["password"]){
+                                                            return "Le mot de pass incorrect";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        isObscureText: passwordVisible,
+                                                        suffixIcon: IconButton(
+                                                          icon: passwordVisible
+                                                              ? Icon(Icons.visibility_off)
+                                                              : Icon(Icons.visibility),
+                                                          color: CustomColors.blue,
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              print("State Changed");
+                                                              passwordVisible = !passwordVisible;
+                                                            },
+                                                            );
                                                           },
-
-                                                        );
-
-                                                      },
-                                                    ),
-                                                    editingController: currentPasswordEditEditingController,
-                                                    hintText: "Mot de pass"),
-                                                CustomWidgets.verticalSpace(20.0),
-                                                CustomWidgets.customTextFormField(
-                                                  icon: Icons.lock_open,
-                                                    funcValid: (value){
-                                                        if(value!.isEmpty) {
-                                                          return "Entrer la Nouvelle de mot de pass";
-                                                        }
-                                                        return null;
-                                                    },
-                                                    isObscureText: true,
-                                                    editingController: passwordEditEditingController,
-                                                    hintText: "Nouvell mot de pass"),
-                                                CustomWidgets.verticalSpace(20.0),
-                                                CustomWidgets.customTextFormField(
-                                                    icon: Icons.lock_open,
-
-                                                    funcValid: (value){
-                                                      if(value!.isEmpty) {
-                                                        return "Entrer la Confirmation de mot de pass";
-                                                      } else if(value != passwordEditEditingController.text){
-                                                        return "Le mot de pass ne match pas";
-                                                      }
-                                                      return null;
-                                                    },
-                                                    isObscureText: true,
-                                                    editingController: passwordConfirmationEditEditingController,
-                                                    hintText: "Confirmer mot de pass"),
-                                              ],
-                                            ),
-                                          ),
+                                                        ),
+                                                        editingController: currentPasswordEditEditingController,
+                                                        hintText: "Mot de pass"),
+                                                    CustomWidgets.verticalSpace(20.0),
+                                                    CustomWidgets.customTextFormField(
+                                                        icon: Icons.lock_open,
+                                                        funcValid: (value){
+                                                          if(value!.isEmpty) {
+                                                            return "Entrer la Nouvelle de mot de pass";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        isObscureText: passwordVisible,
+                                                        editingController: passwordEditEditingController,
+                                                        hintText: "Nouvell mot de pass"),
+                                                    CustomWidgets.verticalSpace(20.0),
+                                                    CustomWidgets.customTextFormField(
+                                                        icon: Icons.lock_open,
+                                                        funcValid: (value){
+                                                          if(value!.isEmpty) {
+                                                            return "Entrer la Confirmation de mot de pass";
+                                                          } else if(value != passwordEditEditingController.text){
+                                                            return "Le mot de pass ne match pas";
+                                                          }
+                                                          return null;
+                                                        },
+                                                        isObscureText: passwordVisible,
+                                                        editingController: passwordConfirmationEditEditingController,
+                                                        hintText: "Confirmer mot de pass"),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         ),
                                         list:
                                         [
-                                          CustomWidgets.customButton(
-                                            text: "Sauvgarder",
-                                            func: (){
-                                              if(formKey.currentState!.validate()) {
-                                                widget._firebaseServiceUser.reAuthenticateUser(
-                                                    widget.adminUser!.email,
-                                                    currentPasswordEditEditingController.text,
-                                                ).then((_){
-                                                  widget._firebaseServiceUser.updatePassword(
-                                                      widget.adminUser!.id_user,
-                                                      passwordEditEditingController.text,
-                                                  ).then((value){
-                                                    print("Password updated");
-                                                    Navigator.pop(context);
+                                          Flexible(
+                                            child: CustomWidgets.customButton(
+                                              text: "Sauvgarder",
+                                              func: (){
+                                                if(formKey.currentState!.validate()) {
+                                                  widget._firebaseServiceUser.reAuthenticateUser(
+                                                      widget.adminUser!.email,
+                                                      currentPasswordEditEditingController.text,
+                                                  ).then((_){
+                                                    widget._firebaseServiceUser.updatePassword(
+                                                        widget.adminUser!.id_user,
+                                                        passwordEditEditingController.text,
+                                                    ).then((value){
+                                                      print("Password updated");
+                                                      Navigator.pop(context);
+                                                    }).catchError((onError){
+                                                      print("Update error");
+                                                    });
                                                   }).catchError((onError){
-                                                    print("Update error");
+                                                    print("Auth error");
                                                   });
-                                                }).catchError((onError){
-                                                  print("Auth error");
-                                                });
-                                              }
-                                            },
-                                            color: CustomColors.green,
-                                            shadowColor: CustomColors.transparent,
-                                            surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.white,
-                                            radius: 30,
+                                                }
+                                              },
+                                              color: CustomColors.green,
+                                              shadowColor: CustomColors.transparent,
+                                              surfaceTintColor: CustomColors.transparent,
+                                              colorText: CustomColors.white,
+                                              radius: 30,
+                                            ),
                                           ),
-                                          CustomWidgets.customButton(
-                                            text: "Annuler",
-                                            func: (){
-                                              Navigator.pop(context);
-                                              setState(() {
-                                                CustomFunctions.ClearTextFields([nomEditEditingController]);
-                                              });
-                                            },
-                                            color: CustomColors.red,
-                                            shadowColor: CustomColors.transparent,
-                                            surfaceTintColor: CustomColors.transparent,
-                                            colorText: CustomColors.white,
-                                            radius: 30,
+                                          Flexible(
+                                            child: CustomWidgets.customButton(
+                                              text: "Annuler",
+                                              func: (){
+                                                Navigator.pop(context);
+                                                setState(() {
+                                                  CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                                });
+                                              },
+                                              color: CustomColors.red,
+                                              shadowColor: CustomColors.transparent,
+                                              surfaceTintColor: CustomColors.transparent,
+                                              colorText: CustomColors.white,
+                                              radius: 30,
+                                            ),
                                           ),
                                         ]
                                         );

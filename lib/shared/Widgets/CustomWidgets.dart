@@ -160,7 +160,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCardUser(UserModel user,{bool checkbox = false,bool checkBox = false,void Function(bool?)? func,bool isUser = false}) => Card(
+ static Widget customCardUser(UserModel user,{bool checkbox = false,bool isCheck = false,void Function(bool?)? func,bool isUser = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -195,7 +195,7 @@ class CustomWidgets{
                [
                  const VerticalDivider(),
                  Checkbox(
-                     value: false,
+                     value: isCheck,
                      onChanged: func,
                  ),
                  CustomWidgets.customIconButton(
@@ -213,6 +213,7 @@ class CustomWidgets{
      ),
    ),
  );
+
  static Widget customCardProjet(Map<String,dynamic> data,
      {Function(String?)? deleteFunction}) => Card(
    shape: const RoundedRectangleBorder(

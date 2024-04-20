@@ -1,10 +1,13 @@
+import 'package:cinq_etoils/firebase_services/FirebaseServiceClients.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
+import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../model/Client.dart';
 import '../model/project_model.dart';
 import '../shared/CustomColors.dart';
 
@@ -12,6 +15,7 @@ class HomeScreen extends StatefulWidget {
   AdminUser? adminUser;
   HomeScreen({this.adminUser});
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
+  FirebaseServiceClients _firebaseServiceClients = FirebaseServiceClients();
   FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
 
 
@@ -21,6 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Map<String,dynamic>> listOfProjects =[];
+  List<Client>? listOfClients =[];
+  List<UserModel> listOfUsers =[];
 
   @override
   void initState() {
@@ -31,9 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void fetchDataSize()async {
     var data = await widget._firebaseServiceProject.getProjects();
+    var clientData = await widget._firebaseServiceClients.getClients();
+    var usersData = await widget._firebaseServiceUser.getUsers();
    setState(() {
      listOfProjects = data;
+     listOfClients = clientData;
    });
+   usersData.listen((List<UserModel> users) {
+      setState(() {
+        listOfUsers = users;
+      });
+   });
+
   }
 
 
@@ -98,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                                 padding:const EdgeInsets.only(left: 20),
                                 child: Text(
-                                  'Nombre : +999',
+                                  'Nombre : ${listOfClients!.length}',
                                   style: TextStyle(fontSize: 20, color: Colors.grey[350]),
                                 ),
                               ),
@@ -163,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                                 padding: EdgeInsets.only(left: 20),
                                 child: Text(
-                                  'Nombre : +999',
+                                  'Nombre : ${listOfUsers.length}',
                                   style: TextStyle(fontSize: 20, color: Colors.grey[350]),
                                 ),
                               ),

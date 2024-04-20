@@ -6,7 +6,6 @@ import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/shared/CustomColors.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
-import 'package:cinq_etoils/twilio/twilio.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -171,7 +170,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   child: CustomWidgets.customButtonWithIcon(
                       text: "Envoyer",
                       func: (){
-                        selectedUser();
+                        //selectedUser();
                         },
                       color: CustomColors.green,
                       icon: Icons.send
@@ -509,35 +508,39 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
-  Future<void> selectedUser() async {
-    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
-    List<UserModel> userList = await userStream.first;
-    for(int i=0;i<userList.length;i++){
-      if(checkBoxes[i]){
-        String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
-        await sendMessage("Aa test test !! Lmhm ila wsalkom Had lmsg A si bilal ou si Youssef Sifto li bli rah wsalkom !! wajazakom allah khayra",
-            phoneNumberWithCountryCode)
-            .then((response){
-              if(response.statusCode == 100){
-                setState(() {
-                  isSending = true;
-                });
-              }else if(response.statusCode == 201){
-                setState(() {
-                  isSending = false;
-                });
-                CustomWidgets.showSnackBar(
-                    context,
-                    "Les Messages est Envoyer",
-                    Colors.green
-                );
-              }
-        }).catchError((onError){
-          print(onError.toString());
-        });
-      }
-    }
-  }
+  //Had Code dertlo Comment 7itach Twilio API fih chi m3lomat 7sassa b7al
+  //Account id ou dakchi rakom 3arfin ou git makhlanich n pushing
+  //bisab hada wa dak Dert hadchi ou 7ta lcode dyal twilio lakhor rani m7ito !! Rah 3andi khlass
+
+  // Future<void> selectedUser() async {
+  //   Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+  //   List<UserModel> userList = await userStream.first;
+  //   for(int i=0;i<userList.length;i++){
+  //     if(checkBoxes[i]){
+  //       String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
+  //       await sendMessage("Aa test test !! Lmhm ila wsalkom Had lmsg A si bilal ou si Youssef Sifto li bli rah wsalkom !! wajazakom allah khayra",
+  //           phoneNumberWithCountryCode)
+  //           .then((response){
+  //             if(response.statusCode == 100){
+  //               setState(() {
+  //                 isSending = true;
+  //               });
+  //             }else if(response.statusCode == 201){
+  //               setState(() {
+  //                 isSending = false;
+  //               });
+  //               CustomWidgets.showSnackBar(
+  //                   context,
+  //                   "Les Messages est Envoyer",
+  //                   Colors.green
+  //               );
+  //             }
+  //       }).catchError((onError){
+  //         print(onError.toString());
+  //       });
+  //     }
+  //   }
+  // }
 
   String modifyPhoneNumber(String phoneNumber){
     return phoneNumber.replaceRange(0,1, "+212");

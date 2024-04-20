@@ -160,7 +160,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCardUser(UserModel user,{bool checkbox = false,bool isCheck = false,void Function(bool?)? func,bool isUser = false}) => Card(
+ static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -177,7 +177,7 @@ class CustomWidgets{
      child: Container(
        decoration: BoxDecoration(
          border: Border(
-           left: BorderSide(color: CustomColors.green, width: 7),
+           left: BorderSide(color: borderSideColor, width: 7),
          ),
        ),
        child:ListTile(

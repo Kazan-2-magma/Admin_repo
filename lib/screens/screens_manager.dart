@@ -38,7 +38,7 @@ class _ScreenManagerState extends State<ScreenManager> {
 
   @override
   void initState() {
-    title = "Home";
+    title = "Accueil";
     currentScreen = HomeScreen();
     super.initState();
   }
@@ -96,7 +96,7 @@ class _SliderViewState extends State<_SliderView> {
   void initState() {
     super.initState();
     list =[
-      Menu(Icons.home, 'Accueil',HomeScreen(adminUser: widget.adminUser),false),
+      Menu(Icons.home, 'Accueil',HomeScreen(adminUser: widget.adminUser),true),
       Menu(Icons.people_alt_rounded, 'Clients',ClientsScreen(adminUser :widget.adminUser),false),
       Menu(Icons.people, 'Utilisateurs',UsersScreen(adminUser :widget.adminUser),false),
       Menu(Icons.business_center, 'Projets',ProjectScreen(adminUser : widget.adminUser),false),

@@ -44,6 +44,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
     super.initState();
     fetchData();
     clientsList =  widget._firebaseServiceClients.getClients();
+
   }
   void fetchData() async{
     projectsList = await widget._firebaseServiceProject.getProjects();
@@ -77,7 +78,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children:
                           [
-                            const Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
+                            const Expanded(child: Text("Liste des clients:",style: TextStyle(fontSize: 20),)),
                             const SizedBox(width: 30,),
                             DropdownButtonHideUnderline(
                               child: DropdownButton2<String>(

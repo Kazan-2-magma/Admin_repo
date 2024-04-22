@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: CustomColors.blue,
-        title: const Text("appBar"),
+        title: const Text("Cinq Etoiles"),
       ),
       body: Container(
           height: MediaQuery

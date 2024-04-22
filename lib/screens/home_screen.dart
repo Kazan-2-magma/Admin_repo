@@ -53,122 +53,186 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-      color: CustomColors.lightGrey,
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          children:
-          [
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 15
-              ),
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              child: Card(
-                shadowColor: Colors.black,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: CustomColors.red,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+      body: SingleChildScrollView(
+        child: Container(
+        color: CustomColors.lightGrey,
+        child: Padding(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children:
+            [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 15
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children:
-                      [
-                        Align(
-                          alignment: AlignmentDirectional(-1, -1),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20,top: 15),
-                            child: Icon(
-                              Icons.people_alt_rounded,
-                              size: 50,
-                              color: CustomColors.white,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: const AlignmentDirectional(0, -1),
-                          child: Padding(
-                            padding:const EdgeInsets.only(left: 5,top: 15),
-                            child: Text(
-                              'Clients',
-                              style: TextStyle(fontSize: 40, color: CustomColors.white),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                        alignment: const AlignmentDirectional(0, 0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Align(
-                              alignment:const AlignmentDirectional(1, 1),
-                              child: Padding(
-                                padding:const EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Nombre : ${listOfClients!.length}',
-                                  style: TextStyle(fontSize: 20, color: Colors.grey[350]),
-                                ),
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child: Card(
+                  shadowColor: Colors.black,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  color: CustomColors.red,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children:
+                        [
+                          Align(
+                            alignment: AlignmentDirectional(-1, -1),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 20,top: 15),
+                              child: Icon(
+                                Icons.people_alt_rounded,
+                                size: 50,
+                                color: CustomColors.white,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                    ),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              child: Card(
-                shadowColor: Colors.black,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: CustomColors.blue,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Align(
-                          alignment: AlignmentDirectional(-1, -1),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20,top: 15),
-                            child: Icon(
-                              Icons.people,
-                              size: 50,
-                              color: CustomColors.white,
+                          ),
+                          Align(
+                            alignment: const AlignmentDirectional(0, -1),
+                            child: Padding(
+                              padding:const EdgeInsets.only(left: 5,top: 15),
+                              child: Text(
+                                'Clients',
+                                style: TextStyle(fontSize: 40, color: CustomColors.white),
+                                textAlign: TextAlign.start,
+                              ),
                             ),
                           ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0, -1),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5,top: 15),
-                            child: Text(
-                              'Utilisateurs',
-                              style: TextStyle(fontSize: 40, color: CustomColors.white),
-                              textAlign: TextAlign.start,
-                            ),
+                        ],
+                      ),
+                      Align(
+                          alignment: const AlignmentDirectional(0, 0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Align(
+                                alignment:const AlignmentDirectional(1, 1),
+                                child: Padding(
+                                  padding:const EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    'Nombre : ${listOfClients!.length}',
+                                    style: TextStyle(fontSize: 20, color: Colors.grey[350]),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    Align(
+                      ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child: Card(
+                  shadowColor: Colors.black,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  color: CustomColors.blue,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Align(
+                            alignment: AlignmentDirectional(-1, -1),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 20,top: 15),
+                              child: Icon(
+                                Icons.people,
+                                size: 50,
+                                color: CustomColors.white,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional(0, -1),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5,top: 15),
+                              child: Text(
+                                'Utilisateurs',
+                                style: TextStyle(fontSize: 40, color: CustomColors.white),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Align(
+                          alignment: AlignmentDirectional(0, 0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(1, 1),
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    'Nombre : ${listOfUsers.length}',
+                                    style: TextStyle(fontSize: 20, color: Colors.grey[350]),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                      ),
+              ),
+              Container(
+                padding: EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child: Card(
+                  shadowColor: Colors.black,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  color: CustomColors.green,
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Align(
+                            alignment: AlignmentDirectional(-1, -1),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 20,top: 15),
+                              child: Icon(
+                                Icons.work,
+                                size: 50,
+                                color: CustomColors.white,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional(0, -1),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5,top: 15),
+                              child: Text(
+                                'Projets',
+                                style: TextStyle(fontSize: 40, color: CustomColors.white),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Align(
                         alignment: AlignmentDirectional(0, 0),
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -178,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Padding(
                                 padding: EdgeInsets.only(left: 20),
                                 child: Text(
-                                  'Nombre : ${listOfUsers.length}',
+                                  'Nombre : ${listOfProjects.length}',
                                   style: TextStyle(fontSize: 20, color: Colors.grey[350]),
                                 ),
                               ),
@@ -188,75 +252,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                    ),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              child: Card(
-                shadowColor: Colors.black,
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: CustomColors.green,
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Align(
-                          alignment: AlignmentDirectional(-1, -1),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20,top: 15),
-                            child: Icon(
-                              Icons.work,
-                              size: 50,
-                              color: CustomColors.white,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: AlignmentDirectional(0, -1),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5,top: 15),
-                            child: Text(
-                              'Projets',
-                              style: TextStyle(fontSize: 40, color: CustomColors.white),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional(0, 0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(1, 1),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 20),
-                              child: Text(
-                                'Nombre : ${listOfProjects.length}',
-                                style: TextStyle(fontSize: 20, color: Colors.grey[350]),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
+            ],
+            )
+            )
             ),
-          ],
-    )
-    )
-    ),
+      ),
     );
   }
 }

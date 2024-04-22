@@ -15,7 +15,7 @@ bool passwordValidation(String password){
 }
 
 bool phoneNumberValidation(String phoneNumber){
-  var reg = RegExp(r"^\+212\d{9}$");
+  var reg = RegExp(r"\d{10}");
   if(reg.hasMatch(phoneNumber)){
     return true;
   }

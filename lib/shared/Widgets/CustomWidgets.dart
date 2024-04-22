@@ -92,6 +92,7 @@ class CustomWidgets{
    required String? hintText,
    bool isObscureText = false,
    String? initValue,
+   String? hint,
    IconData? icon,
    Color? iconColor = Colors.blue,
    Color? colorText = Colors.blue,
@@ -110,6 +111,7 @@ class CustomWidgets{
      controller: editingController,
      decoration: InputDecoration(
        suffixIcon: suffixIcon,
+       hintText: hint,
        prefix: prefix,
        fillColor: fillColor,
        filled: true,

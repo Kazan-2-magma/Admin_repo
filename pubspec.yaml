@@ -50,6 +50,7 @@ dependencies:
   modal_bottom_sheet:
   provider: ^6.1.2
   twilio_flutter: ^0.3.0
+  url_launcher: ^6.2.6
 
 
 

@@ -1,5 +1,5 @@
 class Projet {
-  String id;
+  String id = "";
   String nomProjet;
   String emailProfessionel;
   String phoneNumber;

@@ -10,10 +10,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:flutter/widgets.dart';
 
 import '../model/UserModel.dart';
 import '../model/Users.dart';
+import '../twilio/twilio.dart';
 
 class UsersScreen extends StatefulWidget {
   final FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
@@ -23,6 +26,7 @@ class UsersScreen extends StatefulWidget {
   @override
   State<UsersScreen> createState() => _UsersScreenState();
 }
+
 
 
 class _UsersScreenState extends State<UsersScreen> {
@@ -54,6 +58,7 @@ class _UsersScreenState extends State<UsersScreen> {
   }
   void fetchProjectsData() async{
     projectsList =await widget._firebaseServiceProject.getProjects();
+    print(projectsList);
   }
 
 
@@ -170,7 +175,8 @@ class _UsersScreenState extends State<UsersScreen> {
                   child: CustomWidgets.customButtonWithIcon(
                       text: "Envoyer",
                       func: (){
-                        //selectedUser();
+                        //selectedUser()
+                        showOptions(context);
                         },
                       color: CustomColors.green,
                       icon: Icons.send
@@ -249,7 +255,7 @@ class _UsersScreenState extends State<UsersScreen> {
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le Email de Utilisateur";
-                              else if(emailValidation(value)){
+                              else if(!emailValidation(value)){
                                 return "Email n'est pas valid";
                               }
                               return null;
@@ -260,11 +266,10 @@ class _UsersScreenState extends State<UsersScreen> {
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.call,
-
-                            inputType: TextInputType.number,
+                            inputType: TextInputType.phone,
                             funcValid: (value){
                               if(value!.isEmpty) return "N° de Telephone de Utilisateur";
-                              else if(phoneNumberValidation(value)){
+                              else if(!phoneNumberValidation(value)){
                                 return "N° de Telephone n'est valid";
                               }
                               return null;
@@ -273,7 +278,6 @@ class _UsersScreenState extends State<UsersScreen> {
                             hintText: "N° Telephone de Utilisateur",
                           ),
                           CustomWidgets.verticalSpace(20.0),
-
 
                           Row(
                             children:
@@ -315,81 +319,26 @@ class _UsersScreenState extends State<UsersScreen> {
                               child: Row(
                                 children: [
                                   const Expanded(
-                                      child: Text("Projet : ",style: TextStyle(fontSize: 15),)),
-                                  DropdownButtonHideUnderline(
-                                    child: DropdownButton2<String>(
-                                      hint: Text(
-                                      'Choisir un projet',
-                                      style: TextStyle(
-                                      fontSize: 14,
-                                      color: CustomColors.grey,
-                                      ),
-                                      ),
+                                      child: Text(
+                                        "Projet : ",
+                                        style: TextStyle(fontSize: 21,fontWeight: FontWeight.w800),
+                                      )),
+                                  DropdownButton<String>(
                                       value: selectedProjectId,
-                                      items: projectsList?.map((e){
+                                      items: projectsList!.map((e){
+                                        print(e["id"]);
                                         return DropdownMenuItem<String>(
                                             value: e["id"],
                                             child: Text(e["nomProjet"])
                                         );
                                       }).toList(),
-                                      onChanged: (value) {
-                                        print(value);
-                                        setState((){
-                                          selectedProjectId = value;
-                                        });
-                                      },
-                                      buttonStyleData: const ButtonStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 16),
-                                      height: 40,
-                                      width: 200,
-                                      ),
-                                      dropdownStyleData: const DropdownStyleData(
-                                      maxHeight: 200,
-                                      ),
-                                      menuItemStyleData: const MenuItemStyleData(
-                                      height: 40,
-                                      ),
-                                      dropdownSearchData: DropdownSearchData(
-                                      searchController: dropDownSearchTextEditingController,
-                                      searchInnerWidgetHeight: 50,
-                                      searchInnerWidget: Container(
-                                      height: 50,
-                                      padding: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 4,
-                                      right: 8,
-                                      left: 8,
-                                      ),
-                                      child: TextFormField(
-                                      expands: true,
-                                      maxLines: null,
-                                      controller: dropDownSearchTextEditingController,
-                                      decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8,
-                                      ),
-                                      hintText: 'Chercher un projet...',
-                                      hintStyle: const TextStyle(fontSize: 12),
-                                      border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      ),
-                                      ),
-                                      ),
-                                      searchMatchFn: (item, searchValue) {
-                                      return item.value.toString().contains(searchValue);
-                                      },
-                                      ),
-                                      //This to clear the search value when you close the menu
-                                      onMenuStateChange: (isOpen) {
-                                      if (!isOpen) {
-                                      dropDownSearchTextEditingController.clear();
+                                      onChanged: (value){
+                                          setState((){
+                                            selectedProjectId = value!;
+                                          });
+                                          print(value);
                                       }
-                                      },
-                                    ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -451,39 +400,54 @@ class _UsersScreenState extends State<UsersScreen> {
                                   child: CustomWidgets.customButton(
                                       text: "Ajouter",
                                       func: (){
-                                          widget._firebaseServiceUser.registerWithEmailAndPassword(
-                                              email.text,
-                                              password.text,
-                                              groupValue == "admin"
-                                              ? AdminUser(
-                                                  firstName: firstName.text,
-                                                  lastName: lastName.text,
-                                                  phoneNumber: phoneNumber.text,
-                                                  email: email.text,
-                                                  photoUrl: "",
-                                                  role: groupValue,
-                                                  password: password.text
-                                              )
-                                              : Users(
-                                                  firstName: firstName.text,
-                                                  lastName: lastName.text,
-                                                  phoneNumber: phoneNumber.text,
-                                                  email: email.text,
-                                                  photoUrl: "",
-                                                  role: groupValue,
-                                                  password: password.text,
-                                                  idProjet: ''
-                                              )
-                                          ).then((value){
-                                            CustomWidgets.showSnackBar(
-                                              context,
-                                              "Success! Utilsateur est Ajouter",
-                                              Colors.green,
-                                            );
-                                          }).catchError((e){
-                                            print("ERROR : ADDING NEW USER");
-                                          });
-                                        Navigator.pop(context);
+                                          if(formKey.currentState!.validate()){
+                                            if(selectedProjectId!.isNotEmpty){
+                                              widget._firebaseServiceUser.registerWithEmailAndPassword(
+                                                  email.text,
+                                                  password.text,
+                                                  groupValue == "admin"
+                                                      ? AdminUser(
+                                                      firstName: firstName.text,
+                                                      lastName: lastName.text,
+                                                      phoneNumber: phoneNumber.text,
+                                                      email: email.text,
+                                                      photoUrl: "",
+                                                      role: groupValue,
+                                                      password: password.text
+                                                  )
+                                                      : Users(
+                                                      firstName: firstName.text,
+                                                      lastName: lastName.text,
+                                                      phoneNumber: phoneNumber.text,
+                                                      email: email.text,
+                                                      photoUrl: "",
+                                                      role: groupValue,
+                                                      password: password.text,
+                                                      idProjet: selectedProjectId ?? ""
+                                                  )
+                                              ).then((value){
+                                                CustomWidgets.showSnackBar(
+                                                  context,
+                                                  "Success! Utilsateur est Ajouter",
+                                                  Colors.green,
+                                                );
+                                                Navigator.pop(context);
+                                              }).catchError((e){
+                                                CustomWidgets.showSnackBar(
+                                                  context,
+                                                  "Error d'ajouter cette Utilisateur",
+                                                  Colors.red,
+                                                );
+                                              });
+                                            }else{
+                                              CustomWidgets.showSnackBar(
+                                                context,
+                                                "Choisi un projet",
+                                                Colors.red,
+                                              );
+                                            }
+                                          }
+
                                       },
                                       color: CustomColors.green
                                   )
@@ -508,41 +472,114 @@ class _UsersScreenState extends State<UsersScreen> {
     );
   }
 
-  //Had Code dertlo Comment 7itach Twilio API fih chi m3lomat 7sassa b7al
-  //Account id ou dakchi rakom 3arfin ou git makhlanich n pushing
-  //bisab hada wa dak Dert hadchi ou 7ta lcode dyal twilio lakhor rani m7ito !! Rah 3andi khlass
+  Future<void> selectedUser() async {
+    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+    List<UserModel> userList = await userStream.first;
+    for(int i=0;i<userList.length;i++){
+      if(checkBoxes[i]){
+        String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
+        //SMS Code
+      }
+    }
 
-  // Future<void> selectedUser() async {
-  //   Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
-  //   List<UserModel> userList = await userStream.first;
-  //   for(int i=0;i<userList.length;i++){
-  //     if(checkBoxes[i]){
-  //       String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
-  //       await sendMessage("Aa test test !! Lmhm ila wsalkom Had lmsg A si bilal ou si Youssef Sifto li bli rah wsalkom !! wajazakom allah khayra",
-  //           phoneNumberWithCountryCode)
-  //           .then((response){
-  //             if(response.statusCode == 100){
-  //               setState(() {
-  //                 isSending = true;
-  //               });
-  //             }else if(response.statusCode == 201){
-  //               setState(() {
-  //                 isSending = false;
-  //               });
-  //               CustomWidgets.showSnackBar(
-  //                   context,
-  //                   "Les Messages est Envoyer",
-  //                   Colors.green
-  //               );
-  //             }
-  //       }).catchError((onError){
-  //         print(onError.toString());
-  //       });
-  //     }
-  //   }
-  // }
+
+  }
+
+  List<String> emails = [];
+
+
+  Future showOptions(context) async {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (context) => CupertinoActionSheet(
+            title:const Text(
+              "Selectioner La methode S'il vous plâit",
+              style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 13
+              ),
+            ),
+            actions: [
+              CupertinoActionSheetAction(
+                child:const Text(
+                  'SMS',
+                  style: TextStyle(
+                    color: Colors.blue,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoActionSheetAction(
+                child:const Text(
+                  'EMAIL',
+                  style: TextStyle(
+                    color: Colors.blue,
+                  ),
+                ),
+                onPressed: ()async {
+                  List<String> selectedEmails = await selectedUsersEmails();
+                  launchEmail(selectedEmails);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child:const Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+
+              },
+            ),
+            ),
+        );
+    }
+
 
   String modifyPhoneNumber(String phoneNumber){
     return phoneNumber.replaceRange(0,1, "+212");
   }
+
+  dynamic launchEmail(List<String> paths) async {
+    try
+    {
+
+        print(emails);
+        Uri email = Uri(
+        scheme: 'mailto',
+        path:paths.join(","),
+        queryParameters: {
+          'subject': "",
+        },
+      );
+      await launchUrl(email);
+
+
+    }
+    catch(e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<List<String>> selectedUsersEmails()async{
+    List<String> list = [];
+    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+    List<UserModel> userList = await userStream.first;
+    for(int i=0;i<userList.length;i++){
+      if(checkBoxes[i]){
+        list.add(userList[i].email);
+        print(userList[i].email);
+      }
+    }
+    return list;
+
+  }
+
+
 }

@@ -14,7 +14,7 @@ class FirebaseServiceUser {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
-      await _userCollection.doc(result.user!.uid).set(user.toJson());
+      await _userCollection.doc(result.user!.uid).set(user.toJson(uid: result.user!.uid));
     } on FirebaseAuthException catch (e){
       if(e.code == "weak-password"){
         throw "Mot de pass est faible ! doit contenir 6 character";

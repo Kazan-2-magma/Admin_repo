@@ -57,7 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
               .size
               .width,
           color: CustomColors.lightGrey,
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.symmetric(
+            horizontal: 20
+          ),
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 20,right: 5,left: 5,bottom:5),
-                  padding: EdgeInsets.symmetric(horizontal: 45),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10
+                  ),
                   decoration: BoxDecoration(
                     color: CustomColors.white,
                     borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -188,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 else {
                                                   CustomWidgets.showSnackBar(
                                                       context,
-                                                      "Login Falide",
+                                                      "Login Failed",
                                                       CustomColors.red
                                                   );
                                                 }
@@ -203,10 +207,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                             ,
                                             color: CustomColors.red),
                                         ]
-
-
-
-
                                       );
 
                                         print('Mot de passe oublier');

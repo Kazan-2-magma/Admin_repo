@@ -8,7 +8,7 @@ class FirebaseServiceProject{
     try{
       String id = _firebaseFirestore.collection("projects").doc().id;
       await _firebaseFirestore.collection("projects")
-          .doc().set(projet.toJson(id: id));
+          .doc(id).set(projet.toJson(id: id));
       return "Project Added successfuly";
     }catch (e){
       print("Erreur lors de l\'ajout du projet: $e");
@@ -26,7 +26,7 @@ class FirebaseServiceProject{
             emailProfessionel : e["email_professionel"],
             phoneNumber: e["phoneNumber"],
             projetUrl: e["projetUrl"]
-        ).toJson();
+        ).toJson(id: e.id);
       }).toList();
     }catch (e){
       print("Error ${e.toString()}");

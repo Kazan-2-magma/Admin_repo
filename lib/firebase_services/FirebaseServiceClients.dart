@@ -15,6 +15,13 @@ class FirebaseServiceClients{
       return "Error adding new client";
     }
   }
+  Future<void> deleteClient(String id)async{
+    try{
+      await _collectionReference.doc(id).delete();
+    }catch(e){
+      print("Error deletion");
+    }
+  }
 
 
   Future<List<Client>?> getClients()async {

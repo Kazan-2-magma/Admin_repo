@@ -47,9 +47,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
   }
   void fetchData() async{
     projectsList = await widget._firebaseServiceProject.getProjects();
-    projectsList.forEach((element) {
-      print(element["id"]);
-    });
+    print(projectsList);
   }
 
   @override
@@ -79,21 +77,81 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children:
                           [
-                            DropdownButton<String>(
+                            const Expanded(child: Text("Votre projet:",style: TextStyle(fontSize: 20),)),
+                            const SizedBox(width: 30,),
+                            DropdownButtonHideUnderline(
+                              child: DropdownButton2<String>(
+                                hint: Text(
+                                  'Choisir un projet',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: CustomColors.grey,
+                                  ),
+                                ),
                                 value: selectedProjectId,
-                                items: projectsList!.map((e){
+                                items: projectsList.map((e){
                                   return DropdownMenuItem<String>(
                                       value: e["id"],
                                       child: Text(e["nomProjet"])
                                   );
                                 }).toList(),
-                                onChanged: (value){
+                                onChanged: (value) {
+                                  print(value);
                                   setState((){
                                     selectedProjectId = value;
                                   });
-                                  print(value);
-                                }
-
+                                },
+                                buttonStyleData: const ButtonStyleData(
+                                  padding: EdgeInsets.symmetric(horizontal: 16),
+                                  height: 40,
+                                  width: 200,
+                                ),
+                                dropdownStyleData: const DropdownStyleData(
+                                  maxHeight: 200,
+                                ),
+                                menuItemStyleData: const MenuItemStyleData(
+                                  height: 40,
+                                ),
+                                dropdownSearchData: DropdownSearchData(
+                                  searchController: dropDownSearchTextEditingController,
+                                  searchInnerWidgetHeight: 50,
+                                  searchInnerWidget: Container(
+                                    height: 50,
+                                    padding: const EdgeInsets.only(
+                                      top: 8,
+                                      bottom: 4,
+                                      right: 8,
+                                      left: 8,
+                                    ),
+                                    child: TextFormField(
+                                      expands: true,
+                                      maxLines: null,
+                                      controller: dropDownSearchTextEditingController,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 8,
+                                        ),
+                                        hintText: 'Chercher un projet...',
+                                        hintStyle: const TextStyle(fontSize: 12),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  searchMatchFn: (item, searchValue) {
+                                    return item.value.toString().contains(searchValue);
+                                  },
+                                ),
+                                //This to clear the search value when you close the menu
+                                onMenuStateChange: (isOpen) {
+                                  if (!isOpen) {
+                                    dropDownSearchTextEditingController.clear();
+                                  }
+                                },
+                              ),
                             ),
                             CustomWidgets.customIconButton(
                                 color: CustomColors.green,
@@ -165,14 +223,6 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                       ),
                                                       CustomWidgets.customIconButton(
                                                         func: (){
-                                                          widget._firebaseServiceClients.deleteClient(data[index].id)
-                                                              .then((value){
-                                                                CustomWidgets.showSnackBar(
-                                                                    context,
-                                                                    "Success !! Client est supprimer",
-                                                                    Colors.green
-                                                                );
-                                                          });
                                                         },
                                                         icon:Icon(
                                                           Icons.delete,
@@ -222,6 +272,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
   void BottomSheet(String user_id){
     var formKey = GlobalKey<FormState>();
     showBottomSheet(
+
         context: context,
         builder: (context){
           return StatefulBuilder(

@@ -162,7 +162,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false}) => Card(
+ static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false,int? index,}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),

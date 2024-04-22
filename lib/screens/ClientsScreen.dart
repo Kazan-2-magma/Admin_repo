@@ -214,7 +214,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                       const VerticalDivider(),
                                                       CustomWidgets.customIconButton(
                                                         func: (){
-                                                          ///////////////////////////////////////
+
                                                         },
                                                         icon:Icon(
                                                           Icons.edit,
@@ -223,6 +223,49 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                       ),
                                                       CustomWidgets.customIconButton(
                                                         func: (){
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (context)=>AlertDialog(
+                                                                title: Text(
+                                                                  "Voulez-vous supprimer cette Client?",
+                                                                ),
+                                                                actions:
+                                                                [
+                                                                  ElevatedButton(
+                                                                      style : ElevatedButton.styleFrom(
+                                                                        backgroundColor: Colors.green,
+                                                                        foregroundColor: Colors.white,
+                                                                      ),
+                                                                      onPressed: (){
+                                                                        widget._firebaseServiceClients.deleteClient(
+                                                                          data[index].id,
+                                                                        ).then((value){
+                                                                          CustomWidgets.showSnackBar(
+                                                                              context,
+                                                                              "Le Client est supprimer",
+                                                                              Colors.green
+                                                                          );
+                                                                        }).catchError((e){
+                                                                          print(e.toString());
+                                                                        });
+                                                                      },
+                                                                      child: Text("Oui"),
+                                                                  ),
+                                                                  ElevatedButton(
+                                                                      style : ElevatedButton.styleFrom(
+                                                                        backgroundColor: Colors.red,
+                                                                        foregroundColor: Colors.white,
+                                                                      ),
+                                                                      onPressed: (){
+                                                                        Navigator.pop(context);
+                                                                      },
+                                                                      child: Text(
+                                                                        "Annuler",
+                                                                      )
+                                                                  )
+                                                                ],
+                                                              )
+                                                          );
                                                         },
                                                         icon:Icon(
                                                           Icons.delete,

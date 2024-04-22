@@ -27,8 +27,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController userEmailController = TextEditingController();
+  TextEditingController emailRecovery = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
-  var formKey = GlobalKey<FormState>();
+  TextEditingController _emailRecovery = TextEditingController();
+  var formKey = GlobalKey<FormState>(),btnSheetsFormKey = GlobalKey<FormState>();
   var emailMotDePassOublier = GlobalKey<FormState>();
   bool isLoading = false;
   var data;
@@ -163,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           key : emailMotDePassOublier,
                                           child:CustomWidgets.customTextFormField(
                                             inputType: TextInputType.emailAddress,
-                                            editingController: userEmailController,
+                                            editingController: emailRecovery,
                                             hintText: 'Email',
                                             icon: Icons.email,
                                             funcValid: (value) {
@@ -182,12 +185,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                             func: ()  {
                                               if (emailMotDePassOublier.currentState!.validate()) {
 
+                                                FirebaseAuth.instance.sendPasswordResetEmail(email: emailRecovery.text)
+                                                .then((value){
                                                   CustomWidgets.showSnackBar(context,
-                                                      "Le nouveau Mot de pass est evoyer a votre email:"
-                                                          " ${userEmailController.text+">>"
-                                                          +generateRandomPassword()} ",
-                                                      CustomColors.green);
-                                                  Navigator.pop(context);
+                                                      "Le nouveau Mot de pass est evoyer a votre email:${emailRecovery.text}",
+                                                      CustomColors.green
+                                                  );
+                                                }).catchError((e){
+                                                  print(e.toString());
+                                                });
+                                                Navigator.pop(context);
+
                                               }
                                                 else {
                                                   CustomWidgets.showSnackBar(
@@ -208,6 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             color: CustomColors.red),
                                         ]
                                       );
+
 
                                         print('Mot de passe oublier');
                                       }),
@@ -284,6 +293,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     return signIn;
   }
+
+
   String generateRandomPassword(){
     var letters_Min =["a", "b", "c", "d", "e", "f","g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v","w", "x", "y", "z"];
     var letters_Maj =["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K","L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V","W", "X", "Y", "Z"];

@@ -487,7 +487,6 @@ class _UsersScreenState extends State<UsersScreen> {
 
   List<String> emails = [];
 
-
   Future showOptions(context) async {
     showCupertinoModalPopup(
         context: context,

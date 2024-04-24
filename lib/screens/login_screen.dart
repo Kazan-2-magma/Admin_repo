@@ -66,11 +66,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-
               children: [
                 ClipOval(
                   child: Image.asset(
-                    "assets/logo.png",
+                    "assets/icon.png",
                     fit: BoxFit.cover,
                     width: 200,
                     height: 200,

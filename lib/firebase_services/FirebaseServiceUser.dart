@@ -26,12 +26,11 @@ class FirebaseServiceUser {
     }
   }
 
-  Future<void> deleteUser(String userId, String password) async {
+  Future<void> deleteUser(String userId,String email, String password) async {
     try {
-      AuthCredential credential = EmailAuthProvider.credential(email: _auth.currentUser!.email!, password: password);
+      AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
       await _auth.currentUser!.reauthenticateWithCredential(credential);
       await _auth.currentUser?.delete();
-
       await _userCollection.doc(userId).delete();
     } catch (e) {
       print('Error deleting user: $e');
@@ -83,9 +82,10 @@ class FirebaseServiceUser {
     await _auth.signOut();
   }
 
-  Stream<List<UserModel>> getUsers() {
-    return _userCollection.snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) {
+  Future<List<UserModel>> getUsers() async{
+    try{
+      QuerySnapshot querySnapshot = await _userCollection.get();
+      return querySnapshot.docs.map((doc){
         if(doc["role"] == "admin"){
           return AdminUser(
             id_user: doc.id,
@@ -111,17 +111,20 @@ class FirebaseServiceUser {
           );
         }
       }).toList();
-    });
+    }catch(e){
+      print(e.toString());
+      return [];
+    }
   }
 
-  Future<List<UserModel>> rechercheUserParEmailEtPassword(String email, String password) async {
+  Future<UserModel?> rechercheUserParEmailEtPassword(String email, String password) async {
     try {
       QuerySnapshot querySnapshot = await _userCollection
           .where('email', isEqualTo: email)
           .where('password', isEqualTo: password)
           .get();
 
-      List<UserModel> users = querySnapshot.docs.map((doc) {
+      querySnapshot.docs.map((doc) {
         if(doc["role"] == "admin"){
           return AdminUser(
             id_user: doc.id,
@@ -146,11 +149,10 @@ class FirebaseServiceUser {
             idProjet: doc["id_projet"],
           );
         }
-      }).toList();
-      return users;
+      }).first;
     } catch (e) {
-      print('Erreur lors de la recherche d\'utilisateur par email et mot de passe : $e');
-      return [];
+      throw Exception("Erreur lors de la recherche d\'utilisateur par email et mot de passe");
+      return null;
     }
   }
 

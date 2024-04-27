@@ -12,7 +12,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 
 import '../shared/CustomColors.dart';
@@ -24,6 +23,9 @@ class ScreenManager extends StatefulWidget {
   AdminUser? userData;
   ScreenManager({this.userData});
 
+  static void setCurrentScreen(Widget widget){
+    _ScreenManagerState.currentScreen = widget;
+  }
 
   @override
   State<ScreenManager> createState() => _ScreenManagerState();
@@ -32,7 +34,7 @@ class ScreenManager extends StatefulWidget {
 
 class _ScreenManagerState extends State<ScreenManager> {
   String title = "";
-  Widget currentScreen = Container();
+  static Widget currentScreen = Container();
   final FirebaseServiceUser firebaseServiceuser=FirebaseServiceUser();
 
 
@@ -40,6 +42,7 @@ class _ScreenManagerState extends State<ScreenManager> {
   void initState() {
     title = "Accueil";
     currentScreen = HomeScreen();
+    print("AdminData ${widget.userData}");
     super.initState();
   }
 
@@ -91,7 +94,7 @@ class _SliderView extends StatefulWidget{
 
 class _SliderViewState extends State<_SliderView> {
   late List<Menu> list;
-  String? _imageStr;
+
   @override
   void initState() {
     super.initState();
@@ -103,15 +106,13 @@ class _SliderViewState extends State<_SliderView> {
       Menu(Icons.person, 'Profile',ProfileScreen(adminUser: widget.adminUser),false),
       //Menu(Icons.arrow_back_ios, 'LogOut',Container())
     ];
-    print("from Sliider View ${widget.adminUser!.email}");
+    print("from Sliider View ${widget.adminUser}");
   }
 
 
 
-// Define a function to handle item selection
   void handleItemSelection(String title) {
     setState(() {
-      // Update the isSelected property based on the selected title
       list.forEach((item) {
         item.isSelected = item.title == title;
       });
@@ -134,6 +135,7 @@ class _SliderViewState extends State<_SliderView> {
 
   @override
   Widget build(BuildContext context) {
+    String? _imageStr;
     return  Container(
       color: CustomColors.lightGrey,
       child: ListView(
@@ -148,19 +150,14 @@ class _SliderViewState extends State<_SliderView> {
               ),
               CircleAvatar(
                 radius: 42,
-                backgroundColor: CustomColors.blue,
+                backgroundColor: Colors.transparent,
                 child: widget.adminUser!.photoUrl.isNotEmpty
                     ? CircleAvatar(
-                  radius: 60,
-                  backgroundImage : convertStringToXFile(widget.adminUser!.photoUrl),
-                )
-                    : ProfilePicture(
-                  //IMAGE
-                  radius: 50,
-                  name: widget.adminUser!.getFullname(),
-                  fontsize: 21,
-                  img: _imageStr,
-                ),
+                      radius: 60,
+                      backgroundColor: Colors.transparent,
+                      backgroundImage : convertStringToXFile(widget.adminUser!.photoUrl),
+                  )
+                    : Image(image: AssetImage("assets/admin.png"))
               ),
               const SizedBox(
                 width: 15,
@@ -182,7 +179,6 @@ class _SliderViewState extends State<_SliderView> {
             height: 20,
           ),
           Divider(color: CustomColors.grey),
-
           ...list.map((e){
             return _SliderMenuItem(
               title: e.title,
@@ -190,7 +186,7 @@ class _SliderViewState extends State<_SliderView> {
               iconData: e.iconData,
               isSelected: e.isSelected,
               onItemClick: widget.onItemClick,
-              handleItemSelection: handleItemSelection, // Pass handleItemSelection
+              handleItemSelection: handleItemSelection,
 
             );
           }),
@@ -247,11 +243,9 @@ class _SliderMenuItem extends StatelessWidget {
                   fontFamily: 'BalsamiqSans_Regular')),
           leading: Icon(iconData, color: isSelected ? CustomColors.blue : CustomColors.black),
           onTap: () {
-            // Call handleItemSelection to update isSelected
             handleItemSelection(title);
-            // Call onItemClick to notify the parent widget
             onItemClick?.call(title, currentScreen);
-          }), // Call onItemClick
+          }),
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:cinq_etoils/shared/CustomFunctions.dart';
 import 'package:cinq_etoils/shared/Widgets/CustomWidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -31,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var editNom = TextEditingController(),editPhone = TextEditingController(),editEmail = TextEditingController();
 
   TextEditingController nomEditEditingController =TextEditingController();
+  TextEditingController emailEditEditingController =TextEditingController();
   TextEditingController numeroEditEditingController =TextEditingController();
   TextEditingController currentPasswordEditEditingController =TextEditingController();
   TextEditingController passwordEditEditingController =TextEditingController();
@@ -96,18 +96,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ? CircleAvatar(
                                         radius: 60,
                                         backgroundImage : FileImage(File(_image!.path)),
+                                        backgroundColor: Colors.transparent,
                                       )
                                         : widget.adminUser!.photoUrl.isNotEmpty
                                         ? CircleAvatar(
                                           radius: 60,
+                                          backgroundColor: Colors.transparent,
                                           backgroundImage: MemoryImage(base64Decode(widget.adminUser!.photoUrl)),
                                       )
-                                        : ProfilePicture(
-                                            radius: 50,
-                                            name: widget.adminUser!.getFullname(),
-                                            fontsize: 21,
-                                            img: _imageStr,
-                                      ),
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.transparent,
+                                            child: Image(image: AssetImage("assets/admin.png"),),
+                                    )
                                   ),
                                   CustomWidgets.horizontalSpace(10),
                                   Column(
@@ -172,7 +172,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           context,
                                           "Votre nom: ${widget.adminUser!.getFullname()}",
                                           children:  CustomWidgets.customTextFormField(
-
                                               icon: Icons.person,
                                               funcValid: (value){
                                                 return null;
@@ -182,7 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           list:
                                           [
                                             CustomWidgets.customButton(
-                                            text: "Sauvgarder",
+                                            text: Text("Sauvgarder"),
                                             func: (){
                                               if(nomEditEditingController.text.isNotEmpty){
                                                setState(() {
@@ -209,7 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             radius: 30,
                                           ),
                                             CustomWidgets.customButton(
-                                              text: "Annuler",
+                                              text: Text("Annuler"),
                                               func: (){
                                                 Navigator.pop(context);
                                                 setState(() {
@@ -230,7 +229,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
-
                         const Divider(height: 1.0,indent: 45),
                         Container(
                           height: 50,
@@ -262,6 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       context,
                                       "Votre Tel: ${widget.adminUser!.phoneNumber}",
                                       children: CustomWidgets.customTextFormField(
+                                        inputType: TextInputType.phone,
                                         icon: Icons.call,
                                           funcValid: (value){
                                               return null;
@@ -270,7 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           hintText: "Nouvell numero"),
                                       list: [
                                         CustomWidgets.customButton(
-                                          text: "Sauvgarder",
+                                          text: Text("Sauvgarder"),
                                           func: (){
                                             if(numeroEditEditingController.text.isNotEmpty){
                                               data!["phoneNumber"] = numeroEditEditingController.text;
@@ -292,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           radius: 30,
                                         ),
                                         CustomWidgets.customButton(
-                                          text: "Annuler",
+                                          text: Text("Annuler"),
                                           func: (){
                                             Navigator.pop(context);
                                             setState(() {
@@ -318,20 +317,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 50,
                           padding:const  EdgeInsets.symmetric(/*vertical: 15,*/ horizontal:5),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
                             [
-                              Icon(Icons.email,size: 30,color: CustomColors.grey,),
-                              CustomWidgets.horizontalSpace(10),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Email",style: TextStyle(color: CustomColors.grey),),
-                                  Text(
-                                    widget.adminUser!.email,
-                                    style:const TextStyle(fontWeight: FontWeight.w600),
+                              Row(
+                                children:
+                                [
+                                  Icon(Icons.email,size: 30,color: CustomColors.grey,),
+                                  CustomWidgets.horizontalSpace(10),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Email",style: TextStyle(color: CustomColors.grey),),
+                                      Text(
+                                        widget.adminUser!.email,
+                                        style:const TextStyle(fontWeight: FontWeight.w600),
+                                      ),
+                                    ],
                                   ),
                                 ],
+                              ),
+                              CustomWidgets.customIconButton(
+                                func: () {
+                                  CustomWidgets.showAlertDialog(
+                                      context,
+                                      "Votre Email: ${widget.adminUser!.email}",
+                                      children:  CustomWidgets.customTextFormField(
+                                          icon: Icons.person,
+                                          funcValid: (value){
+                                            return null;
+                                          },
+                                          editingController: emailEditEditingController,
+                                          hintText: "Nouveau Email"),
+                                      list:
+                                      [
+                                        CustomWidgets.customButton(
+                                          text: Text("Sauvgarder"),
+                                          func: (){
+                                            if(emailEditEditingController.text.isNotEmpty){
+                                              setState(() {
+                                                data!["email"] = emailEditEditingController.text;
+                                              });
+                                            }
+                                            widget._firebaseServiceUser.modifyUserById(
+                                                widget.adminUser!.id_user,
+                                                AdminUser.fromJson(data)
+                                            ).then((value){
+                                              fetchData();
+                                            });
+                                            setState(()  {
+                                              widget.adminUser!.email = emailEditEditingController.text;
+                                              CustomFunctions.ClearTextFields([emailEditEditingController]);
+                                            });
+                                            AppFunctions.navigateFrom(context);
+                                          },
+                                          color: CustomColors.green,
+                                          shadowColor: CustomColors.transparent,
+                                          surfaceTintColor: CustomColors.transparent,
+                                          colorText: CustomColors.white,
+                                          radius: 30,
+                                        ),
+                                        CustomWidgets.customButton(
+                                          text: Text("Annuler"),
+                                          func: (){
+                                            Navigator.pop(context);
+                                            setState(() {
+                                              CustomFunctions.ClearTextFields([nomEditEditingController]);
+                                            });
+                                          },
+                                          color: CustomColors.red,
+                                          shadowColor: CustomColors.transparent,
+                                          surfaceTintColor: CustomColors.transparent,
+                                          colorText: CustomColors.white,
+                                          radius: 30,
+                                        ),
+                                      ]
+                                  );
+                                },
+                                icon: Icon(Icons.edit,color: CustomColors.grey,),
                               )
                             ],
                           ),
@@ -372,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Flexible(
                               child: CustomWidgets.customButton(
                                   textSize: 16,
-                                  text: "Modifier le mot de pass",
+                                  text: Text("Modifier le mot de pass"),
                                   func: (){
                                     var formKey = GlobalKey<FormState>();
                                     CustomWidgets.showAlertDialog(
@@ -449,7 +513,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         [
                                           Flexible(
                                             child: CustomWidgets.customButton(
-                                              text: "Sauvgarder",
+                                              text: Text("Sauvgarder"),
                                               func: (){
                                                 if(formKey.currentState!.validate()) {
                                                   widget._firebaseServiceUser.reAuthenticateUser(
@@ -479,7 +543,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                           Flexible(
                                             child: CustomWidgets.customButton(
-                                              text: "Annuler",
+                                              text: Text("Annuler"),
                                               func: (){
                                                 Navigator.pop(context);
                                                 setState(() {
@@ -501,7 +565,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             CustomWidgets.customButton(
                                 textSize: 16,
                                 color: CustomColors.red,
-                                text: "Deconnecter",
+                                text: Text("Deconnecter"),
                                 func: (){
                                     widget._firebaseServiceUser.signOut();
                                 },
@@ -578,13 +642,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             actions:
             [
               CustomWidgets.customButton(
-                  text: 'Modifier',
+                  text: Text('Modifier'),
                   func: (){
 
                   }
               ),
               CustomWidgets.customButton(
-                  text: 'Annuler',
+                  text: Text('Annuler'),
                   func: (){
 
                   }

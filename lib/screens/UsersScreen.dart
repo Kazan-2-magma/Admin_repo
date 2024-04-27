@@ -35,7 +35,7 @@ class _UsersScreenState extends State<UsersScreen> {
   bool isVisible = true;
   bool isVisibleConf = true;
   bool isSending = false;
-  Stream<List<UserModel>>? usersList;
+  Future<List<UserModel>>? usersList;
   List<Map<String,dynamic>>? projectsList;
   TextEditingController _searchController = TextEditingController(),
       firstName = TextEditingController(),
@@ -100,9 +100,11 @@ class _UsersScreenState extends State<UsersScreen> {
                             isBackButtonVisible: false,
                             centerTitle: "List Des Utilisateurs : ",
                             centerTitleStyle: const TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                            hintText: "Chercher un client...",
-                            onChanged: (String) {
-
+                            hintText: "Chercher un user...",
+                            onChanged: (value) {
+                                setState(() {
+                                  _searchController.text = value;
+                                });
                             },
                             searchTextEditingController: _searchController,
                           ),
@@ -119,23 +121,24 @@ class _UsersScreenState extends State<UsersScreen> {
                       ],
                     ),
                     const Divider(),
-                    StreamBuilder(
-                        stream: usersList,
+                    FutureBuilder(
+                        future: searchUsers(_searchController.text),
                         builder: (context,snapshot){
                           if(snapshot.connectionState == ConnectionState.waiting){
                             return const Center(
                               child: CircularProgressIndicator(),
                             );
-                          }else if(snapshot.hasData ){
+                          }else if(snapshot.hasData && snapshot.data!.isNotEmpty){
                             checkBoxes = List<bool>.filled(snapshot.data!.length,false);
                             return Expanded(
                                 child: ListView.separated(
                                   separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: (context,index){
-                                    UserModel user =  snapshot.data![index].role == "admin"
-                                        ? snapshot.data![index] as AdminUser
-                                        : snapshot.data![index] as Users;
+                                    UserModel user = AdminUser.fromJson(snapshot.data![index]);
+                                        //snapshot.data![index]["role"] == "admin"
+                                        // ? AdminUser.fromJson(snapshot.data![index])
+                                        // : Users.fromJson(snapshot.data![index]);
                                     return StatefulBuilder(
                                       builder: (context,setState){
                                         return CustomWidgets.customCardUser(
@@ -145,6 +148,32 @@ class _UsersScreenState extends State<UsersScreen> {
                                               setState((){
                                                 checkBoxes[index] = value!;
                                               });
+                                            },
+                                            editFunc: (){
+                                                updateBottomSheet(user, user.id_user);
+                                            },
+                                            deleteFunc: (){
+                                              CustomWidgets.showAlertDialog(
+                                                  context,
+                                                  "Voulez vous supprimer Cette Utilisateur?",
+                                                  list: [
+                                                    CustomWidgets.customButton(
+                                                        color:Colors.green,
+                                                        text: Text("Oui"),
+                                                        func: (){
+
+                                                        }
+                                                    ),
+                                                    CustomWidgets.customButton(
+                                                        color:Colors.red,
+                                                        text: Text("Non"),
+                                                        func: (){
+                                                          AppFunctions.navigateFrom(context);
+                                                        }
+                                                    )
+
+                                                  ]
+                                              );
                                             }
                                         );
                                       },
@@ -187,6 +216,32 @@ class _UsersScreenState extends State<UsersScreen> {
           )
         ),
     );
+  }
+
+
+  Future<List<Map<String, dynamic>>> searchUsers(String query) async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .where("firstName", isGreaterThanOrEqualTo: query)
+          .where("firstName", isLessThan: query + 'z')
+          .get();
+      return querySnapshot.docs.map((e) {
+        return {
+          "id_user" : e["id_user"],
+          'firstName': e["firstName"] ,
+          'lastName': e["lastName"] ,
+          'phoneNumber':e["phoneNumber"] ,
+          'email': e["email"] ,
+          'photoUrl': e["photoUrl"] ,
+          'role':e["role"] ,
+          'password' :e["password"]
+        };
+      }).toList();
+    } catch (e) {
+      print("Error ${e.toString()}");
+      return [];
+    }
   }
 
   void BottomSheet(String user_id){
@@ -398,7 +453,7 @@ class _UsersScreenState extends State<UsersScreen> {
                             [
                               Flexible(
                                   child: CustomWidgets.customButton(
-                                      text: "Ajouter",
+                                      text: Text("Ajouter"),
                                       func: (){
                                           if(formKey.currentState!.validate()){
                                             if(selectedProjectId!.isNotEmpty){
@@ -453,7 +508,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                   )
                               ),
                               CustomWidgets.customButton(
-                                  text: "Annuler",
+                                  text: Text("Annuler"),
                                   color: CustomColors.red,
                                   func: (){
                                     Navigator.pop(context);
@@ -471,10 +526,228 @@ class _UsersScreenState extends State<UsersScreen> {
         }
     );
   }
+  void updateBottomSheet(UserModel user,String user_id){
+    var formKey = GlobalKey<FormState>();
+    TextEditingController firstName_up = TextEditingController();
+    TextEditingController lastname_up = TextEditingController();
+    TextEditingController email_up = TextEditingController();
+    TextEditingController phoneNumber_up = TextEditingController();
+    firstName_up.text = user.firstName;
+    lastname_up.text = user.lastName;
+    email_up.text = user.email;
+    phoneNumber_up.text = user.phoneNumber;
+    String? groupValue;
+    showBottomSheet(
+        context: context,
+        builder: (context){
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.98,
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom
+                ),
+                child: StatefulBuilder(
+                  builder: (context,setState){
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children:
+                      [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children:
+                          [
+                            IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon:const Icon(Icons.arrow_back_ios)),
+                            const Text(
+                              "Modifier Utilisateur",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 30.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        CustomWidgets.customTextFormField(
+                          icon: Icons.person,
+                          funcValid: (value){
+                            if(value!.isEmpty) return "Modifier le nom de Utilisateur";
+                            return null;
+                          },
+                          editingController: firstName_up,
+                          hintText: "Prenom de Utilisateur",
+                        ),
+                        CustomWidgets.verticalSpace(20.0),
+                        CustomWidgets.customTextFormField(
+                          icon: Icons.person,
+
+                          funcValid: (value){
+                            if(value!.isEmpty) return "Modifier le nom de Utilisateur";
+                            return null;
+                          },
+                          editingController: lastname_up,
+                          hintText: "Nom de Utilisateur",
+
+                        ),
+                        CustomWidgets.verticalSpace(20.0),
+                        CustomWidgets.customTextFormField(
+                          icon: Icons.email,
+                          inputType: TextInputType.emailAddress,
+                          funcValid: (value){
+                            if(value!.isEmpty) return "Modifier le Email de Utilisateur";
+                            else if(!emailValidation(value)){
+                              return "Email n'est pas valid";
+                            }
+                            return null;
+                          },
+                          editingController: email_up,
+                          hintText: "Email de Utilisateur",
+                        ),
+                        CustomWidgets.verticalSpace(20.0),
+                        CustomWidgets.customTextFormField(
+                          icon: Icons.call,
+                          inputType: TextInputType.phone,
+                          funcValid: (value){
+                            if(value!.isEmpty) return "N° de Telephone de Utilisateur";
+                            else if(!phoneNumberValidation(value)){
+                              return "N° d Telephone n'est pas valide";
+                            }
+                            return null;
+                          },
+                          editingController: phoneNumber_up,
+                          hintText: "N° Telephone de Utilisateur",
+                        ),
+                        CustomWidgets.verticalSpace(20.0),
+                        Row(
+                          children:
+                          [
+                            Expanded(
+                                child: RadioListTile(
+                                  title: Text("Admin"),
+                                  value: "Admin",
+                                  onChanged: (value){
+                                    setState((){
+                                      groupValue = value!;
+                                    });
+                                  },
+                                  groupValue: groupValue,
+                                )
+                            ),
+                            Flexible(
+                              child: RadioListTile(
+                                title:const Text(
+                                  "Partenaire",
+                                  style: TextStyle(
+                                      fontSize: 15.0
+                                  ),
+                                ),
+                                value: "partenaire",
+                                onChanged: (value){
+                                  setState((){
+                                    groupValue = value!;
+                                  });
+                                },
+                                groupValue: groupValue,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if(groupValue == "partenaire")
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              children: [
+                                const Expanded(
+                                    child: Text(
+                                      "Projet : ",
+                                      style: TextStyle(fontSize: 21,fontWeight: FontWeight.w800),
+                                    )),
+                                DropdownButton<String>(
+                                    value: selectedProjectId,
+                                    items: projectsList!.map((e){
+                                      print(e["id"]);
+                                      return DropdownMenuItem<String>(
+                                          value: e["id"],
+                                          child: Text(e["nomProjet"])
+                                      );
+                                    }).toList(),
+                                    onChanged: (value){
+                                      setState((){
+                                        selectedProjectId = value!;
+                                      });
+                                      print(value);
+                                    }
+                                )
+                              ],
+                            ),
+                          ),
+                        CustomWidgets.verticalSpace(20.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children:
+                          [
+                            Flexible(
+                                child: CustomWidgets.customButton(
+                                    text: Text("Modifier"),
+                                    func: (){
+                                      if(formKey.currentState!.validate()) {
+                                        Users users = Users(
+                                            firstName: firstName_up.text,
+                                            lastName: lastname_up.text,
+                                            email: email_up.text,
+                                            phoneNumber: phoneNumber_up.text,
+                                            photoUrl: user.photoUrl,
+                                            idProjet: selectedProjectId!,
+                                            role: groupValue!,
+                                            password: user.password
+                                        );
+                                        widget._firebaseServiceUser.modifyUserById(
+                                            user.id_user,
+                                            users
+                                        ).then((value){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Le Utilisateur a été modifier"),backgroundColor: Colors.green,)
+                                          );
+                                          setState(() {
+                                            usersList = widget._firebaseServiceUser.getUsers();
+                                          });
+                                          AppFunctions.navigateFrom(context);
+                                        }).catchError((e){
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Error lors de modification. Operation Echoue"),backgroundColor: Colors.red,)
+                                          );
+                                        });
+                                      }
+                                    },
+                                    color: CustomColors.green
+                                )
+                            ),
+                            CustomWidgets.customButton(
+                                text: Text("Annuler"),
+                                color: CustomColors.red,
+                                func: (){
+                                  Navigator.pop(context);
+                                }
+                            )
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                )
+              ),
+            ),
+          );
+        }
+    );
+  }
 
   Future<void> selectedUser() async {
-    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
-    List<UserModel> userList = await userStream.first;
+    Future<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+    List<UserModel> userList = await userStream;
     for(int i=0;i<userList.length;i++){
       if(checkBoxes[i]){
         String phoneNumberWithCountryCode = modifyPhoneNumber(userList[i].phoneNumber);
@@ -568,8 +841,8 @@ class _UsersScreenState extends State<UsersScreen> {
 
   Future<List<String>> selectedUsersEmails()async{
     List<String> list = [];
-    Stream<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
-    List<UserModel> userList = await userStream.first;
+    Future<List<UserModel>> userStream = widget._firebaseServiceUser.getUsers();
+    List<UserModel> userList = await userStream;
     for(int i=0;i<userList.length;i++){
       if(checkBoxes[i]){
         list.add(userList[i].email);

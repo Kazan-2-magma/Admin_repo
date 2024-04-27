@@ -9,6 +9,18 @@ import 'package:flutter/widgets.dart';
 import '../../model/UserModel.dart';
 import '../CustomColors.dart';
 
+class AppFunctions{
+  static navigateTo(context,route){
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => route)
+    );
+  }
+  static navigateFrom(context){
+    Navigator.pop(context);
+  }
+}
+
 class CustomWidgets{
   static ScaffoldMessengerState? scaffoldMessengerState;
 
@@ -19,8 +31,9 @@ class CustomWidgets{
 
 
 
+
  static Widget customButton({
-   required String text,
+   required Widget text,
    required VoidCallback func,
    Color colorText = Colors.white,
    Color color =  Colors.green,
@@ -48,9 +61,7 @@ class CustomWidgets{
          ),
        ),
      ),
-     child: Text(
-         text,
-     style: TextStyle(fontSize: textSize),),
+     child: text
 
    );
  }
@@ -162,7 +173,7 @@ class CustomWidgets{
    );
  }
 
- static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false,int? index,}) => Card(
+ static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false,int? index,void Function()? editFunc,void Function()? deleteFunc}) => Card(
    shape: const RoundedRectangleBorder(
        borderRadius: BorderRadius.only(
            topLeft: Radius.circular(10),
@@ -183,7 +194,12 @@ class CustomWidgets{
          ),
        ),
        child:ListTile(
-             contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+             contentPadding: const EdgeInsets.only(
+               left: 15,
+               right: 15,
+               top: 15,
+               bottom: 20
+             ),
              title: Text(
                "${user.firstName} ${user.lastName}",
                style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
@@ -192,23 +208,38 @@ class CustomWidgets{
                  ? Text("Email: ${user.email}\nTel: ${user.phoneNumber}")
                  : Text("Email: ${user.email}\nTel: ${user.phoneNumber}\nRole : ${user.role}"),
              trailing: Row(
+               crossAxisAlignment: CrossAxisAlignment.start,
                mainAxisSize: MainAxisSize.min,
                children:
                [
                  const VerticalDivider(),
                  Checkbox(
-                     value: isCheck,
-                     onChanged: func,
+                   value: isCheck,
+                   onChanged: func,
                  ),
-                 CustomWidgets.customIconButton(
-                   func: (){
-
-                   },
-                   icon:Icon(
-                     Icons.delete,
-                     color: CustomColors.red,
-                   ),
-                 ),
+                 Column(
+                   mainAxisSize: MainAxisSize.min,
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children:
+                   [
+                     CustomWidgets.customIconButton(
+                         func: editFunc!,
+                         icon: const Icon(
+                             Icons.edit,
+                             color:Colors.green
+                         )
+                     ),
+                     isUser
+                         ? CustomWidgets.customIconButton(
+                       func: deleteFunc!,
+                       icon:Icon(
+                         Icons.delete,
+                         color: CustomColors.red,
+                       ),
+                     )
+                         : SizedBox()
+                   ],
+                 )
                ],
              )
        )
@@ -277,11 +308,6 @@ class CustomWidgets{
  );
 
 
- static Widget showProgress(){
-   return const Center(
-     child: CircularProgressIndicator(),
-   );
- }
 
  static void showSnackBar(context,content,color){
    scaffoldMessengerState?.showSnackBar(

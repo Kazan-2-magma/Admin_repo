@@ -207,6 +207,7 @@
 //     );
 //   }
 // }
+import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/model/Users.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -452,7 +453,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                  CustomWidgets.customTextFormField(
                     inputType: TextInputType.emailAddress,
                      funcValid: (value) {
-                       if (value!.isEmpty) return "Enter Email";
+                       if (value!.isEmpty) return "Email est require";
+                       else if(!emailValidation(value)){
+                         return "Email n'est pas valider";
+                       }
                        return null;
                      },
                      icon: Icons.email,
@@ -462,9 +466,15 @@ class _ProjectScreenState extends State<ProjectScreen> {
                      editingController: emailProfessionel,
                      hintText: "Email"),
                  CustomWidgets.verticalSpace(10.0),
+                 //COUNTRY CODE
                  CustomWidgets.customTextFormField(
-                     inputType: TextInputType.number,
+                     inputType: TextInputType.phone,
                      funcValid: (value) {
+                       if(value!.isEmpty){
+                         return "N° de Telephone est require";
+                       }else if(!phoneNumberValidation(value)){
+                         return "N° de telephone n'est pas valid";
+                       }
                        return null;
                      },
                      icon: Icons.phone,
@@ -472,11 +482,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
                      iconColor: CustomColors.grey,
                      colorText: CustomColors.grey,
                      editingController: phoneNumber,
-                     hintText: "Tele Projet"),
+                     hintText: "N° de Telephone Projet"),
                  CustomWidgets.verticalSpace(10.0),
                  CustomWidgets.customTextFormField(
                      inputType: TextInputType.url,
                      funcValid: (value) {
+                       if(value!.isNotEmpty && !URLValidation(value)){
+                         return "URL n'est pas valid";
+                       }
                        return null;
                      },
                      icon: Icons.link_outlined,
@@ -491,7 +504,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
          ),
         list :  [
       CustomWidgets.customButton(
-          text: "Ajouter",
+          text:Text("Ajouter"),
           func: () {
             if (formKey.currentState!.validate()) {
               widget._firebaseServiceProject
@@ -514,7 +527,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
           },
           color: CustomColors.green),
       CustomWidgets.customButton(
-          text: "Annuler",
+          text: Text("Annuler"),
           func: () {
             Navigator.of(context).pop();
             clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);
@@ -527,7 +540,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     CustomWidgets.showAlertDialog(context,
         "Voulez-vous vraiment supprimer cette projet?",
         list: [
-          CustomWidgets.customButton(color: CustomColors.red,text: "Oui", func: (){
+          CustomWidgets.customButton(color: CustomColors.green,text: Text("Oui"), func: (){
             widget._firebaseServiceProject.deleteProject(project_id)
                 .then((value){
                   CustomWidgets.showSnackBar(context,"Suppression success", CustomColors.green);
@@ -539,7 +552,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
             }).catchError((onError) => print("Error : ${onError.toString()}"));
           }),
-          CustomWidgets.customButton(text: "Non", func: () {
+          CustomWidgets.customButton(text: Text("Non"),
+              color: Colors.red,
+              func: () {
             CustomWidgets.showSnackBar(context,"Operation annuler", CustomColors.grey);
             Navigator.pop(context);
           }),
@@ -611,9 +626,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       CustomWidgets.customTextFormField(
                         icon: Icons.call,
 
-                        inputType: TextInputType.number,
+                        inputType: TextInputType.phone,
                           funcValid: (value){
                             if(value!.isEmpty) return "N° de Telephone de projet";
+                            else if (!phoneNumberValidation(value)){
+                              return "N° de telphone n'estb pas valider";
+                            }
                             return null;
                           },
                           editingController: phoneNumber,
@@ -622,9 +640,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
                       CustomWidgets.verticalSpace(20.0),
                       CustomWidgets.customTextFormField(
                         icon: Icons.link,
-
                         inputType: TextInputType.url,
                         funcValid: (value){
+                          if(!URLValidation(value!)){
+                            return "Url n'est pas valid";
+                          }
                           return null;
                         },
                         editingController: projetUrl,
@@ -637,7 +657,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         [
                           Flexible(
                               child: CustomWidgets.customButton(
-                                  text: "Modifier",
+                                  text: Text("Modifier"),
                                   func: (){
                                     if(formKey.currentState!.validate()){
                                       Projet project = Projet(
@@ -648,7 +668,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                       );
                                       widget._firebaseServiceProject.updateProject(project_id, project)
                                       .then((value){
-                                        print("Projet Updated Success");
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Project a été Modifier en Success"),backgroundColor: Colors.green,)
+                                        );
                                         setState(() {
                                           searchProjects(_searchController.text);
                                         });
@@ -656,6 +678,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                         Navigator.pop(context);
                                       }).catchError((e){
                                         print("Error : ${e.toString()}");
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text("Error"),backgroundColor: Colors.red,)
+                                        );
                                       });
                                     }
 
@@ -664,7 +689,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                               )
                           ),
                           CustomWidgets.customButton(
-                              text: "Annuler",
+                              text: Text("Annuler"),
                               color: CustomColors.red,
                               func: (){
                                 clearTextFields([projectName,projetUrl,phoneNumber,emailProfessionel]);

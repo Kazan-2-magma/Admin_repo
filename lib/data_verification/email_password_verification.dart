@@ -21,3 +21,11 @@ bool phoneNumberValidation(String phoneNumber){
   }
   return false;
 }
+
+bool URLValidation(String url){
+  var reg = RegExp(r"^www.\S+.(com|ma|fr|net|org)$");
+  if(reg.hasMatch(url)){
+    return true;
+  }
+  return false;
+}

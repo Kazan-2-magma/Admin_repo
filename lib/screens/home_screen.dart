@@ -4,6 +4,8 @@ import 'package:cinq_etoils/firebase_services/FirebaseServiceUser.dart';
 import 'package:cinq_etoils/model/UserModel.dart';
 import 'package:cinq_etoils/model/Users.dart';
 import 'package:cinq_etoils/screens/ClientsScreen.dart';
+import 'package:cinq_etoils/screens/UsersScreen.dart';
+import 'package:cinq_etoils/screens/project_screen.dart';
 import 'package:cinq_etoils/screens/screens_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,9 @@ import '../shared/CustomColors.dart';
 
 class HomeScreen extends StatefulWidget {
   AdminUser? adminUser;
-  HomeScreen({this.adminUser});
+  final Function(Widget)? onScreenChange;
+  HomeScreen({this.adminUser,this.onScreenChange});
+
   FirebaseServiceUser _firebaseServiceUser = FirebaseServiceUser();
   FirebaseServiceClients _firebaseServiceClients = FirebaseServiceClients();
   FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
@@ -61,9 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
             [
               GestureDetector(
                 onTap: (){
-                  setState(() {
-                    ScreenManager.setCurrentScreen(ClientsScreen(adminUser: widget.adminUser,));
-                  });
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(
@@ -133,48 +134,120 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                width: MediaQuery.of(context).size.width,
-                height: 150,
-                child: Card(
-                  shadowColor: Colors.black,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: CustomColors.blue,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(-1, -1),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 20,top: 15),
-                              child: Icon(
-                                Icons.people,
-                                size: 50,
-                                color: CustomColors.white,
+              GestureDetector(
+                onTap: (){
+                  widget.onScreenChange!(UsersScreen(adminUser: widget.adminUser,));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  child: Card(
+                    shadowColor: Colors.black,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: CustomColors.blue,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Align(
+                              alignment: AlignmentDirectional(-1, -1),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20,top: 15),
+                                child: Icon(
+                                  Icons.people,
+                                  size: 50,
+                                  color: CustomColors.white,
+                                ),
                               ),
                             ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional(0, -1),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5,top: 15),
-                              child: Text(
-                                'Utilisateurs',
-                                style: TextStyle(fontSize: 40, color: CustomColors.white),
-                                textAlign: TextAlign.start,
+                            Align(
+                              alignment: AlignmentDirectional(0, -1),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 5,top: 15),
+                                child: Text(
+                                  'Utilisateurs',
+                                  style: TextStyle(fontSize: 40, color: CustomColors.white),
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
+                            ),
+                          ],
+                        ),
+                        Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(1, 1),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 20),
+                                    child: Text(
+                                      'Nombre : ${listOfUsers.length}',
+                                      style: TextStyle(fontSize: 20, color: Colors.grey[350]),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      Align(
+                        ),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                    widget.onScreenChange!(ProjectScreen(adminUser: widget.adminUser,));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
+                  child: Card(
+                    shadowColor: Colors.black,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: CustomColors.green,
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Align(
+                              alignment: AlignmentDirectional(-1, -1),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 20,top: 15),
+                                child: Icon(
+                                  Icons.work,
+                                  size: 50,
+                                  color: CustomColors.white,
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: AlignmentDirectional(0, -1),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 5,top: 15),
+                                child: Text(
+                                  'Projets',
+                                  style: TextStyle(fontSize: 40, color: CustomColors.white),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Align(
                           alignment: AlignmentDirectional(0, 0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
@@ -184,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Padding(
                                   padding: EdgeInsets.only(left: 20),
                                   child: Text(
-                                    'Nombre : ${listOfUsers.length}',
+                                    'Nombre : ${listOfProjects.length}',
                                     style: TextStyle(fontSize: 20, color: Colors.grey[350]),
                                   ),
                                 ),
@@ -194,68 +267,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                      ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                width: MediaQuery.of(context).size.width,
-                height: 150,
-                child: Card(
-                  shadowColor: Colors.black,
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: CustomColors.green,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(-1, -1),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 20,top: 15),
-                              child: Icon(
-                                Icons.work,
-                                size: 50,
-                                color: CustomColors.white,
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional(0, -1),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 5,top: 15),
-                              child: Text(
-                                'Projets',
-                                style: TextStyle(fontSize: 40, color: CustomColors.white),
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Align(
-                              alignment: AlignmentDirectional(1, 1),
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: Text(
-                                  'Nombre : ${listOfProjects.length}',
-                                  style: TextStyle(fontSize: 20, color: Colors.grey[350]),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),

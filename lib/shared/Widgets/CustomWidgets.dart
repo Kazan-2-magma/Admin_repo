@@ -173,55 +173,73 @@ class CustomWidgets{
    );
  }
 
- static Widget customCardUser(UserModel user,{Color borderSideColor = Colors.green,bool isCheck = false,void Function(bool?)? func,bool isUser = false,int? index,void Function()? editFunc,void Function()? deleteFunc}) => Card(
-   shape: const RoundedRectangleBorder(
-       borderRadius: BorderRadius.only(
-           topLeft: Radius.circular(10),
-           bottomLeft: Radius.circular(10)
-       )
-   ),
-   elevation: 0.6,
-   child: ClipPath(
-     clipper: ShapeBorderClipper(
-         shape: RoundedRectangleBorder(
-             borderRadius: BorderRadius.circular(10)
+ static Widget customCardUser(
+     Users user,
+     {Color borderSideColor = Colors.green,
+       bool isCheck = false,
+       void Function(bool?)? func,
+       bool isUser = false,
+       bool isAdmin = false,
+       bool userDisabled = false,
+       int? index,void Function()? editFunc,
+       void Function()? deleteFunc,
+       bool? Function(bool?)? disableFunc
+     }){
+   return Card(
+     shape: const RoundedRectangleBorder(
+         borderRadius: BorderRadius.only(
+             topLeft: Radius.circular(10),
+             bottomLeft: Radius.circular(10)
          )
      ),
-     child: Container(
-       decoration: BoxDecoration(
-         border: Border(
-           left: BorderSide(color: borderSideColor, width: 7),
-         ),
+     elevation: 0.6,
+     child: ClipPath(
+       clipper: ShapeBorderClipper(
+           shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(10)
+           )
        ),
-       child:ListTile(
-             contentPadding: const EdgeInsets.only(
-               left: 15,
-               right: 15,
-               top: 15,
-               bottom: 20
-             ),
-             title: Text(
-               "${user.firstName} ${user.lastName}",
-               style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
-             ),
-             subtitle:isUser
-                 ? Text("Email: ${user.email}\nTel: ${user.phoneNumber}")
-                 : Text("Email: ${user.email}\nTel: ${user.phoneNumber}\nRole : ${user.role}"),
-             trailing: Row(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               mainAxisSize: MainAxisSize.min,
+       child: Container(
+         decoration: BoxDecoration(
+           border: Border(
+             left: BorderSide(color: borderSideColor, width: 7),
+           ),
+         ),
+         child:ExpansionTile(
+           tilePadding: EdgeInsets.all(10),
+           expandedAlignment: Alignment.center,
+           title: Text(
+             "${user.firstName} ${user.lastName}",
+             style: TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+           ),
+           subtitle:isUser
+               ? Text("Email: ${user.email}\nTel: ${user.phoneNumber}")
+               : Text("Email: ${user.email}\nTel: ${user.phoneNumber}\nRole : ${user.role}"),
+           children: [
+             Column(
                children:
                [
-                 const VerticalDivider(),
-                 Checkbox(
-                   value: isCheck,
-                   onChanged: func,
-                 ),
-                 Column(
-                   mainAxisSize: MainAxisSize.min,
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                 !isUser && user.role != "admin"
+                 ? Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
                    children:
                    [
+                     Icon(Icons.sms,size: 50,),
+                     const SizedBox(width: 30,),
+                     Text("${user.msgNbr}",style: TextStyle(
+                       fontSize: 30
+                     ),)
+                   ],
+                 )
+                 : Text(""),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                   children:
+                   [
+                     Checkbox(
+                       value: isCheck,
+                       onChanged: func,
+                     ),
                      CustomWidgets.customIconButton(
                          func: editFunc!,
                          icon: const Icon(
@@ -229,23 +247,29 @@ class CustomWidgets{
                              color:Colors.green
                          )
                      ),
-                     isUser
-                         ? CustomWidgets.customIconButton(
+                     CustomWidgets.customIconButton(
                        func: deleteFunc!,
                        icon:Icon(
                          Icons.delete,
                          color: CustomColors.red,
                        ),
+                     ),
+                     !isUser
+                         ? Switch(
+                         value: userDisabled,
+                         onChanged: disableFunc
                      )
-                         : SizedBox()
+                         : Container()
                    ],
-                 )
+                 ),
                ],
              )
-       )
+           ],
+         ),
+       ),
      ),
-   ),
- );
+   );
+ }
 
  static Widget customCardProjet(Map<String,dynamic> data,
      {Function(String?)? deleteFunction}) => Card(

@@ -26,17 +26,6 @@ class FirebaseServiceUser {
     }
   }
 
-  Future<void> deleteUser(String userId,String email, String password) async {
-    try {
-      AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
-      await _auth.currentUser!.reauthenticateWithCredential(credential);
-      await _auth.currentUser?.delete();
-      await _userCollection.doc(userId).delete();
-    } catch (e) {
-      print('Error deleting user: $e');
-      throw e;
-    }
-  }
 
   Future<void> modifyUserById(String userId, UserModel updatedUser) async {
     try {
@@ -172,6 +161,19 @@ class FirebaseServiceUser {
       await _auth.currentUser!.reauthenticateWithCredential(credential);
     }catch (e){
       throw e.toString();
+    }
+  }
+
+  Future<void> deleteUser(String email, String password,String id) async {
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
+      print(credential.asMap());
+      await _auth.currentUser!.reauthenticateWithCredential(credential);
+      await _auth.currentUser?.delete();
+      await _userCollection.doc(id).delete();
+    } catch (e) {
+      print('Error deleting user: $e');
+      throw e;
     }
   }
 

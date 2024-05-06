@@ -1,5 +1,7 @@
 
 
+import 'dart:convert';
+
 import 'package:animation_search_bar/animation_search_bar.dart';
 import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceProject.dart';
@@ -10,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/widgets.dart';
@@ -36,6 +39,7 @@ class _UsersScreenState extends State<UsersScreen> {
   bool isVisibleConf = true;
   bool isSending = false;
   Future<List<UserModel>>? usersList;
+  List countryCodeMap = [] ;
   List<Map<String,dynamic>>? projectsList;
   TextEditingController _searchController = TextEditingController(),
       firstName = TextEditingController(),
@@ -47,7 +51,9 @@ class _UsersScreenState extends State<UsersScreen> {
       role = TextEditingController();
       String? selectedProjectId;
   List<bool> checkBoxes = [];
+  List<bool> disabledUser = [];
   int length = 0;
+  String? dialCode ;
   bool isCheck = false;
 
   @override
@@ -58,7 +64,8 @@ class _UsersScreenState extends State<UsersScreen> {
   }
   void fetchProjectsData() async{
     projectsList =await widget._firebaseServiceProject.getProjects();
-    print(projectsList);
+    countryCodeMap = await countryCode();
+    print("clist $countryCodeMap");
   }
 
 
@@ -130,24 +137,38 @@ class _UsersScreenState extends State<UsersScreen> {
                             );
                           }else if(snapshot.hasData && snapshot.data!.isNotEmpty){
                             checkBoxes = List<bool>.filled(snapshot.data!.length,false);
+                            disabledUser = List<bool>.filled(snapshot.data!.length,false);
                             return Expanded(
                                 child: ListView.separated(
                                   separatorBuilder: (context,index) => CustomWidgets.verticalSpace(10.0),
                                   itemCount: snapshot.data!.length,
                                   itemBuilder: (context,index){
-                                    UserModel user = AdminUser.fromJson(snapshot.data![index]);
-                                        //snapshot.data![index]["role"] == "admin"
-                                        // ? AdminUser.fromJson(snapshot.data![index])
-                                        // : Users.fromJson(snapshot.data![index]);
+                                    Users user = Users.fromJson(snapshot.data![index]);
                                     return StatefulBuilder(
-                                      builder: (context,setState){
+                                      builder: (context,setStateFull){
                                         return CustomWidgets.customCardUser(
                                             user,
+                                            isUser: false,
                                             isCheck: checkBoxes[index],
                                             func: (value){
-                                              setState((){
+                                              setStateFull((){
                                                 checkBoxes[index] = value!;
                                               });
+                                            },
+                                            userDisabled: disabledUser[index],
+                                            disableFunc: (value){
+                                              if(user.role != "admin"){
+                                                Users users = user as Users;
+                                                if(users.msgNbr > 30){
+                                                    setStateFull((){
+                                                      disabledUser[index] = true;
+                                                    });
+                                                }
+                                              }
+                                              setStateFull((){
+                                                disabledUser[index] = value!;
+                                              });
+                                              return null;
                                             },
                                             editFunc: (){
                                                 updateBottomSheet(user, user.id_user);
@@ -161,7 +182,16 @@ class _UsersScreenState extends State<UsersScreen> {
                                                         color:Colors.green,
                                                         text: Text("Oui"),
                                                         func: (){
-
+                                                          print(user.getFullname());
+                                                          widget._firebaseServiceUser.deleteUser(user.email, user.password,user.id_user)
+                                                              .then((value){
+                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                  SnackBar(content: Text("Utilisateur est Supprimer"))
+                                                                );
+                                                             setStateFull((){});
+                                                             Navigator.of(context).pop();
+                                                          }).catchError((e) => print(e.toString()));
+                                                          Navigator.of(context).pop();
                                                         }
                                                     ),
                                                     CustomWidgets.customButton(
@@ -226,12 +256,14 @@ class _UsersScreenState extends State<UsersScreen> {
           .where("firstName", isGreaterThanOrEqualTo: query)
           .where("firstName", isLessThan: query + 'z')
           .get();
+      print(querySnapshot.docs.first);
       return querySnapshot.docs.map((e) {
         return {
           "id_user" : e["id_user"],
           'firstName': e["firstName"] ,
           'lastName': e["lastName"] ,
           'phoneNumber':e["phoneNumber"] ,
+          "msg_nbr" : e["role"] == "admin" ? null : e["msg_nbr"],
           'email': e["email"] ,
           'photoUrl': e["photoUrl"] ,
           'role':e["role"] ,
@@ -306,7 +338,6 @@ class _UsersScreenState extends State<UsersScreen> {
                           CustomWidgets.verticalSpace(20.0),
                           CustomWidgets.customTextFormField(
                             icon: Icons.email,
-
                             inputType: TextInputType.emailAddress,
                             funcValid: (value){
                               if(value!.isEmpty) return "Entre le Email de Utilisateur";
@@ -319,18 +350,51 @@ class _UsersScreenState extends State<UsersScreen> {
                             hintText: "Email de Utilisateur",
                           ),
                           CustomWidgets.verticalSpace(20.0),
-                          CustomWidgets.customTextFormField(
-                            icon: Icons.call,
-                            inputType: TextInputType.phone,
-                            funcValid: (value){
-                              if(value!.isEmpty) return "N° de Telephone de Utilisateur";
-                              else if(!phoneNumberValidation(value)){
-                                return "N° de Telephone n'est valid";
-                              }
-                              return null;
-                            },
-                            editingController: phoneNumber,
-                            hintText: "N° Telephone de Utilisateur",
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                  child: DropdownButton<String>(
+                                    hint: Text(
+                                      "CODE PAYS",
+                                      style: TextStyle(
+                                        fontSize: 17
+                                      ),
+                                    ),
+                                    value: dialCode,
+                                    isExpanded: true,
+                                    items: countryCodeMap.map((e){
+                                      return DropdownMenuItem<String>(
+                                        value: "${e["flag"]} ${e["dial_code"]}",
+                                        child: Text(
+                                            "${e["flag"]} ${e["dial_code"]}"
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) {
+                                      setState((){
+                                        dialCode = value!;
+                                      });
+                                    },
+                                  )
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child:CustomWidgets.customTextFormField(
+                                  icon: Icons.call,
+                                  inputType: TextInputType.phone,
+                                  funcValid: (value){
+                                    if(value!.isEmpty) return "N° de Telephone de Client";
+                                    else if(!phoneNumberValidation(value)){
+                                      return "N° d Telephone n'est pas valide";
+                                    }
+                                    return null;
+                                  },
+                                  editingController: phoneNumber,
+                                  hintText: "N° Telephone de Client",
+                                ),
+                              ),
+                            ],
                           ),
                           CustomWidgets.verticalSpace(20.0),
 
@@ -455,31 +519,33 @@ class _UsersScreenState extends State<UsersScreen> {
                                   child: CustomWidgets.customButton(
                                       text: Text("Ajouter"),
                                       func: (){
+                                        UserModel? userModel;
                                           if(formKey.currentState!.validate()){
-                                            if(selectedProjectId!.isNotEmpty){
+                                            if(selectedProjectId!.isNotEmpty && groupValue != "admin"){
+                                              userModel = Users(
+                                                  firstName: firstName.text,
+                                                  lastName: lastName.text,
+                                                  phoneNumber: "$dialCode${phoneNumber.text}",
+                                                  email: email.text,
+                                                  photoUrl: "",
+                                                  role: groupValue,
+                                                  password: password.text,
+                                                  idProjet: selectedProjectId ?? ""
+                                              );
+                                              }else {
+                                              userModel = AdminUser(
+                                                  firstName: firstName.text,
+                                                  lastName: lastName.text,
+                                                  phoneNumber: "$dialCode${phoneNumber.text}",
+                                                  email: email.text,
+                                                  photoUrl: "",
+                                                  role: groupValue,
+                                                  password: password.text
+                                              );
+                                            }
                                               widget._firebaseServiceUser.registerWithEmailAndPassword(
                                                   email.text,
-                                                  password.text,
-                                                  groupValue == "admin"
-                                                      ? AdminUser(
-                                                      firstName: firstName.text,
-                                                      lastName: lastName.text,
-                                                      phoneNumber: phoneNumber.text,
-                                                      email: email.text,
-                                                      photoUrl: "",
-                                                      role: groupValue,
-                                                      password: password.text
-                                                  )
-                                                      : Users(
-                                                      firstName: firstName.text,
-                                                      lastName: lastName.text,
-                                                      phoneNumber: phoneNumber.text,
-                                                      email: email.text,
-                                                      photoUrl: "",
-                                                      role: groupValue,
-                                                      password: password.text,
-                                                      idProjet: selectedProjectId ?? ""
-                                                  )
+                                                  password.text,userModel
                                               ).then((value){
                                                 CustomWidgets.showSnackBar(
                                                   context,
@@ -494,13 +560,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                   Colors.red,
                                                 );
                                               });
-                                            }else{
-                                              CustomWidgets.showSnackBar(
-                                                context,
-                                                "Choisi un projet",
-                                                Colors.red,
-                                              );
-                                            }
+
                                           }
 
                                       },
@@ -852,6 +912,14 @@ class _UsersScreenState extends State<UsersScreen> {
     return list;
 
   }
-
+  Future<dynamic> countryCode()async{
+    try{
+      String jsonData = await rootBundle.loadString("assets/countries.json");
+      var countryCodeData = jsonDecode(jsonData);
+      return countryCodeData;
+    }catch(e){
+      print(e.toString());
+    }
+  }
 
 }

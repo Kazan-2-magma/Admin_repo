@@ -17,10 +17,10 @@ class FirebaseServiceAttach{
     }
   }
 
-  Future<Attach?> getAttachment(String id)async{
+  Future<Attach?> getAttachment(String client_id)async{
     try{
       QuerySnapshot querySnapshot =await _collectionReference
-          .where("id",isEqualTo : id)
+          .where("clientId",isEqualTo : client_id)
           .limit(1)
           .get();
       return querySnapshot.docs.map((e){
@@ -28,6 +28,14 @@ class FirebaseServiceAttach{
       }).first;
     }catch(e){
       return null;
+    }
+  }
+
+  Future<void> deleteAttachment(String id)async{
+    try{
+      await _collectionReference.doc(id).delete();
+    }catch(e){
+      print(e.toString());
     }
   }
 }

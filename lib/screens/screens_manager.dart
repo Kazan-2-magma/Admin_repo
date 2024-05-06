@@ -41,7 +41,14 @@ class _ScreenManagerState extends State<ScreenManager> {
   @override
   void initState() {
     title = "Accueil";
-    currentScreen = HomeScreen();
+    currentScreen = HomeScreen(
+      adminUser: widget.userData,
+      onScreenChange: (newScreen){
+        setState(() {
+          currentScreen = newScreen;
+        });
+      },
+    );
     print("AdminData ${widget.userData}");
     super.initState();
   }

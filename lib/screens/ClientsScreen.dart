@@ -1,5 +1,7 @@
 
 
+import 'dart:convert';
+
 import 'package:animation_search_bar/animation_search_bar.dart';
 import 'package:cinq_etoils/data_verification/email_password_verification.dart';
 import 'package:cinq_etoils/firebase_services/FirebaseServiceAttach.dart';
@@ -13,11 +15,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../model/UserModel.dart';
 import '../model/Users.dart';
+import '../model/attachement.dart';
 
 class ClientsScreen extends StatefulWidget {
   final FirebaseServiceClients _firebaseServiceClients = FirebaseServiceClients();
@@ -41,20 +45,27 @@ class _ClientsScreenState extends State<ClientsScreen> {
       phoneNumber = TextEditingController(),
       email = TextEditingController();
   String? selectedProjectId;
+  String? dialCode;
   List<bool> checkboxes = [];
+  List countryCodeMap = [];
+
 
   @override
   void initState(){
     super.initState();
-    fetchProjectData();
+    widget._firebaseServiceProject.getProjects().then((value){
+      setState(() {
+        projectsList = value;
+      });
+    });
     clientsList =  widget._firebaseServiceClients.getClients();
     fetchClientData();
   }
 
-  void fetchProjectData() async{
+
+  void fetchProjectData() async {
+    //countryCodeMap = await countryCode();
     projectsList = await widget._firebaseServiceProject.getProjects();
-    projectsList.forEach((element) {
-    });
   }
 
   void fetchClientData()async{
@@ -64,6 +75,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   @override
   Widget build(BuildContext context){
+    print(projectsList);
     CustomWidgets.init(context);
     TextEditingController dropDownSearchBarController = TextEditingController();
     return Scaffold(
@@ -79,7 +91,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 [
                 Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:
+                children :
                 [
                   CustomWidgets.customIconButton(
                       color: CustomColors.green,
@@ -91,34 +103,14 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       )
                   ),
                   DropdownButton<String>(
-                      menuMaxHeight: 200,
-                      icon: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                        [
-                          IconButton(
-                          onPressed: (){
-                            setState((){
-                              if(selectedProjectId == null){
-                                //clientsList = widget._firebaseServiceClients.getClientsWithProject(selectedProjectId!);
-                                return;
-                              }else{
-                                clientsList = widget._firebaseServiceClients.getClientsWithProject(selectedProjectId!);
-                              }
-                              selectedProjectId = null;
-                              clientsList = widget._firebaseServiceClients.getClients();
-                            });
-                          }, icon: Icon(Icons.remove))
-                        ],
-                      ),
-                      hint: Text("Select Projet"),
-                      value: selectedProjectId,
                       items: projectsList.map((e){
                         return DropdownMenuItem<String>(
                           value:e["id"],
                           child: Text(e["nomProjet"]),
                         );
                       }).toList(),
+                      hint: Text("Select Projet"),
+                      value: selectedProjectId,
                       onChanged: (value){
                         setState(() {
                           selectedProjectId = value!;
@@ -155,58 +147,61 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                       separatorBuilder: (context,index) => const SizedBox(height:10.0),
                                       itemCount: snapshot.data!.length,
                                       itemBuilder: (context,index){
-                                        return  Card(
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(10),
-                                                    bottomLeft: Radius.circular(10)
-                                                )
-                                            ),
-                                            elevation: 0.6,
-                                            child: ClipPath(
-                                              clipper: ShapeBorderClipper(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10)
+                                        checkboxes = List<bool>.filled(FirebaseServiceClients.countClinents,false);
+                                        return  StatefulBuilder(
+                                          builder: (context,setStateFull){
+                                            return Card(
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10)
                                                   )
                                               ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border(
-                                                    left: BorderSide(color: CustomColors.green, width: 7),
-                                                  ),
+                                              elevation: 0.6,
+                                              child: ClipPath(
+                                                clipper: ShapeBorderClipper(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10)
+                                                    )
                                                 ),
-                                                child: ListTile(
-                                                    contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
-                                                    title: Text(
-                                                      data![index].getFullName(),
-                                                      style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      left: BorderSide(color: CustomColors.green, width: 7),
                                                     ),
-                                                    subtitle:Text("Email ${data[index].email}\nTel\n${data[index].phoneNumber}"),
-                                                    trailing: Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children:
-                                                      [
-                                                        const VerticalDivider(),
-                                                        CustomWidgets.customIconButton(
-                                                          func: (){
-                                                            updateBottomSheet(data[index],data[index].id);
-                                                          },
-                                                          icon:Icon(
-                                                            Icons.edit,
-                                                            color: CustomColors.green,
+                                                  ),
+                                                  child: ListTile(
+                                                      contentPadding: const EdgeInsets.symmetric(horizontal: 15.0,vertical: 10.0),
+                                                      title: Text(
+                                                        data![index].getFullName(),
+                                                        style: const TextStyle(fontSize: 20,fontWeight: FontWeight.w900),
+                                                      ),
+                                                      subtitle:Text("Email ${data[index].email}\nTel\n${data[index].phoneNumber}"),
+                                                      trailing: Row(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children:
+                                                        [
+                                                          const VerticalDivider(),
+                                                          CustomWidgets.customIconButton(
+                                                            func: (){
+                                                              updateBottomSheet(data[index],data[index].id);
+                                                            },
+                                                            icon:Icon(
+                                                              Icons.edit,
+                                                              color: CustomColors.green,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        CustomWidgets.customIconButton(
-                                                          func: (){
-                                                            showDialog(
-                                                                context: context,
-                                                                builder: (context)=>AlertDialog(
-                                                                  title: Text(
-                                                                    "Voulez-vous supprimer cette Client?",
-                                                                  ),
-                                                                  actions:
-                                                                  [
-                                                                    ElevatedButton(
+                                                          CustomWidgets.customIconButton(
+                                                            func: (){
+                                                              showDialog(
+                                                                  context: context,
+                                                                  builder: (context)=>AlertDialog(
+                                                                    title: Text(
+                                                                      "Voulez-vous supprimer cette Client?",
+                                                                    ),
+                                                                    actions:
+                                                                    [
+                                                                      ElevatedButton(
                                                                         style : ElevatedButton.styleFrom(
                                                                           backgroundColor: Colors.green,
                                                                           foregroundColor: Colors.white,
@@ -214,7 +209,11 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                                         onPressed: (){
                                                                           widget._firebaseServiceClients.deleteClient(
                                                                             data[index].id,
-                                                                          ).then((value){
+                                                                          ).then((value)async{
+                                                                            Attach attach = (await widget._firebaseServiceAttach.getAttachment(data[index].id))!;
+                                                                            widget._firebaseServiceAttach.deleteAttachment(
+                                                                                attach.id!
+                                                                            );
                                                                             CustomWidgets.showSnackBar(
                                                                                 context,
                                                                                 "Le Client est supprimer",
@@ -229,43 +228,45 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                                           });
                                                                         },
                                                                         child: Text("Oui"),
-                                                                    ),
-                                                                    ElevatedButton(
-                                                                        style : ElevatedButton.styleFrom(
-                                                                          backgroundColor: Colors.red,
-                                                                          foregroundColor: Colors.white,
-                                                                        ),
-                                                                        onPressed: (){
-                                                                          Navigator.pop(context);
-                                                                        },
-                                                                        child: Text(
-                                                                          "Annuler",
-                                                                        )
-                                                                    )
-                                                                  ],
-                                                                )
-                                                            );
-                                                          },
-                                                          icon:Icon(
-                                                            Icons.delete,
-                                                            color: CustomColors.red,
+                                                                      ),
+                                                                      ElevatedButton(
+                                                                          style : ElevatedButton.styleFrom(
+                                                                            backgroundColor: Colors.red,
+                                                                            foregroundColor: Colors.white,
+                                                                          ),
+                                                                          onPressed: (){
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: Text(
+                                                                            "Annuler",
+                                                                          )
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                              );
+                                                            },
+                                                            icon:Icon(
+                                                              Icons.delete,
+                                                              color: CustomColors.red,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Checkbox(
-                                                            value: checkboxes[index],
-                                                            onChanged: (value){
-                                                              setState(() {
-                                                                checkboxes[index] = value!;
-                                                              });
-                                                              print(checkboxes);
+                                                          Checkbox(
+                                                              value: checkboxes[index],
+                                                              onChanged: (value){
+                                                                setStateFull(() {
+                                                                  checkboxes[index] = value!;
+                                                                });
+                                                                print(checkboxes);
 
-                                                            }
-                                                        )
-                                                      ],
-                                                    )
+                                                              }
+                                                          )
+                                                        ],
+                                                      )
+                                                  ),
                                                 ),
                                               ),
-                                            ),
+                                            );
+                                          },
                                         );
                                       },
                                  ),
@@ -296,7 +297,13 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           func: (){
                             if(checkboxes.every((element) => element == false)){
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Selectioner en moins un client pour Envoyer SMS ou Email"),backgroundColor: Colors.orangeAccent,)
+                                  SnackBar(
+                                    content: Text(
+                                        "Selectioner en moins un client pour Envoyer SMS ou Email",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),backgroundColor: Colors.orangeAccent,)
                               );
                             }else{
                               showOptions(context);
@@ -331,7 +338,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                           bottom: MediaQuery.of(context).viewInsets.bottom
                       ),
                       child: StatefulBuilder(
-                        builder: (context,setState){
+                        builder: (context,setStateFull){
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children:
@@ -388,32 +395,62 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                 hintText: "Email de Client",
                               ),
                               CustomWidgets.verticalSpace(20.0),
-                              CustomWidgets.customTextFormField(
-                                icon: Icons.call,
-                                inputType: TextInputType.phone,
-                                funcValid: (value){
-                                  if(value!.isEmpty) return "N° de Telephone de Client";
-                                  else if(!phoneNumberValidation(value)){
-                                    return "N° d Telephone n'est pas valide";
-                                  }
-                                  return null;
-                                },
-                                editingController: phoneNumber,
-                                hintText: "N° Telephone de Client",
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                      child: DropdownButton<String>(
+                                        value: dialCode,
+                                        hint: Text("Choisi votre pays",style: TextStyle(
+                                            fontSize: 13
+                                        ),),
+                                        isExpanded: true,
+                                        items: countryCodeMap.map((e){
+                                          return DropdownMenuItem<String>(
+                                            value: "${e["flag"]} ${e["dial_code"]}",
+                                            child: Text(
+                                                "${e["flag"]} ${e["dial_code"]}"
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? value) {
+                                          setStateFull((){
+                                            dialCode = value!;
+                                          });
+                                        },
+                                      )
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child:CustomWidgets.customTextFormField(
+                                      icon: Icons.call,
+                                      inputType: TextInputType.phone,
+                                      funcValid: (value){
+                                        if(value!.isEmpty) return "N° de Telephone de Client";
+                                        else if(!phoneNumberValidation(value)){
+                                          return "N° d Telephone n'est pas valide";
+                                        }
+                                        return null;
+                                      },
+                                      editingController: phoneNumber,
+                                      hintText: "N° Telephone de Client",
+                                    ),
+                                  ),
+                                ],
                               ),
                               CustomWidgets.verticalSpace(20.0),
                               DropdownButton<String>(
                                   menuMaxHeight: 200,
                                   hint: Text("Select Projet"),
                                   value: client_project,
-                                  items: projectsList.map((e){
+                                  items: projectsList!.map((e){
                                     return DropdownMenuItem<String>(
                                       value:e["id"],
                                       child: Text(e["nomProjet"]),
                                     );
                                   }).toList(),
                                   onChanged: (value){
-                                    setState(() {
+                                    setStateFull(() {
                                       client_project = value!;
                                     });
                                   }
@@ -433,7 +470,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                       firstName: firstName.text,
                                                       lastName: lastName.text,
                                                       email: email.text,
-                                                      phoneNumber: phoneNumber.text
+                                                      phoneNumber: "$dialCode${phoneNumber.text}"
                                                   )
                                               ).then((value){
                                                 widget._firebaseServiceAttach.addAttachment(
@@ -710,4 +747,13 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   }
 
+  Future<dynamic> countryCode()async{
+    try{
+      String jsonData = await rootBundle.loadString(("assets/countries.json"));
+      var countryCodeData = jsonDecode(jsonData);
+      return countryCodeData;
+    }catch(e){
+      print(e.toString());
+    }
+  }
 }

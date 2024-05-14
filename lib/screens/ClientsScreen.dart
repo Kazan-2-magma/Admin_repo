@@ -23,6 +23,7 @@ import '../model/UserModel.dart';
 import '../model/Users.dart';
 import '../model/attachement.dart';
 
+
 class ClientsScreen extends StatefulWidget {
   final FirebaseServiceClients _firebaseServiceClients = FirebaseServiceClients();
   final FirebaseServiceProject _firebaseServiceProject = FirebaseServiceProject();
@@ -60,12 +61,13 @@ class _ClientsScreenState extends State<ClientsScreen> {
     });
     clientsList =  widget._firebaseServiceClients.getClients();
     fetchClientData();
+    fetchCodeData();
   }
 
 
-  void fetchProjectData() async {
-    //countryCodeMap = await countryCode();
-    projectsList = await widget._firebaseServiceProject.getProjects();
+  void fetchCodeData() async {
+    countryCodeMap = await countryCode();
+    print(countryCodeMap);
   }
 
   void fetchClientData()async{
